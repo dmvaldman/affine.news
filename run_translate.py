@@ -12,8 +12,8 @@ target_lang = 'en'
 
 if __name__ == "__main__":
     from google.cloud import translate
-    translate_client = translate.TranslationServiceClient.from_service_account_json('plural-news-1564928671096-8e6de93f2996.json')
-    parent = translate_client.location_path("env/plural-news-1564928671096", "global")
+    translate_client = translate.TranslationServiceClient.from_service_account_json('env/plural-news-1564928671096-8e6de93f2996.json')
+    parent = translate_client.location_path("plural-news-1564928671096", "global")
 
     c.execute('''
         SELECT url, lang, keywords, title, text, title_translated FROM article
@@ -34,14 +34,11 @@ if __name__ == "__main__":
         if source_lang != target_lang:
             to_translate = [
                 result['title'],
-                result['keywords'],
-                result['text']
+                result['keywords']
             ]
 
             if not (result['title'] and result['keywords'] and result['text']):
                 continue
-
-            print(result['url'], to_translate)
 
             keywords_translated = translate_client.translate_text(
                 parent=parent,
@@ -52,21 +49,21 @@ if __name__ == "__main__":
 
             title_text = keywords_translated.translations[0].translated_text
             keywords_text = keywords_translated.translations[1].translated_text.lower()
-            text_translated = keywords_translated.translations[2].translated_text
+            # text_translated = keywords_translated.translations[2].translated_text
         else:
             title_text = result['title']
             keywords_text = result['keywords'].lower()
-            text_translated = result['text']
+            # text_translated = result['text']
+
+        print(result['url'], title_text)
 
         c.execute('''
             UPDATE article SET 
-                keywords_translated=:keywords_text,
-                text_translated=:text_translated,  
+                keywords_translated=:keywords_text,                  
                 title_translated=:title_translated
             WHERE url=:url
         ''', {
             "keywords_text": keywords_text,
-            "text_translated": text_translated,
             "title_translated": title_text,
             "url": result['url']
         })

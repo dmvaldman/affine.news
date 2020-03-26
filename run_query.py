@@ -12,7 +12,7 @@ c = conn.cursor()
 
 
 if __name__ == "__main__":
-    query = 'pelosi'
+    query = 'coronavirus'
     today = datetime.date.today()
     date_start = today - datetime.timedelta(days=1)
     date_end = today.isoformat()
@@ -32,10 +32,12 @@ if __name__ == "__main__":
     results_matched = []
     for result in results:
         keywords = result['keywords_translated']
-        if keywords is None:
+        title = result['title_translated']
+
+        if keywords is None and title is None:
             continue
 
-        if re.search(query, keywords, re.IGNORECASE):
+        if re.search(query, keywords, re.IGNORECASE) or re.search(query, title, re.IGNORECASE):
             results_matched.append(result)
 
     by_country = {}
