@@ -1,5 +1,45 @@
 [
     {
+        "country": "Italy",
+        "lang": "it",
+        "url": "https://www.corriere.it/",
+        "category_urls": [
+            "https://www.corriere.it/",
+            "https://www.corriere.it/esteri/",
+            "https://www.corriere.it/politica"
+        ]
+    },
+    {
+        "country": "Italy",
+        "lang": "it",
+        "url": "https://www.repubblica.it/",
+        "category_urls": [
+            "https://www.repubblica.it/cronaca",
+            "https://www.repubblica.it/politica",
+            "https://www.repubblica.it/esteri"
+        ]
+    },
+    {
+        "country": "Spain",
+        "lang": "es",
+        "url": "https://elpais.com/",
+        "category_urls": [
+            "https://elpais.com/internacional/",
+            "https://elpais.com/espana/",
+            "https://elpais.com/sociedad/"
+        ]
+    },
+    {
+        "country": "Spain",
+        "lang": "es",
+        "url": "https://www.abc.es/",
+        "category_urls": [
+            "https://www.abc.es/espana/",
+            "https://www.abc.es/internacional/",
+            "https://www.abc.es/sociedad/"
+        ]
+    },
+    {
         "country": "Turkey",
         "lang": "tr",
         "url": "http://www.hurriyet.com.tr/",
@@ -36,7 +76,7 @@
             "http://youth.ynet.com/"
         ]
     },
-        {
+    {
         "country": "China",
         "lang": "zh",
         "url": "http://www.chinanews.com/",
@@ -47,10 +87,21 @@
         ]
     },
     {
+        "country": "China",
+        "lang": "zh",
+        "url": "http://www.weibo.com/",
+        "category_urls": [
+            "http://www.weibo.com/",
+            "https://www.weibo.com/us"
+        ]
+    },
+    {
         "country": "Iran",
         "lang": "ar",
         "url": "https://www.khabaronline.ir/",
         "category_urls": [
+            "https://www.khabaronline.ir/",
+            "https://www.khabaronline.ir/news/",
             "https://www.khabaronline.ir/service/World",
             "https://www.khabaronline.ir/service/Politics",
             "https://www.khabaronline.ir/service/World/americas",
@@ -65,7 +116,8 @@
         "lang": "ar",
         "url": "http://jamejamonline.ir/",
         "category_urls": [
-            "http://jamejamonline.ir/"
+            "http://jamejamonline.ir/",
+            "http://jamejamonline.ir/online"
         ]
     },
     {
@@ -74,7 +126,9 @@
         "url": "http://www.aryanews.com/",
         "category_urls": [
             "http://www.aryanews.com/Service/3/%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D9%85%D9%84%D9%84",
-            "http://www.aryanews.com/Service/1/%D8%B3%D9%8A%D8%A7%D8%B3%D9%8A"
+            "http://www.aryanews.com/Service/1/%D8%B3%D9%8A%D8%A7%D8%B3%D9%8A",
+            "http://www.aryanews.com/News",
+            "http://www.aryanews.com"
         ]
     },
     {
