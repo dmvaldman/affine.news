@@ -1,10 +1,3 @@
-from Crawler import Crawler
-from Paper import Papers
+from services.crawl import run as run_crawl
 
-if __name__ == "__main__":
-    crawler = Crawler(max_articles=40)
-
-    papers = Papers()
-    papers.load()
-
-    crawler.crawl_papers(papers)
+run_crawl(max_articles=40)
