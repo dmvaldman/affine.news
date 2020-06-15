@@ -2,15 +2,40 @@
 <html>
 <head>
     <title>Affine News</title>
+
+    <!--Map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+    <style type="text/css">.leaflet-container{background-color:#c5e8ff;}</style>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+
+    <!--Daterange picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!--App-->
     <link rel="stylesheet" href="static/css/app.css">
+
 </head>
 <body>
     <div class="container">
-       <div class="search">
-          <input id="search" type="text" class="searchQuery" placeholder="Search">
-          <button id="submitQuery" type="submit" class="searchButton">Search</button>
-       </div>
+        <div id="searchContainer">
+            <input id="search" type="text" class="searchQuery" placeholder="Search">
+            <button id="submitQuery" type="submit" class="searchButton" value="awesome,neat"  >Search</button>
+        </div>
+        <div id="datarangeContainer">
+            <input type="text" name="dates" />
+        </div>
+
+        <div id="map"></div>
+
+        <div id="searchResults"></div>
     </div>
+
     <script src="static/js/app.js"></script>
+
 </body>
 </html>

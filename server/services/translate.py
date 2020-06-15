@@ -13,7 +13,7 @@ def run():
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
             SELECT url, lang, keywords, title, text, title_translated FROM article
-            WHERE keywords_translated is NULL        
+            WHERE title_translated is NULL        
         ''')
 
         results = c.fetchall()
@@ -23,6 +23,7 @@ def run():
 
     for index, result in enumerate(results):
         if result['title_translated']:
+            print('title already translated', result['url'])
             continue
 
         source_lang = result['lang']
@@ -32,11 +33,12 @@ def run():
                 result['title']
             ]
 
-            if not (result['title'] and result['text']):
+            if not result['title']:
+                print('no title', result['url'])
                 continue
 
             if len(result['title']) > 2000:
-                print('length too long')
+                print('length too long', result['url'])
                 continue
 
             keywords_translated = translate_client.translate_text(
@@ -50,7 +52,7 @@ def run():
         else:
             title_text = result['title']
 
-        print(result['url'], title_text)
+        print('translation:', result['url'], title_text)
 
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
@@ -65,5 +67,5 @@ def run():
         if index % 10 == 0:
             print('Progress:', index/num_results)
 
+    print('done')
     conn.commit()
-    conn.close()

@@ -1,0 +1,12 @@
+Run local DB proxy
+```
+./cloud_sql_proxy -instances=affine-news:us-central1:affine=tcp:5432 -credential_file=affine/env/affine-news-97580ef473e5.json
+```
+
+Run server
+
+```
+python3 main.py
+```
+
+Open `localhost:8000` in a web browser

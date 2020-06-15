@@ -4,10 +4,11 @@ from psycopg2.extras import DictCursor
 
 
 def run(query, date_start, date_end, country=None):
-    command = '''SELECT p.country as country, p.url as paper_url, a.url as article_url, a.publish_at, a.title_translated, a.text_translated FROM article a
+    command = '''SELECT p.country as country, p.url as paper_url, a.url as article_url, a.publish_at, a.title_translated FROM article a
         JOIN paper p on p.uuid = a.paper_uuid
         WHERE a.publish_at >= %s
-        AND a.publish_at <= %s'''
+        AND a.publish_at <= %s
+        AND a.title_translated is not NULL'''
 
     params = (str(date_start), str(date_end))
 
@@ -23,12 +24,10 @@ def run(query, date_start, date_end, country=None):
     for result in results:
         title = result['title_translated']
 
-        if title is None:
-            continue
-
-        print(re.search(query, title, re.IGNORECASE), 'title')
-        if re.search(query, title, re.IGNORECASE):
-            results_matched.append(result)
+        print(re.search(query, title, re.IGNORECASE), query, title)
+        for word in query.split(','):
+            if re.search(word, title, re.IGNORECASE):
+                results_matched.append(result)
 
     by_country = {}
     for result_matched in results_matched:

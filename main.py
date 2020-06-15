@@ -10,8 +10,6 @@ from server.services.crawl import run as run_crawl
 from server.services.translate import run as run_translate
 from server.services.query import run as run_query
 
-# template_dir = os.path.abspath('./static')
-# app = Flask(__name__, template_folder=template_dir)
 
 app = Flask(__name__)
 app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
