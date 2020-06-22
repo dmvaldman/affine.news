@@ -4,11 +4,14 @@
     <title>Affine News</title>
 
     <!--Map-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-  crossorigin=""/>
-    <style type="text/css">.leaflet-container{background-color:#c5e8ff;}</style>
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<!--    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"-->
+<!--  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="-->
+<!--  crossorigin=""/>-->
+<!--    <style type="text/css">.leaflet-container{background-color:#c5e8ff;}</style>-->
+<!--    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="static/js/datamaps.js"></script>
 
     <!--Daterange picker-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
@@ -23,8 +26,8 @@
 <body>
     <div class="container">
         <div id="searchContainer">
-            <input id="search" type="text" class="searchQuery" placeholder="Search">
-            <button id="submitQuery" type="submit" class="searchButton" value="awesome,neat"  >Search</button>
+            <input id="search" type="text" class="searchQuery" placeholder="Search sans center...">
+            <button id="submitQuery" type="submit" class="searchButton">Search</button>
         </div>
         <div id="datarangeContainer">
             <input type="text" name="dates" />
