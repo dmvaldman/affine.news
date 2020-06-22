@@ -23,7 +23,6 @@ class Crawler:
             print('Building paper for', paper)
 
         todays_date = date.today()
-        # now = datetime.datetime.utcnow().isoformat()
 
         crawl = Crawl(
             start_at=todays_date,
@@ -42,18 +41,15 @@ class Crawler:
             memoize_articles=False,
             fetch_images=False,
             request_timeout=20,
+            max_articles=self.max_articles,
             category_urls=paper.category_urls)
 
-        articles_max = self.max_articles
         articles_index = 0
         count_failure = 0
         count_success = 0
 
         for paper_article in paper_build.articles:
             articles_index += 1
-
-            if articles_index > articles_max:
-                break
 
             try:
                 self.crawl_article(paper_article)
@@ -72,14 +68,12 @@ class Crawler:
             if not text:
                 continue
 
-            keywords = paper_article.meta_keywords + paper_article.keywords + list(paper_article.tags)
             img_url = paper_article.meta_img or paper_article.top_img or ''
 
             article = Article(
                 url=paper_article.url,
                 title=paper_article.title,
                 img_url=img_url,
-                keywords=keywords,
                 text=text,
                 publish_at=paper_article.publish_date or todays_date,
                 lang=paper.lang,
@@ -128,11 +122,11 @@ class Crawl:
         self.paper_uuid = paper_uuid
 
     def cache_hit(self):
-        from server.db.models.DBCrawl_postgres import DBCrawl
+        from server.db.models.DBCrawl import DBCrawl
         return DBCrawl.cache_hit(self)
 
     def update_status(self, status):
-        from server.db.models.DBCrawl_postgres import DBCrawl
+        from server.db.models.DBCrawl import DBCrawl
         self.status = status
         DBCrawl.update_status(self, status)
         return True
@@ -141,9 +135,9 @@ class Crawl:
         pass
 
     def save(self):
-        from server.db.models.DBCrawl_postgres import DBCrawl
+        from server.db.models.DBCrawl import DBCrawl
         return DBCrawl.create(self)
 
     def close(self):
-        from server.db.models.DBCrawl_postgres import DBCrawl
+        from server.db.models.DBCrawl import DBCrawl
         return DBCrawl.close()

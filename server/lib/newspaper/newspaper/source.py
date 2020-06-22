@@ -96,7 +96,7 @@ class Source(object):
         self.parse_categories()
 
         self.set_feeds()
-        self.download_feeds()  # mthread
+        # self.download_feeds()  # mthread
         # self.parse_feeds()
 
         self.generate_articles()
@@ -271,7 +271,6 @@ class Source(object):
                     config=self.config)
                 cur_articles.append(article)
 
-            cur_articles = self.purge_articles('url', cur_articles)
             after_purge = len(cur_articles)
 
             if self.config.memoize_articles:
@@ -312,6 +311,9 @@ class Source(object):
             if self.config.memoize_articles:
                 cur_articles = utils.memoize_articles(self, cur_articles)
             after_memo = len(cur_articles)
+
+            if self.config.max_articles > 0:
+                cur_articles = cur_articles[:self.config.max_articles]
 
             articles.extend(cur_articles)
 

@@ -1,63 +1,65 @@
-import sqlite3
-import os
 from server.models.Crawler import CrawlStatus
-
-path = os.path.dirname(os.path.abspath(__file__))
-db = os.path.join(path, '../paper.db')
-
-conn = sqlite3.connect(db)
-conn.row_factory = sqlite3.Row
-c = conn.cursor()
+from server.db.db import conn
+from psycopg2.extras import DictCursor
 
 
 class DBCrawl:
     @staticmethod
     def create(crawl):
-        with conn:
-            c.execute("""INSERT INTO crawl VALUES ( 
-                        :uuid,
-                        :start_at,                                                 
-                        :status,
-                        :max_articles,
-                        :paper_uuid                        
-                    )""", {
-                "uuid": str(crawl.uuid),
-                "max_articles": crawl.max_articles,
-                "start_at": crawl.start_at.isoformat(),
-                "status": crawl.status.value,
-                "paper_uuid": str(crawl.paper_uuid)
-            })
-            conn.commit()
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            c.execute("""
+                INSERT INTO crawl (
+                    uuid,
+                    start_at,                                                 
+                    status,
+                    max_articles,
+                    paper_uuid
+                ) VALUES (%s, %s, %s, %s, %s)""", (
+                    str(crawl.uuid),
+                    crawl.start_at.isoformat(),
+                    crawl.status.value,
+                    crawl.max_articles,
+                    str(crawl.paper_uuid)
+                )
+            )
+
+        conn.commit()
         return True
 
     @staticmethod
     def cache_hit(crawl):
-        with conn:
+        with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
                 SELECT * FROM crawl 
-                WHERE paper_uuid=:paper_uuid
-                AND status=:complete_status
-                AND start_at >=:start_at
-                AND max_articles=:max_articles           
-            ''', {
-                "paper_uuid": str(crawl.paper_uuid),
-                "complete_status": CrawlStatus.COMPLETED.value,
-                "start_at": crawl.start_at.isoformat(),
-                "max_articles": crawl.max_articles
-            })
-
-        return c.fetchone()
+                WHERE paper_uuid=%s
+                AND status=%s
+                AND start_at>=%s
+                AND max_articles=%s           
+            ''', (
+                str(crawl.paper_uuid),
+                CrawlStatus.COMPLETED.value,
+                crawl.start_at.isoformat(),
+                crawl.max_articles
+            ))
+            return c.fetchone()
 
     @staticmethod
     def update_status(crawl, status):
-        with conn:
-            c.execute(('''
-                UPDATE crawl SET status=:status
-                WHERE uuid=:uuid
-            '''), {"status": status.value, "uuid": str(crawl.uuid)})
-            conn.commit()
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            c.execute('''
+                UPDATE crawl SET status=%s
+                WHERE uuid=%s
+            ''', (
+                status.value,
+                str(crawl.uuid)
+            ))
+        conn.commit()
         return True
 
     @staticmethod
     def delete(crawl):
         pass
+
+    @staticmethod
+    def close():
+        conn.close()

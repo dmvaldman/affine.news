@@ -1,14 +1,7 @@
-import sqlite3
 import uuid
 from server.models.Paper import Paper
-import os
-
-path = os.path.dirname(os.path.abspath(__file__))
-db = os.path.join(path, '../paper.db')
-
-conn = sqlite3.connect(db)
-conn.row_factory = sqlite3.Row
-c = conn.cursor()
+from server.db.db import conn
+from psycopg2.extras import DictCursor
 
 
 def get_papers_from_rows(results):
@@ -50,7 +43,7 @@ def get_papers_from_rows(results):
 class DBPaper:
     @staticmethod
     def get_all():
-        with conn:
+        with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
                 SELECT p.uuid, p.country, p.lang, p.url, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
@@ -59,34 +52,34 @@ class DBPaper:
 
     @staticmethod
     def get_paper_by_url(url):
-        with conn:
+        with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
                 SELECT p.uuid, p.country, p.lang, p.url as url, cs.url as category_url FROM paper p                 
                 JOIN category_set cs on cs.paper_uuid = p.uuid
-                WHERE p.url=:url 
-                ''', {"url": url})
+                WHERE p.url=%s
+                ''', (url,))
             return get_papers_from_rows(c.fetchall())
 
     @staticmethod
     def create(paper):
         paper_uuid = uuid.uuid4()
-        with conn:
-            c.execute("""INSERT INTO paper VALUES (
-                :uuid 
-                :url, 
-                :country,
-                :lang                                 
-            )""", {
-                "uuid": str(paper_uuid),
-                "url": paper.url,
-                "country": paper.country,
-                "lang": paper.lang
-            })
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            c.execute("""INSERT INTO paper (
+                uuid 
+                url, 
+                country,
+                lang) VALUES (%s, %s, %s, %s)""", (
+                    str(paper_uuid),
+                    paper.url,
+                    paper.country,
+                    paper.lang
+                )
+            )
 
             for category_url in paper.category_urls:
-                c.execute('''INSERT INTO category_set VALUES (?, ?)''', (str(paper_uuid), category_url))
+                c.execute('''INSERT INTO category_set VALUES (%s, %s)''', (str(paper_uuid), category_url))
 
-            conn.commit()
+        conn.commit()
 
     @staticmethod
     def create_many(papers):
@@ -105,6 +98,3 @@ class DBPaper:
 if __name__ == '__main__':
     results = DBPaper.get_all()
     print(results)
-#
-#     results = DBPaper.get_paper_by_url('http://www.hurriyet.com.tr/')
-#     print(results)

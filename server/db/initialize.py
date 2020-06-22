@@ -13,9 +13,10 @@ def init():
 
         c.execute("""
             CREATE TABLE paper (
-                uuid TEXT PRIMARY KEY,
+                uuid TEXT PRIMARY KEY,                
                 url TEXT, 
                 country TEXT, 
+                ISO TEXT,
                 lang TEXT
             )
         """)
@@ -68,11 +69,11 @@ def init():
             uuid_paper = str(uuid.uuid4())
 
             c.execute(
-                """INSERT INTO paper (uuid, url, country, lang) VALUES (%s, %s, %s, %s)""",
-                (uuid_paper, paper_json['url'], paper_json['country'], paper_json['lang'])
+                """INSERT INTO paper (uuid, url, country, ISO, lang) VALUES (%s, %s, %s, %s, %s)""",
+                (uuid_paper, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang'])
             )
 
-            print('inserted', (uuid_paper, paper_json['url'], paper_json['country'], paper_json['lang']))
+            print('inserted', (uuid_paper, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang']))
 
             for url in paper_json['category_urls']:
                 c.execute('''INSERT INTO category_set (paper_uuid, url) VALUES (%s, %s)''', (uuid_paper, url))

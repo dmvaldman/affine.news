@@ -1,13 +1,5 @@
-import sqlite3
-import os
-
-path = os.path.dirname(os.path.abspath(__file__))
-db = os.path.join(path, '../paper.db')
-
-conn = sqlite3.connect(db)
-conn.row_factory = sqlite3.Row
-c = conn.cursor()
-
+from server.db.db import conn
+from psycopg2.extras import DictCursor
 
 class DBArticle:
     @staticmethod
@@ -16,35 +8,36 @@ class DBArticle:
 
     @staticmethod
     def create(article):
-        with conn:
-            c.execute("""INSERT INTO article VALUES ( 
-                :url, 
-                :img_url,
-                :title,
-                :title_translated,
-                :lang,
-                :keywords,                 
-                :text,
-                :publish_at,
-                :text_translated,
-                :keywords_translated,
-                :paper_uuid,
-                :crawl_uuid
-            )""", {
-                "url": article.url,
-                "img_url": article.img_url,
-                "title": article.title,
-                "title_translated": article.title_translated,
-                "lang": article.lang,
-                "keywords": ', '.join(article.keywords).lower(),
-                "text": article.text.lower(),
-                "publish_at": article.publish_at.isoformat(),
-                "text_translated": article.text_translated,
-                "keywords_translated": article.keywords_translated,
-                "paper_uuid": str(article.paper_uuid),
-                "crawl_uuid": str(article.crawl_uuid)
-            })
-            conn.commit()
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            try:
+                c.execute("""
+                    INSERT INTO article (                
+                        url, 
+                        img_url,
+                        title,
+                        title_translated,
+                        lang,          
+                        text,
+                        publish_at,
+                        text_translated,
+                        paper_uuid,
+                        crawl_uuid
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """, (
+                        article.url,
+                        article.img_url,
+                        article.title,
+                        article.title_translated,
+                        article.lang,
+                        article.text.lower(),
+                        article.publish_at.isoformat(),
+                        article.text_translated,
+                        str(article.paper_uuid),
+                        str(article.crawl_uuid)
+                    )
+                )
+            except Exception as e:
+                print(e)
+        conn.commit()
 
     @staticmethod
     def update(article, **kwargs):
@@ -56,8 +49,8 @@ class DBArticle:
 
     @staticmethod
     def cache_hit(article):
-        with conn:
-            c.execute('''
-                SELECT * FROM article WHERE url=:url              
-            ''', {"url": article.url})
-        return c.fetchone()
+        query = '''SELECT * FROM article WHERE url=%s'''
+        data = (article.url,)
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            c.execute(query, data)
+            return c.fetchone()

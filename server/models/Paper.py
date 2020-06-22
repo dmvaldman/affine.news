@@ -29,11 +29,11 @@ class Papers:
             self.add(paper)
 
     def load(self):
-        from server.db.models.DBPaper_postgres import DBPaper
+        from server.db.models.DBPaper import DBPaper
         self.papers = DBPaper.get_all()
 
     def save(self):
-        from server.db.models.DBPaper_postgres import DBPaper
+        from server.db.models.DBPaper import DBPaper
         DBPaper.create_many(self.papers)
 
 
@@ -63,10 +63,10 @@ class Paper:
         }
 
     def save(self):
-        from server.db.models.DBPaper_postgres import DBPaper
+        from server.db.models.DBPaper import DBPaper
         DBPaper.create(self)
 
     @staticmethod
     def load_from_url(url):
-        from server.db.models.DBPaper_postgres import DBPaper
+        from server.db.models.DBPaper import DBPaper
         return DBPaper.get_paper_by_url(url)

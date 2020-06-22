@@ -25,6 +25,7 @@ def build(url='', dry=False, config=None, **kwargs) -> Source:
     config = config or Configuration()
     config = extend_config(config, kwargs)
     url = url or ''
+
     s = Source(url, config=config)
     if not dry:
         s.build()

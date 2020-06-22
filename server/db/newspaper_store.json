@@ -1,6 +1,7 @@
 [
     {
         "country": "Italy",
+        "ISO": "ITA",
         "lang": "it",
         "url": "https://www.corriere.it/",
         "category_urls": [
@@ -11,6 +12,7 @@
     },
     {
         "country": "Italy",
+        "ISO": "ITA",
         "lang": "it",
         "url": "https://www.repubblica.it/",
         "category_urls": [
@@ -21,6 +23,7 @@
     },
     {
         "country": "Spain",
+        "ISO": "ESP",
         "lang": "es",
         "url": "https://elpais.com/",
         "category_urls": [
@@ -31,6 +34,7 @@
     },
     {
         "country": "Spain",
+        "ISO": "ESP",
         "lang": "es",
         "url": "https://www.abc.es/",
         "category_urls": [
@@ -41,6 +45,7 @@
     },
     {
         "country": "Turkey",
+        "ISO": "TUR",
         "lang": "tr",
         "url": "http://www.hurriyet.com.tr/",
         "category_urls": [
@@ -50,6 +55,7 @@
     },
     {
         "country": "Turkey",
+        "ISO": "TUR",
         "lang": "tr",
         "url": "https://www.sabah.com.tr/",
         "category_urls": [
@@ -58,6 +64,7 @@
     },
     {
         "country": "China",
+        "ISO": "CHN",
         "lang": "zh",
         "url": "http://www.cankaoxiaoxi.com/",
         "category_urls": [
@@ -68,6 +75,7 @@
     },
     {
         "country": "China",
+        "ISO": "CHN",
         "lang": "zh",
         "url": "http://www.ynet.com/",
         "category_urls": [
@@ -78,6 +86,7 @@
     },
     {
         "country": "China",
+        "ISO": "CHN",
         "lang": "zh",
         "url": "http://www.chinanews.com/",
         "category_urls": [
@@ -88,6 +97,7 @@
     },
     {
         "country": "China",
+        "ISO": "CHN",
         "lang": "zh",
         "url": "http://www.weibo.com/",
         "category_urls": [
@@ -97,6 +107,7 @@
     },
     {
         "country": "Iran",
+        "ISO": "IRN",
         "lang": "ar",
         "url": "https://www.khabaronline.ir/",
         "category_urls": [
@@ -113,6 +124,7 @@
     },
     {
         "country": "Iran",
+        "ISO": "IRN",
         "lang": "ar",
         "url": "http://jamejamonline.ir/",
         "category_urls": [
@@ -122,6 +134,7 @@
     },
     {
         "country": "Iran",
+        "ISO": "IRN",
         "lang": "ar",
         "url": "http://www.aryanews.com/",
         "category_urls": [
@@ -133,6 +146,7 @@
     },
     {
         "country": "Iraq",
+        "ISO": "IRQ",
         "lang": "ar",
         "url": "https://www.azzaman.com/",
         "category_urls": [
@@ -144,6 +158,7 @@
     },
     {
         "country": "Iraq",
+        "ISO": "IRQ",
         "lang": "ar",
         "url": "https://www.zowaa.org/",
         "category_urls": [
@@ -153,6 +168,7 @@
     },
     {
         "country": "Russia",
+        "ISO": "RUS",
         "lang": "ru",
         "url": "https://vm.ru/",
         "category_urls": [
@@ -167,6 +183,7 @@
     },
     {
         "country": "Russia",
+        "ISO": "RUS",
         "lang": "ru",
         "url": "https://pravda.ru/",
         "category_urls": [
@@ -177,6 +194,7 @@
     },
     {
         "country": "Syria",
+        "ISO": "SYR",
         "lang": "ar",
         "url": "http://tishreen.news.sy/",
         "category_urls": [
@@ -189,6 +207,7 @@
     },
     {
         "country": "Syria",
+        "ISO": "SYR",
         "lang": "ar",
         "url": "http://alwatan.sy/",
         "category_urls": [
@@ -201,6 +220,7 @@
     },
     {
         "country": "Ukraine",
+        "ISO": "UKR",
         "lang": "uk",
         "url": "https://fakty.ua/",
         "category_urls": [
@@ -211,6 +231,7 @@
     },
     {
         "country": "Ukraine",
+        "ISO": "UKR",
         "lang": "uk",
         "url": "https://www.segodnya.ua/",
         "category_urls": [
@@ -220,6 +241,7 @@
     },
     {
         "country": "Poland",
+        "ISO": "POL",
         "lang": "pl",
         "url": "https://www.gazeta.pl/",
         "category_urls": [
@@ -229,6 +251,7 @@
     },
     {
         "country": "Qatar",
+        "ISO": "QAT",
         "lang": "ar",
         "url": "https://www.aljazeera.net/",
         "category_urls": [
@@ -239,6 +262,7 @@
     },
     {
         "country": "USA",
+        "ISO": "USA",
         "lang": "en",
         "url": "https://www.foxnews.com/",
         "category_urls": [
@@ -250,6 +274,7 @@
     },
     {
         "country": "USA",
+        "ISO": "USA",
         "lang": "en",
         "url": "https://www.nytimes.com/",
         "category_urls": [
@@ -261,10 +286,56 @@
     },
     {
         "country": "Sweden",
+        "ISO": "SWE",
         "lang": "en",
         "url": "https://www.aftonbladet.se/",
         "category_urls": [
             "https://www.aftonbladet.se/"
+        ]
+    },
+    {
+        "country": "Brazil",
+        "ISO": "BRA",
+        "lang": "pt",
+        "url": "https://oglobo.globo.com/",
+        "category_urls": [
+            "https://oglobo.globo.com/mundo/",
+            "https://oglobo.globo.com/sociedade/",
+            "https://oglobo.globo.com/opiniao/"
+        ]
+    },
+    {
+        "country": "Brazil",
+        "ISO": "BRA",
+        "lang": "pt",
+        "url": "https://www.folha.uol.com.br/",
+        "category_urls": [
+            "https://www1.folha.uol.com.br/cotidiano/coronavirus/",
+            "https://www1.folha.uol.com.br/mundo/",
+            "https://www1.folha.uol.com.br/ultimas-noticias/"
+        ]
+    },
+    {
+        "country": "Hong Kong",
+        "ISO": "HKG",
+        "lang": "zh",
+        "url": "https://hk.appledaily.com/",
+        "category_urls": [
+            "https://hk.feature.appledaily.com/",
+            "https://hk.feature.appledaily.com/wars",
+            "https://hk.appledaily.com/hknsl/",
+            "https://hk.appledaily.com/realtime/local/"
+        ]
+    },
+    {
+        "country": "Hong Kong",
+        "ISO": "HKG",
+        "lang": "zh",
+        "url": "https://orientaldaily.on.cc/",
+        "category_urls": [
+            "https://orientaldaily.on.cc/",
+            "https://orientaldaily.on.cc/cnt/news/",
+            "https://orientaldaily.on.cc/cnt/china_world/"
         ]
     }
 ]

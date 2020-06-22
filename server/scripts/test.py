@@ -35,6 +35,6 @@ def query():
 
 
 if __name__ == '__main__':
-    # crawl()
-    translate()
+    crawl()
+    # translate()
     # query()
