@@ -8,7 +8,8 @@ def run(query, date_start, date_end, country=None):
         JOIN paper p on p.uuid = a.paper_uuid
         WHERE a.publish_at >= %s
         AND a.publish_at <= %s
-        AND a.title_translated is not NULL'''
+        AND a.title_translated is not NULL
+        ORDER BY a.publish_at desc'''
 
     params = (str(date_start), str(date_end))
 

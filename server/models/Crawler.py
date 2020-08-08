@@ -30,8 +30,8 @@ class Crawler:
             status=CrawlStatus.STARTED,
             paper_uuid=paper.uuid)
 
-        if crawl.cache_hit():
-            return
+        # if crawl.cache_hit():
+        #     return
 
         crawl.save()
 
@@ -81,8 +81,8 @@ class Crawler:
                 crawl_uuid=crawl.uuid
             )
 
-            if article.cache_hit():
-                continue
+            # if article.cache_hit():
+            #     continue
 
             article.save()
 

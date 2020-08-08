@@ -10,3 +10,10 @@ python3 main.py
 ```
 
 Open `localhost:8000` in a web browser
+
+Query DB
+
+```
+gcloud sql connect affine --user=affine
+/d affine
+```

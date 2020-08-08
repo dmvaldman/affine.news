@@ -99,7 +99,7 @@ def prepare_url(url, source_url=None):
     return proper_url
 
 
-def valid_url(url, verbose=False, test=False):
+def valid_url(url, verbose=True, test=False):
     """
     Is this URL a valid news-article url?
 

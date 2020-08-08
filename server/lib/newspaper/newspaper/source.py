@@ -317,6 +317,8 @@ class Source(object):
 
             articles.extend(cur_articles)
 
+            print('num articles', len(articles))
+
             log.debug('%d->%d->%d for %s' %
                       (before_purge, after_purge, after_memo, category.url))
         return articles

@@ -19,7 +19,7 @@ def translate():
 
 def query():
     url = url_base + 'query'
-    query_str = 'news'
+    query_str = 'north'
     today = datetime.date.today()
     date_start = today - datetime.timedelta(days=1)
     date_end = today - datetime.timedelta(days=0)
