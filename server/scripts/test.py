@@ -1,12 +1,20 @@
 import requests
 import datetime
+import os
+from dotenv import load_dotenv
 
-url_base = 'http://localhost:8000/'
-# url_base = 'https://affine-news.appspot.com/'
+load_dotenv()
+
+env = os.getenv("ENV")
+
+if env == 'DEV':
+    url_base = 'http://localhost:8000/'
+elif env == 'PROD':
+    url_base = 'https://affine-news.appspot.com/'
 
 def crawl():
     url = url_base + 'crawl'
-    payload = {'max_articles': 10}
+    payload = {'max_articles': 30}
     res = requests.post(url, json=payload)
     print(res)
 

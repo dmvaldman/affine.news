@@ -17,3 +17,15 @@ Query DB
 gcloud sql connect affine --user=affine
 /d affine
 ```
+
+Tail logs
+
+```
+gcloud app logs tail
+```
+
+Deploy
+
+```
+gcloud app deploy
+```

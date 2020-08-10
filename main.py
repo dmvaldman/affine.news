@@ -1,6 +1,5 @@
 import logging
 import nltk
-import os
 
 from flask import Flask, request, render_template, Response, jsonify
 from flask_executor import Executor
@@ -9,7 +8,6 @@ from server.db.update import update
 from server.services.crawl import run as run_crawl
 from server.services.translate import run as run_translate
 from server.services.query import run as run_query
-
 
 app = Flask(__name__)
 app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True

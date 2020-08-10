@@ -2,6 +2,9 @@ class Papers:
     def __init__(self):
         self.papers = []
 
+    def __len__(self):
+        return len(self.papers)
+
     def __str__(self):
         return str(self.papers)
 

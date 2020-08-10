@@ -1,13 +1,21 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
 
-db_user = 'affine'
-db_pass = '1D2u2r3a3c3k4'
-db_name = 'affine'
-cloud_sql_connection_name = 'affine-news:us-central1:affine'
+load_dotenv()
 
-# local
-conn = psycopg2.connect(database="affine", user="affine", password="1D2u2r3a3c3k4", host="127.0.0.1", port="5432")
+db_user = os.getenv("DB_USER")
+db_pass = os.getenv("DB_PASS")
+db_name = os.getenv("DB_NAME")
+env = os.getenv("ENV")
 
-# Remote
-# conn = psycopg2.connect(database="affine", user="affine", password="1D2u2r3a3c3k4", host="/cloudsql/affine-news:us-central1:affine")
+
+if env == 'DEV':
+    # local
+    conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, host="127.0.0.1", port="5432")
+elif env == 'PROD':
+    # Remote
+    conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass,
+                            host="/cloudsql/affine-news:us-central1:affine")
+
 
