@@ -73,3 +73,8 @@ class Paper:
     def load_from_url(url):
         from server.db.models.DBPaper import DBPaper
         return DBPaper.get_paper_by_url(url)
+
+    @staticmethod
+    def load_from_uuid(uuid):
+        from server.db.models.DBPaper import DBPaper
+        return DBPaper.get_paper_by_uuid(uuid)

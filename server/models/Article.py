@@ -21,6 +21,9 @@ class Article:
         self.title_translated = None
         self.text_translated = None
 
+    def __str__(self):
+        return 'Article url: {}. Title: {}. Paper uuid: {}.'.format(self.url, self.title, self.paper_uuid)
+
     def load(self):
         pass
 

@@ -31,7 +31,10 @@ class Crawler:
             paper_uuid=paper.uuid)
 
         if crawl.cache_hit():
-            return
+            if verbose:
+                print('crawl cache hit', crawl)
+            crawl.update_status(CrawlStatus.COMPLETED)
+            return crawl
 
         crawl.save()
 
@@ -82,6 +85,8 @@ class Crawler:
             )
 
             if article.cache_hit():
+                if verbose:
+                    print('Article cache hit', article)
                 continue
 
             article.save()
@@ -91,7 +96,7 @@ class Crawler:
         if len(paper_build.articles) > 0:
             if verbose:
                 success_rate = 100 * count_success / (count_failure + count_success)
-                print('Successes: {}, Failures: {}, Crawl Rate: {}%:'.format(count_success, count_failure, success_rate))
+                print('Success: {}, Failure: {}, Rate: {}%:'.format(count_success, count_failure, success_rate))
         else:
             if verbose:
                 print('Crawl failure for ', paper)
@@ -100,12 +105,12 @@ class Crawler:
 
     def crawl_article(self, article, verbose=True):
         if verbose:
-            print('Downloading article', article.url)
+            print('Downloading article', article)
 
         article.download()
 
         if article.download_state == 1:
-            raise Exception('Download Failed for {}'.format(article.url))
+            raise Exception('Download Failed for {}'.format(article))
 
         article.parse()
         article.nlp()
@@ -120,6 +125,9 @@ class Crawl:
         self.start_at = start_at
         self.status = status
         self.paper_uuid = paper_uuid
+
+    def __str__(self):
+        return 'Crawl of {}. Started at {}. Status {}'.format(self.paper_uuid, self.start_at, self.status)
 
     def cache_hit(self):
         from server.db.models.DBCrawl import DBCrawl

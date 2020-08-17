@@ -19,6 +19,13 @@ def crawl():
     print(res)
 
 
+def crawl_paper():
+    url = url_base + 'crawl/'
+    payload = {'max_articles': 30}
+    res = requests.post(url, json=payload)
+    print(res)
+
+
 def translate():
     url = url_base + 'translate'
     res = requests.post(url)
@@ -43,6 +50,6 @@ def query():
 
 
 if __name__ == '__main__':
-    crawl()
-    # translate()
+    # crawl()
+    translate()
     # query()

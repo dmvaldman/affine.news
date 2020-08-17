@@ -1,25 +1,50 @@
 from google.cloud import translate
-from server.db.db import conn
 from psycopg2.extras import DictCursor
+
+from server.db.db import conn
+from server.models.Paper import Papers
 
 
 target_lang = 'en'
+project = 'affine-news'
+location = 'global'
+
+
+def location_path(project_id, location):
+    # might as well use an f-string, the new library supports python >=3.6
+    return f"projects/{project_id}/locations/{location}"
+
+
+def get_paper_uuids():
+    papers = Papers()
+    papers.load()
+
+    uuids = [paper.uuid for paper in papers]
+    return uuids
 
 
 def run():
+    paper_uuids = get_paper_uuids()
+    for paper_uuid in paper_uuids:
+        translate(paper_uuid)
+
+
+def translate_paper_by_uuid(paper_uuid):
     translate_client = translate.TranslationServiceClient.from_service_account_json('env/affine-news-97580ef473e5.json')
-    parent = translate_client.location_path("affine-news", "global")
+    parent = location_path(project, location)
 
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
-            SELECT url, lang, keywords, title, text, title_translated FROM article
-            WHERE title_translated is NULL        
-        ''')
+            SELECT a.url, a.lang, a.title, a.text, a.title_translated FROM article a
+            JOIN paper p on p.uuid = a.paper_uuid
+            WHERE title_translated is NULL
+            AND p.uuid=%s        
+        ''', (paper_uuid, ))
 
         results = c.fetchall()
 
     num_results = len(results)
-    print('Number of articles to translate', num_results)
+    print('Number of articles to translate', num_results, paper_uuid)
 
     for index, result in enumerate(results):
         if result['title_translated']:

@@ -58,7 +58,17 @@ class DBPaper:
                 JOIN category_set cs on cs.paper_uuid = p.uuid
                 WHERE p.url=%s
                 ''', (url,))
-            return get_papers_from_rows(c.fetchall())
+            return get_papers_from_rows(c.fetchall())[0]
+
+    @staticmethod
+    def get_paper_by_uuid(uuid):
+        with conn.cursor(cursor_factory=DictCursor) as c:
+            c.execute('''
+                    SELECT p.uuid, p.country, p.lang, p.url as url, cs.url as category_url FROM paper p                 
+                    JOIN category_set cs on cs.paper_uuid = p.uuid
+                    WHERE p.uuid=%s
+                    ''', (uuid,))
+            return get_papers_from_rows(c.fetchall())[0]
 
     @staticmethod
     def create(paper):
