@@ -1,34 +1,30 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
-
 body{
   margin: 0;
   background: #f2f2f2;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Helvetica', sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
-#map {
-  height: 400px;
+.container{
+  width: 1000px;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-.container{
-  top: 20px;
-  width: 1000px;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
+#map {
+  height: 550px;
 }
 
 #searchContainer {
-  height: 60px;
-  width: 600px;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  height: 5vh;
+  width: 100%;
   position: relative;
   display: inline-block;
+  margin-bottom: 10px;
 }
 
 .searchQuery {
@@ -69,10 +65,22 @@ body{
   width: 150px;
 }
 
+#daterangeContainer {
+  height:100%;
+  float:right;
+  margin-left: 40px;
+}
+
+#daterangeInput {
+  height: 100%;
+  margin-left: 10px;
+  font-size: 16px;
+  border: 3px solid black;
+  border-radius: 5px;
+}
+
 #searchResults {
   font-family: Helvetica;
-  overflow-y: auto;
-  height: 400px;
 }
 
 #searchResults ul {
@@ -80,11 +88,23 @@ body{
   padding-bottom: 5px;
 }
 
-#searchResults li {
-  font-weight: normal;
+#searchResults .iso {
+  display: inline-block;
   padding-bottom: 5px;
 }
 
+#searchResults li {
+  font-weight: normal;
+  padding-bottom: 5px;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 input[type=text] {
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
