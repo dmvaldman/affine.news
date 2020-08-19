@@ -336,5 +336,16 @@
             "https://orientaldaily.on.cc/cnt/news/",
             "https://orientaldaily.on.cc/cnt/china_world/"
         ]
+    },
+    {
+        "country": "Belarus",
+        "ISO": "BLR",
+        "lang": "ru",
+        "url": "https://nn.by/",
+        "category_urls": [
+            "https://nn.by/",
+            "https://nn.by/?c=ca&i=559",
+            "https://nn.by/?c=ca&i=584"
+        ]
     }
 ]
