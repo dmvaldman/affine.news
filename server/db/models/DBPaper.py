@@ -19,6 +19,7 @@ def get_papers_from_rows(results):
                 url=prev_result['url'],
                 lang=prev_result['lang'],
                 country=prev_result['country'],
+                iso=prev_results['iso'],
                 uuid=prev_result['uuid'],
                 category_urls=category_urls)
 
@@ -33,6 +34,7 @@ def get_papers_from_rows(results):
             url=result['url'],
             lang=result['lang'],
             country=result['country'],
+            iso=result['iso'],
             uuid=result['uuid'],
             category_urls=category_urls)
         papers.append(paper)
@@ -45,7 +47,7 @@ class DBPaper:
     def get_all():
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                SELECT p.uuid, p.country, p.lang, p.url, cs.url as category_url FROM paper p
+                SELECT p.uuid, p.country, p.iso, p.lang, p.url, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
             ''')
             return get_papers_from_rows(c.fetchall())
@@ -54,7 +56,7 @@ class DBPaper:
     def get_paper_by_url(url):
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                SELECT p.uuid, p.country, p.lang, p.url as url, cs.url as category_url FROM paper p                 
+                SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, cs.url as category_url FROM paper p                 
                 JOIN category_set cs on cs.paper_uuid = p.uuid
                 WHERE p.url=%s
                 ''', (url,))
@@ -64,7 +66,7 @@ class DBPaper:
     def get_paper_by_uuid(uuid):
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                    SELECT p.uuid, p.country, p.lang, p.url as url, cs.url as category_url FROM paper p                 
+                    SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, cs.url as category_url FROM paper p                 
                     JOIN category_set cs on cs.paper_uuid = p.uuid
                     WHERE p.uuid=%s
                     ''', (uuid,))
@@ -75,13 +77,15 @@ class DBPaper:
         paper_uuid = uuid.uuid4()
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute("""INSERT INTO paper (
-                uuid 
+                uuid                 
                 url, 
                 country,
-                lang) VALUES (%s, %s, %s, %s)""", (
+                iso,
+                lang) VALUES (%s, %s, %s, %s, %s)""", (
                     str(paper_uuid),
                     paper.url,
                     paper.country,
+                    paper.iso,
                     paper.lang
                 )
             )

@@ -4,7 +4,7 @@ from psycopg2.extras import DictCursor
 
 
 def run(query, date_start, date_end, country=None):
-    command = '''SELECT p.country as country, p.url as paper_url, a.url as article_url, a.publish_at, a.title_translated FROM article a
+    command = '''SELECT p.country as country, p.ISO as iso, p.url as paper_url, a.url as article_url, a.publish_at, a.title_translated FROM article a
         JOIN paper p on p.uuid = a.paper_uuid
         WHERE a.publish_at >= %s
         AND a.publish_at <= %s
@@ -32,10 +32,10 @@ def run(query, date_start, date_end, country=None):
 
     by_country = {}
     for result_matched in results_matched:
-        country = result_matched["country"]
-        if country not in by_country:
-            by_country[country] = []
-        by_country[country].append({
+        iso = result_matched["iso"]
+        if iso not in by_country:
+            by_country[iso] = []
+        by_country[iso].append({
             "article_url": result_matched['article_url'],
             "title": result_matched['title_translated'],
             "paper_url": result_matched['paper_url'],

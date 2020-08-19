@@ -9,14 +9,14 @@ let map = new Datamap({
     element: document.getElementById('map'),
     projection: 'mercator',
     fills: {
-        defaultFill: 'rgba(182,184,196,0.9)' // Any hex, color name or rgb/rgba value
+        defaultFill: 'rgba(182,184,196,0.6)' // Any hex, color name or rgb/rgba value
     },
     geographyConfig: {
         highlightOnHover: false
     },
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            let el = document.getElementById(geography.properties.name)
+            let el = document.getElementById(geography.id)
             if (el) el.click()
         })
     }
@@ -38,35 +38,15 @@ $(function() {
     });
 });
 
-const countryToISO = {
-    'USA': 'USA',
-    'Sweden': 'SWE',
-    'Italy': 'ITA',
-    'France': 'FRA',
-    'Spain': 'ESP',
-    'China': 'CHN',
-    'Poland': 'POL',
-    'Ukraine': 'UKR',
-    'Syria': 'SYR',
-    'Russia': 'RUS',
-    'Iraq': 'IRQ',
-    'Iran': 'IRN',
-    'Turkey': 'TUR',
-    'Qatar': 'QAT',
-    'Hong Kong': 'HKG',
-    'Brazil': 'BRA'
-}
-
 function formatData(data){
     let formattedData = {}
-    let lengthMin = Infinity
-    let lengthMax = -Infinity
+    let lengthMin = -Infinity
+    let lengthMax = Infinity
 
-    for (let country in data){
-        let iso = countryToISO[country]
-        formattedData[iso] = data[country]
+    for (let iso in data){
+        formattedData[iso] = iso
 
-        let length = data[country].length
+        let length = data[iso].length
         if (length > lengthMin) lengthMin = length
         if (length < lengthMax) lengthMax = length
     }
@@ -74,14 +54,14 @@ function formatData(data){
     let paletteScale = d3.scale.linear()
             .domain([lengthMin,lengthMax])
             .range([
-                "#EFEFFF",
-                "#02386F"]
+                "#02386F",
+                "#a0a0f6"
+                ]
             );
 
-    for (let country in data){
-        let iso = countryToISO[country]
-        formattedData[iso] = Object.assign({}, data[country])
-        formattedData[iso]['fillColor'] = paletteScale(data[country].length)
+    for (let iso in data){
+        formattedData[iso] = Object.assign({}, data[iso])
+        formattedData[iso]['fillColor'] = paletteScale(data[iso].length)
     }
 
     return formattedData
@@ -89,6 +69,7 @@ function formatData(data){
 
 searchQueryEl.onkeypress = function(e){
     let code = (e.keyCode ? e.keyCode : e.which);
+    console.log(code)
     if (code == 13) {
         search()
     }
@@ -130,10 +111,13 @@ function search(){
             for (let country in data){
                 let countryEl = document.createElement('ul')
                 let anchorEl = document.createElement('a')
-                anchorEl.textContent = country + ' (' + data[country].length + ')'
+
+                anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
                 anchorEl.href = '#' + country
                 anchorEl.name = country
                 anchorEl.id = country
+                anchorEl.classList.add('iso')
+
                 countryEl.appendChild(anchorEl)
 
                 for (let result in data[country]){
@@ -149,6 +133,7 @@ function search(){
 
                     let urlEl = document.createElement('a')
                     let textEl = document.createTextNode(data[country][result].title)
+                    urlEl.title = data[country][result].title
                     urlEl.appendChild(textEl)
 
                     urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url

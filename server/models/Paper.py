@@ -41,8 +41,9 @@ class Papers:
 
 
 class Paper:
-    def __init__(self, url='', lang='', country='', uuid='', category_urls=None):
+    def __init__(self, url='', iso='', lang='', country='', uuid='', category_urls=None):
         self.url = url
+        self.iso = iso
         self.lang = lang
         self.country = country
         self.uuid = uuid
@@ -60,6 +61,7 @@ class Paper:
         return {
             "uuid": str(self.uuid),
             "country": self.country,
+            "iso": self.iso,
             "lang": self.lang,
             "url": self.url,
             "category_urls": self.category_urls

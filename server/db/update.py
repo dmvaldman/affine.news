@@ -35,10 +35,11 @@ def update():
                 uuid_paper = str(uuid.uuid4())
 
                 c.execute("""
-                    INSERT INTO paper VALUES (%s, %s, %s, %s)""", (
+                    INSERT INTO paper VALUES (%s, %s, %s, %s, %s)""", (
                         uuid_paper,
                         paper_json['url'],
                         paper_json['country'],
+                        paper_json['iso'],
                         paper_json['lang']
                     )
                 )
