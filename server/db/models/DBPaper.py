@@ -19,7 +19,7 @@ def get_papers_from_rows(results):
                 url=prev_result['url'],
                 lang=prev_result['lang'],
                 country=prev_result['country'],
-                iso=prev_results['iso'],
+                iso=prev_result['iso'],
                 uuid=prev_result['uuid'],
                 category_urls=category_urls)
 
