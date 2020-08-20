@@ -2,8 +2,8 @@ const searchButtonEl = document.getElementById("submitQuery");
 const searchQueryEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 
-const url_base = "http://localhost:8000/"
-// const url_base = "https://affine-news.appspot.com/"
+// const url_base = "http://localhost:8000/"
+const url_base = "https://affine-news.appspot.com/"
 
 let map = new Datamap({
     element: document.getElementById('map'),
@@ -74,7 +74,6 @@ function formatData(data){
 
 searchQueryEl.onkeypress = function(e){
     let code = (e.keyCode ? e.keyCode : e.which);
-    console.log(code)
     if (code == 13) {
         search()
     }
