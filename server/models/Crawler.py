@@ -1,8 +1,12 @@
-from enum import Enum
 import uuid
+import nltk
+from enum import Enum
 from datetime import date
 from server.lib.newspaper import newspaper
 from server.models.Article import Article
+
+
+nltk.download('punkt')
 
 
 class CrawlStatus(Enum):

@@ -49,8 +49,8 @@ class DBArticle:
 
     @staticmethod
     def cache_hit(article):
-        query = '''SELECT * FROM article WHERE url=%s'''
-        data = (article.url,)
+        query = '''SELECT * FROM article WHERE url=%s OR title=%s'''
+        data = (article.url, article.title)
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute(query, data)
             return c.fetchone()

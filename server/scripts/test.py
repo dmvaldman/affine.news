@@ -34,9 +34,9 @@ def translate():
 
 def query():
     url = url_base + 'query'
-    query_str = 'north'
+    query_str = 'Trump'
     today = datetime.date.today()
-    date_start = today - datetime.timedelta(days=1)
+    date_start = today - datetime.timedelta(days=7)
     date_end = today - datetime.timedelta(days=0)
 
     params = {
@@ -51,5 +51,5 @@ def query():
 
 if __name__ == '__main__':
     # crawl()
-    translate()
-    # query()
+    # translate()
+    query()

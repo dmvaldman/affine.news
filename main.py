@@ -1,5 +1,4 @@
 import logging
-import nltk
 import json
 
 from flask import Flask, request, render_template, Response, jsonify
@@ -19,7 +18,6 @@ location = 'us-central1'
 executor = Executor(app)
 logger = logging.getLogger()
 
-nltk.download('punkt')
 
 @app.route('/')
 def root():
