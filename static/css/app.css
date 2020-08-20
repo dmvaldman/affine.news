@@ -122,14 +122,20 @@ body {
   overflow: hidden;
 }
 
-#searchResults li:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
 #searchResults a {
   text-decoration: none;
 }
 
 input[type=text] {
   padding: 4px;
+}
+
+@media (pointer:coarse) {
+    #searchResults li {
+      overflow: visible;
+    }
+
+    #searchResults ul {
+      overflow-x: scroll;
+   }
 }
