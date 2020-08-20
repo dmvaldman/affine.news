@@ -3,12 +3,13 @@
 <head>
     <title>Affine News</title>
 
-    <!--Map-->
-<!--    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"-->
-<!--  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="-->
-<!--  crossorigin=""/>-->
-<!--    <style type="text/css">.leaflet-container{background-color:#c5e8ff;}</style>-->
-<!--    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>-->
+<!--    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=no" />-->
+<!--    <meta name="mobile-web-app-capable" content="yes" />-->
+<!--    <meta name="apple-mobile-web-app-capable" content="yes" />-->
+<!--    <meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="static/js/datamaps.js"></script>
@@ -26,10 +27,12 @@
 <body>
     <div class="container">
         <div id="searchContainer">
-            <input id="search" type="text" class="searchQuery" placeholder="Search... (comma separated keywords)">
-            <button id="submitQuery" type="submit" class="searchButton">Search</button>
+            <div id="queryContainer">
+                <input id="search" type="text" class="searchQuery" placeholder="comma, separated, keywords">
+                <button id="submitQuery" type="submit" class="searchButton">Search</button>
+            </div>
             <div id="daterangeContainer">
-                <span>Date Range</span>
+                <span class="label">Date Range</span>
                 <input type="text" name="dates" id="daterangeInput"/>
             </div>
         </div>

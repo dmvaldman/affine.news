@@ -2,8 +2,8 @@ const searchButtonEl = document.getElementById("submitQuery");
 const searchQueryEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 
-// const url_base = "http://localhost:8000/"
-const url_base = "https://affine-news.appspot.com/"
+const url_base = "http://localhost:8000/"
+// const url_base = "https://affine-news.appspot.com/"
 
 let map = new Datamap({
     element: document.getElementById('map'),
@@ -11,6 +11,7 @@ let map = new Datamap({
     fills: {
         defaultFill: 'rgba(182,184,196,0.6)' // Any hex, color name or rgb/rgba value
     },
+    responsive: true,
     geographyConfig: {
         highlightOnHover: false
     },
@@ -21,6 +22,10 @@ let map = new Datamap({
         })
     }
 });
+
+window.addEventListener('resize', function(){
+    map.resize()
+})
 
 $(function() {
     $('input[name="dates"]').daterangepicker({
