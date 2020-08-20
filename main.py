@@ -4,8 +4,6 @@ import json
 
 from flask import Flask, request, render_template, Response, jsonify
 from flask_executor import Executor
-from server.db.initialize import init
-from server.db.update import update
 from server.services.crawl import get_paper_uuids, crawl_paper_by_uuid
 from server.services.translate import translate_paper_by_uuid
 from server.services.query import run as run_query
@@ -21,15 +19,7 @@ location = 'us-central1'
 executor = Executor(app)
 logger = logging.getLogger()
 
-
-@app.before_first_request
-def create_tables():
-    # Create tables (if they don't already exist)
-    # init()
-    nltk.download('punkt')
-    update()
-    return True
-
+nltk.download('punkt')
 
 @app.route('/')
 def root():
@@ -145,4 +135,4 @@ def query():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)
