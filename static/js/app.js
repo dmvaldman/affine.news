@@ -166,7 +166,10 @@ function search(){
                     urlEl.title = data[country][result].title
                     urlEl.appendChild(textEl)
 
-                    urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
+                    if (data[country][result].lang = 'en')
+                        urlEl.href = url
+                    else
+                        urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
 
                     resultEl.appendChild(dateEl)
                     resultEl.appendChild(urlEl)
