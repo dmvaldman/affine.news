@@ -114,12 +114,22 @@ body {
   padding-right: 15px;
 }
 
+#searchResults .toggle {
+  display: inline-block;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
 #searchResults li {
   font-weight: normal;
   padding-bottom: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+#searchResults .collapse {
+  display: none;
 }
 
 #searchResults a {

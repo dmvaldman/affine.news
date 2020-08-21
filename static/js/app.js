@@ -2,8 +2,8 @@ const searchButtonEl = document.getElementById("submitQuery");
 const searchQueryEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 
-// const url_base = "http://localhost:8000/"
-const url_base = "https://affine-news.appspot.com/"
+const url_base = "http://localhost:8000/"
+// const url_base = "https://affine-news.appspot.com/"
 
 let map = new Datamap({
     element: document.getElementById('map'),
@@ -115,6 +115,7 @@ function search(){
             for (let country in data){
                 let countryEl = document.createElement('ul')
                 let anchorEl = document.createElement('a')
+                let toggleEl = document.createElement('div')
 
                 anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
                 anchorEl.href = '#' + country
@@ -122,7 +123,32 @@ function search(){
                 anchorEl.id = country
                 anchorEl.classList.add('iso')
 
+
+                toggleEl.textContent = '[–]';
+                toggleEl.classList.add('toggle')
+
+                function toggle(){
+                    let toggleState = true;
+                    return function(){
+                        if (toggleState)
+                            toggleEl.textContent = '[+]'
+                        else
+                            toggleEl.textContent = '[–]'
+
+                        toggleState = !toggleState;
+
+                        let items = countryEl.getElementsByTagName('li')
+                        for (let item of items){
+                            item.classList.toggle('collapse')
+                        }
+                    }
+                }
+
+                toggleEl.addEventListener('click', toggle())
+
+
                 countryEl.appendChild(anchorEl)
+                countryEl.appendChild(toggleEl)
 
                 for (let result in data[country]){
                     let date = new Date(data[country][result].publish_at).toDateString()
