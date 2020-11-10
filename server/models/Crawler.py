@@ -6,8 +6,11 @@ from server.lib.newspaper import newspaper
 from server.models.Article import Article
 
 
-nltk.download('punkt')
-
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+    
 
 class CrawlStatus(Enum):
     STARTED = 1
