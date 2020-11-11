@@ -2,6 +2,7 @@ from server.db.db import conn
 from psycopg2.extras import DictCursor
 from datetime import date
 
+
 def delete(date):
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
@@ -17,6 +18,7 @@ def delete(date):
         ''', (date,))
 
     conn.commit()
+
 
 if __name__ == '__main__':
     date = date.today()

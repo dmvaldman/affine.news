@@ -1,16 +1,9 @@
 import uuid
-import nltk
 from enum import Enum
 from datetime import date
 from server.lib.newspaper import newspaper
 from server.models.Article import Article
 
-
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-    
 
 class CrawlStatus(Enum):
     STARTED = 1
@@ -120,7 +113,6 @@ class Crawler:
             raise Exception('Download Failed for {}'.format(article))
 
         article.parse()
-        article.nlp()
 
         return article
 
