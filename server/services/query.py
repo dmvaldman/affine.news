@@ -7,7 +7,7 @@ def run(query, date_start, date_end, country=None):
     command = '''SELECT p.country as country, p.ISO as iso, p.url as paper_url, p.lang, a.url as article_url, a.publish_at, a.title_translated FROM article a
         JOIN paper p on p.uuid = a.paper_uuid
         WHERE a.publish_at >= %s
-        AND a.publish_at <= %s
+        AND DATE(a.publish_at) <= %s
         AND a.title_translated is not NULL
         ORDER BY a.publish_at desc'''
 
