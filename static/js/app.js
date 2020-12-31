@@ -2,8 +2,8 @@ const searchButtonEl = document.getElementById("submitQuery");
 const searchQueryEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 
-// const url_base = "http://localhost:8000/"
-const url_base = "https://affine-news.appspot.com/"
+const url_base = "http://localhost:8000/"
+// const url_base = "https://affine-news.appspot.com/"
 
 let map = new Datamap({
     element: document.getElementById('map'),
@@ -85,7 +85,8 @@ searchButtonEl.onclick = function(e){
 }
 
 function search(){
-    const url = new URL(url_base + "query")
+    const articles_url = new URL(url_base + "query")
+    const stats_url = new URL(url_base + "stats")
 
     let query_str = searchQueryEl.value
     console.log(query_str)
@@ -95,15 +96,22 @@ function search(){
     const date_start = dates[0]
     const date_end = dates[1]
 
-    const params = {
+    const article_params = {
         query: query_str,
         date_start: date_start,
         date_end: date_end
     }
 
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+    const stat_params = {
+        query: query_str,
+        date_start: moment(date_start).subtract(10, 'days').format('MM/DD/YYYY'),
+        date_end: moment(date_end).add(10, 'days').format('MM/DD/YYYY')
+    }
 
-    fetch(url)
+    Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))
+    Object.keys(stat_params).forEach(key => stats_url.searchParams.append(key, stat_params[key]))
+
+    fetch(articles_url)
         .then(function(response){
             return response.json();
         })
@@ -182,5 +190,13 @@ function search(){
             }
 
             console.log(data)
+        })
+
+    fetch(stats_url)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            console.log('stats response', data)
         })
 }
