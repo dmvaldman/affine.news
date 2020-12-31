@@ -49,7 +49,25 @@ def query():
     print(res)
 
 
+def stats():
+    url = url_base + 'stats'
+    query_str = 'Trump'
+    today = datetime.date.today()
+    date_start = today - datetime.timedelta(days=7)
+    date_end = today - datetime.timedelta(days=0)
+
+    params = {
+        'query': query_str,
+        'date_start': str(date_start),
+        'date_end': str(date_end)
+    }
+
+    res = requests.get(url, params=params)
+    print(res)
+
+
 if __name__ == '__main__':
     # crawl()
     # translate()
-    query()
+    # query()
+    stats()

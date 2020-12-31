@@ -1,11 +1,15 @@
 import logging
 import json
+import decimal
+import flask.json
+
 
 from flask import Flask, request, render_template, Response, jsonify
 from flask_executor import Executor
 from server.services.crawl import get_paper_uuids, crawl_paper_by_uuid
 from server.services.translate import translate_paper_by_uuid
 from server.services.query import run as run_query
+from server.services.stats import occurences_over_time
 from google.cloud import tasks_v2
 
 app = Flask(__name__)
@@ -17,6 +21,18 @@ location = 'us-central1'
 
 executor = Executor(app)
 logger = logging.getLogger()
+
+
+# To decode decimal types from SQL in jsonify
+class MyJSONEncoder(flask.json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            # Convert decimal instances to strings.
+            return str(obj)
+        return super(MyJSONEncoder, self).default(obj)
+
+
+app.json_encoder = MyJSONEncoder
 
 
 @app.route('/')
@@ -125,9 +141,22 @@ def query():
     print('query route hit with', query_str, date_start, date_end)
     query_result = run_query(query_str, date_start, date_end)
 
-    print('result is')
-    print(jsonify(query_result))
+    print('result is', query_result)
     print('')
+
+    return jsonify(query_result)
+
+@app.route('/stats', methods=['GET'])
+def stats():
+    query_str = request.args.get('query')
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    print('stats route hit with', query_str, date_start, date_end)
+    query_result = occurences_over_time(query_str, date_start, date_end)
+
+    print('result is', query_result)
+    print('\n')
 
     return jsonify(query_result)
 
