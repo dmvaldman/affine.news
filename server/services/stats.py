@@ -26,7 +26,7 @@ def occurences_over_time(query, date_start, date_end, country=None):
           JOIN paper p on a.paper_uuid = p.uuid
           WHERE DATE(a.publish_at) >= DATE(%s)
           AND DATE(a.publish_at) <= DATE(%s)
-          AND LOWER(a.title) LIKE %s
+          AND LOWER(a.title_translated) LIKE %s
           GROUP BY 1, 2          
         ) foo    
         ORDER BY 1
