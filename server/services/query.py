@@ -4,7 +4,7 @@ from psycopg2.extras import DictCursor
 
 
 def run(query, date_start, date_end, country=None):
-    command = '''SELECT p.country as country, p.ISO as iso, p.url as paper_url, p.lang, a.url as article_url, a.publish_at, a.title_translated FROM article a
+    command = '''SELECT p.country as country, p.ISO as iso, p.url as paper_url, p.lang as lang, a.url as article_url, a.publish_at, a.title_translated FROM article a
         JOIN paper p on p.uuid = a.paper_uuid
         WHERE a.publish_at >= %s
         AND DATE(a.publish_at) <= %s
@@ -48,6 +48,6 @@ def run(query, date_start, date_end, country=None):
         print(country)
         print('\n')
         for article in articles:
-            print(article['title'], article['article_url'])
+            print(article['lang'], article['title'], article['article_url'])
 
     return by_country
