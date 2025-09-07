@@ -2,10 +2,14 @@
   "name": "affine-web",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5173"
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "vite": "^5.4.0"
