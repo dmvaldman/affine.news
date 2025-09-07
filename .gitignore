@@ -1,9 +1,5 @@
-.mypy_cache/
 __pycache__
-*.db
-env/*
-venv/*
-todo.md
+.vscode/
 .vercel
 .env
 node_modules/

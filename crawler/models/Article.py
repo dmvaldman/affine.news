@@ -22,7 +22,7 @@ class Article:
         self.text_translated = None
 
     def __str__(self):
-        return 'Article url: {}. Title: {}. Paper uuid: {}.'.format(self.url, self.title, self.paper_uuid)
+        return 'url: {}'.format(self.url)
 
     def load(self):
         pass

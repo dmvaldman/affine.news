@@ -50,9 +50,7 @@ class Paper:
         self.category_urls = category_urls
 
     def __repr__(self):
-        return 'Newspaper {0} from {1} in {2} language. Categories {3}'.format(self.url, self.country,
-                                                                           self.lang,
-                                                                           self.category_urls)
+        return 'Newspaper {0} from {1} in `{2}` language.'.format(self.url, self.country, self.lang)
 
     def set_uuid(self, paper_uuid):
         self.uuid = paper_uuid

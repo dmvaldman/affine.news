@@ -11,7 +11,7 @@ from crawler.services.crawl import get_paper_uuids, crawl_paper_by_uuid
 
 def main():
     parser = argparse.ArgumentParser(description='Run crawler over papers')
-    parser.add_argument('--max-articles', type=int, default=30)
+    parser.add_argument('--max-articles', type=int, default=5)
     args = parser.parse_args()
 
     if not os.environ.get('DATABASE_URL'):

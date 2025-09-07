@@ -20,7 +20,7 @@ class Crawler:
 
     def crawl_paper(self, paper, verbose=True):
         if verbose:
-            print('Building paper for', paper)
+            print('Building', paper)
 
         todays_date = date.today()
 
@@ -32,20 +32,24 @@ class Crawler:
 
         if crawl.cache_hit():
             if verbose:
-                print('crawl cache hit', crawl)
+                print('Cache hit', crawl)
             crawl.update_status(CrawlStatus.COMPLETED)
             return crawl
 
         crawl.save()
 
-        paper_build = newspaper.build(
-            paper.url,
-            language=paper.lang,
-            memoize_articles=False,
-            fetch_images=False,
-            request_timeout=20,
-            max_articles=self.max_articles,
-            category_urls=paper.category_urls)
+        try:
+            paper_build = newspaper.build(
+                paper.url,
+                language=paper.lang,
+                memoize_articles=True,
+                fetch_images=False,
+                request_timeout=20,
+                min_word_count=100,
+                category_urls=paper.category_urls)
+        except Exception as e:
+            print(f"Error crawling {paper.url}: {e}", e)
+            return None
 
         articles_index = 0
         count_failure = 0
@@ -53,6 +57,9 @@ class Crawler:
 
         for paper_article in paper_build.articles:
             articles_index += 1
+
+            if self.max_articles is not None and articles_index > self.max_articles:
+                break
 
             try:
                 self.crawl_article(paper_article)
@@ -105,12 +112,12 @@ class Crawler:
 
     def crawl_article(self, article, verbose=True):
         if verbose:
-            print('Downloading article', article)
+            print('Downloading article', article.url)
 
         article.download()
 
         if article.download_state == 1:
-            raise Exception('Download Failed for {}'.format(article))
+            raise Exception('Download Failed for', article.url)
 
         article.parse()
 
@@ -126,7 +133,7 @@ class Crawl:
         self.paper_uuid = paper_uuid
 
     def __str__(self):
-        return 'Crawl of {}. Started at {}. Status {}'.format(self.paper_uuid, self.start_at, self.status)
+        return 'Crawl of {} on {}. Status {}'.format(self.paper_uuid.split('-')[0], self.start_at, self.status)
 
     def cache_hit(self):
         from crawler.db.models.DBCrawl import DBCrawl
