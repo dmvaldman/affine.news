@@ -139,6 +139,11 @@ Phase 0: Prep
 Phase 1: DB
 - Apply schema to Neon (convert `initialize.py` into SQL or run it pointing to Neon).
 - Seed `paper` and `category_set` using `newspaper_store.json` if needed.
+  - Run locally: `python scripts/seed_papers.py` (use `--prune-missing` to remove stale categories; supports `--dry-run`).
+
+Notes:
+- Papers use a stable id derived from URL (`uuid = md5(url)`) so syncs are idempotent.
+- Categories have a unique index `(paper_uuid, url)` to make upserts safe.
 
 Phase 2: Frontend+API on Vercel
 - Scaffold Vite app in `web/` and port UI/assets from `templates/` and `static/`.
@@ -155,25 +160,31 @@ Phase 4: Translation (optional)
 - Add translator provider abstraction and switch Google client usage to API key REST or client lib with API key.
 - Add a `translate.yml` workflow scheduled less frequently.
 
-Phase 5: Decommission GCP
-- Remove `google-cloud-tasks`, App Engine config, Cloud SQL proxy, and service account JSON.
-- Update docs/README.
+Phase 5: Decommission GCP (progressively)
+- Delete App Engine/Cloud Tasks/Cloud SQL proxy artifacts as their replacements go live; no formal rollback maintained.
+- Update docs/README along the way.
 
 
-### 11) Rollback Plan
+### 11) Local Development & Debugging
 
-- Keep GCP infra running until Neon+Vercel are verified in production.
-- Use a feature flag to switch API base URLs back to App Engine if needed.
-- Backup DB with nightly `pg_dump` from Neon during migration window.
-- If workflow proves unstable, disable scheduled cron and resume manual crawls via old `/crawl` endpoint.
+- Prereqs: Node/npm, Vercel CLI, Neon `DATABASE_URL`.
+- Environment: export `DATABASE_URL` in the same terminal you run the API, e.g. `export DATABASE_URL='postgres://...?...sslmode=require'`.
+- API dev server (Vercel): run with inspector for debugging
+  - `NODE_OPTIONS=--inspect=0 vercel dev`
+  - VS Code: JavaScript Debug Terminal auto‑attaches; or add an Attach config (port shown in terminal) and set breakpoints in `api/query.js` or `api/stats.js`.
+- Frontend dev (Vite): `cd web && npm run dev` (http://localhost:5173)
+  - Vite dev proxy (`web/vite.config.js`) forwards `/api/*` to `http://localhost:3000` during dev.
 
 
 ### 12) Work Items (Checklist)
 
 - [ ] Create Neon DB and set `DATABASE_URL` in Vercel and GitHub
-- [ ] Port schema to Neon and seed papers
-- [ ] Scaffold Vite app in `web/`; port UI and assets
-- [ ] Implement `/api/query` and `/api/stats` as Vercel Functions
+- [x] Port schema to Neon and seed papers
+- [x] Scaffold Vite app in `web/`; port UI and assets
+- [x] Implement `/api/query` and `/api/stats` as Vercel Functions
+- [x] Add Vite dev proxy and document local debugging with `vercel dev`
+- [x] Add Neon schema (`sql/schema.sql`) and apply to Neon
+- [x] Add idempotent JSON→DB sync script (`scripts/seed_papers.py`) and document usage
 - [ ] Add translator provider abstraction and configure `TRANSLATE_PROVIDER`
 - [ ] Store `GOOGLE_TRANSLATE_API_KEY` in GitHub and Vercel and wire usage
 - [ ] Refactor `server/services/translate.py` to use provider abstraction

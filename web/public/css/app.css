@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: 'Inconsolata';
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container{
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+#map {
+  height: 50%;
+}
+
+#searchContainer {
+  width: 100%;
+  position: relative;
+  margin-bottom: 10px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-rows: 1fr;
+  grid-column-gap: 40px;
+  grid-row-gap: 10px;
+}
+
+#queryContainer {
+  height: 100%;
+  display: inline-block;
+}
+
+#queryContainer .searchQuery {
+  height: 100%;
+  width: 75%;
+  font-size: 16px;
+  padding: 10px;
+  border: 3px solid black;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #3b3b3b;
+  display:inline-block;
+  float: left;
+}
+
+#queryContainer .searchQuery:focus{
+  color: black;
+}
+
+#queryContainer .searchButton {
+  height: 100%;
+  width: 25%;
+  border: 1px solid black;
+  background: black;
+  text-align: center;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 18px;
+  display: inline-block;
+  float:left;
+}
+
+#daterangeContainer {
+  height:100%;
+  display: flex;
+  justify-content: flex-end;
+  line-height: 48px;
+}
+
+#daterangeContainer .label {
+  padding-right: 10px;
+}
+
+#daterangeContainer #daterangeInput {
+  height: 100%;
+  font-size: 15px;
+  border: 3px solid black;
+  border-radius: 5px;
+  padding:10px;
+}
+
+#searchResults ul {
+  font-size: 15px;
+  padding-bottom: 5px;
+  padding-inline-start: 0;
+}
+
+#searchResults .iso {
+  font-size: 16px;
+  display: inline-block;
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+
+#searchResults .date {
+  display: inline-block;
+  padding-right: 15px;
+}
+
+#searchResults .toggle {
+  display: inline-block;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+#searchResults li {
+  font-weight: normal;
+  padding-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#searchResults .collapse {
+  display: none;
+}
+
+#searchResults a {
+  text-decoration: none;
+}
+
+input[type=text] {
+  padding: 4px;
+}
+
+@media (pointer:coarse) {
+    #searchResults li {
+      overflow: visible;
+    }
+
+    #searchResults ul {
+      overflow-x: scroll;
+   }
+}
+
+

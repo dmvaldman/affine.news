@@ -1,0 +1,12 @@
+{
+  "name": "affine-root",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "dotenv": "^16.4.5"
+  }
+}
+
+

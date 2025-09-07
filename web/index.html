@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <title>Affine News</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="https://unpkg.com/datamaps@0.5.9/dist/datamaps.world.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+    <div class="container">
+        <div id="searchContainer">
+            <div id="queryContainer">
+                <input id="search" type="text" class="searchQuery" placeholder="comma, separated, keywords">
+                <button id="submitQuery" type="submit" class="searchButton">Search</button>
+            </div>
+            <div id="daterangeContainer">
+                <span class="label">Date Range</span>
+                <input type="text" name="dates" id="daterangeInput"/>
+            </div>
+        </div>
+        <div id="map"></div>
+        <div id="searchResults"></div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
+
