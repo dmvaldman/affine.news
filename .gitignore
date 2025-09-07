@@ -6,3 +6,5 @@ venv/*
 todo.md
 .vercel
 .env
+node_modules/
+web/node_modules/
