@@ -1,4 +1,3 @@
-from crawler.models.Crawler import Crawl
 from crawler.db.db import conn
 from psycopg2.extras import DictCursor
 
@@ -28,6 +27,7 @@ class DBCrawl:
 
     @staticmethod
     def cache_hit(crawl):
+        from crawler.models.Crawler import CrawlStatus
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
                 SELECT * FROM crawl

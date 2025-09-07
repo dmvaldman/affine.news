@@ -1,7 +1,7 @@
 import uuid
 from enum import Enum
 from datetime import date
-from crawler.lib.newspaper import newspaper
+import newspaper
 from crawler.models.Article import Article
 
 

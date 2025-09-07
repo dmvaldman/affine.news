@@ -204,9 +204,9 @@ A future improvement would be to refactor this to use an Object-Relational Mappe
 - [x] Refactor `crawler/services/translate.py` to use provider abstraction
 - [x] Add GitHub Actions crawler workflow and script
 - [x] Add GitHub Actions translation workflow and script
-- [ ] Migrate translation to API key or defer
-- [ ] Remove Cloud Tasks, Cloud SQL proxy, and App Engine config
-- [ ] Update documentation and remove unused deps
+- [x] Migrate translation to API key or defer
+- [x] Remove Cloud Tasks, Cloud SQL proxy, and App Engine config
+- [x] Update documentation and remove unused deps
 - [ ] (Optional) Refactor Python data layer to use SQLAlchemy ORM
 
 
