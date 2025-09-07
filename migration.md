@@ -108,7 +108,7 @@ Translation:
  - Replace service account JSON usage with API key based auth. Recommended envs:
    - `TRANSLATE_PROVIDER=google`
    - `GOOGLE_TRANSLATE_API_KEY=<secret>`
- - Implement a small provider interface (e.g., `server/services/translator.py`) with `translate_title(text, source_lang, target_lang)` that dispatches to Google now and can later dispatch to alternatives.
+ - Implement a small provider interface (e.g., `crawler/services/translator.py`) with `translate_title(text, source_lang, target_lang)` that dispatches to Google now and can later dispatch to alternatives.
  - If no key is configured, skip translation gracefully and log.
 
 
@@ -152,7 +152,7 @@ Phase 2: Frontend+API on Vercel
 - Deploy and validate map + queries.
 
 Phase 3: Crawling via GitHub Actions
-- Add `.github/workflows/crawl.yml` and `server/scripts/run_crawl.py`.
+- Add `.github/workflows/crawl.yml` and `crawler/scripts/run_crawl.py`.
 - Test workflow using `workflow_dispatch` on a branch.
 - Verify data is written to Neon; confirm frontend shows results.
 
@@ -201,7 +201,7 @@ A future improvement would be to refactor this to use an Object-Relational Mappe
 - [x] Add idempotent JSON→DB sync script (`scripts/seed_papers.py`) and document usage
 - [ ] Add translator provider abstraction and configure `TRANSLATE_PROVIDER`
 - [ ] Store `GOOGLE_TRANSLATE_API_KEY` in GitHub and Vercel and wire usage
-- [ ] Refactor `server/services/translate.py` to use provider abstraction
+- [ ] Refactor `crawler/services/translate.py` to use provider abstraction
 - [ ] Add GitHub Actions crawler workflow and script
 - [ ] Migrate translation to API key or defer
 - [ ] Remove Cloud Tasks, Cloud SQL proxy, and App Engine config

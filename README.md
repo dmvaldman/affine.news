@@ -49,7 +49,7 @@ You can run the newspaper crawler on your local machine to populate the database
 
 1.  **Install Dependencies**:
     ```bash
-    pip install -r requirements.crawler.txt
+    pip install -r crawler/requirements.crawler.txt
     ```
 
 2.  **Set Environment**:
@@ -61,10 +61,10 @@ You can run the newspaper crawler on your local machine to populate the database
 3.  **Run the Script**:
     ```bash
     # Crawl with default of 30 articles per paper
-    python -m server.scripts.run_crawl
+    python -m crawler.scripts.run_crawl
 
     # Crawl a smaller number of articles
-    python -m server.scripts.run_crawl --max-articles 5
+    python -m crawler.scripts.run_crawl --max-articles 5
     ```
 
 

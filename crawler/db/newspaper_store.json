@@ -1,0 +1,351 @@
+[
+    {
+        "country": "Italy",
+        "ISO": "ITA",
+        "lang": "it",
+        "url": "https://www.corriere.it/",
+        "category_urls": [
+            "https://www.corriere.it/",
+            "https://www.corriere.it/esteri/",
+            "https://www.corriere.it/politica"
+        ]
+    },
+    {
+        "country": "Italy",
+        "ISO": "ITA",
+        "lang": "it",
+        "url": "https://www.repubblica.it/",
+        "category_urls": [
+            "https://www.repubblica.it/cronaca",
+            "https://www.repubblica.it/politica",
+            "https://www.repubblica.it/esteri"
+        ]
+    },
+    {
+        "country": "Spain",
+        "ISO": "ESP",
+        "lang": "es",
+        "url": "https://elpais.com/",
+        "category_urls": [
+            "https://elpais.com/internacional/",
+            "https://elpais.com/espana/",
+            "https://elpais.com/sociedad/"
+        ]
+    },
+    {
+        "country": "Spain",
+        "ISO": "ESP",
+        "lang": "es",
+        "url": "https://www.abc.es/",
+        "category_urls": [
+            "https://www.abc.es/espana/",
+            "https://www.abc.es/internacional/",
+            "https://www.abc.es/sociedad/"
+        ]
+    },
+    {
+        "country": "Turkey",
+        "ISO": "TUR",
+        "lang": "tr",
+        "url": "http://www.hurriyet.com.tr/",
+        "category_urls": [
+            "http://www.hurriyet.com.tr/dunya/",
+            "http://www.hurriyet.com.tr/gundem/"
+        ]
+    },
+    {
+        "country": "Turkey",
+        "ISO": "TUR",
+        "lang": "tr",
+        "url": "https://www.sabah.com.tr/",
+        "category_urls": [
+            "https://www.sabah.com.tr/dunya"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.cankaoxiaoxi.com/",
+        "category_urls": [
+            "http://china.cankaoxiaoxi.com/",
+            "http://world.cankaoxiaoxi.com/",
+            "http://mil.cankaoxiaoxi.com/"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.ynet.com/",
+        "category_urls": [
+            "http://news.ynet.com/",
+            "http://report.ynet.com/",
+            "http://youth.ynet.com/"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.chinanews.com/",
+        "category_urls": [
+            "http://www.chinanews.com/china/",
+            "http://world.chinanews.com/",
+            "http://youth.ynet.com/"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.weibo.com/",
+        "category_urls": [
+            "http://www.weibo.com/",
+            "https://www.weibo.com/us"
+        ]
+    },
+    {
+        "country": "Iran",
+        "ISO": "IRN",
+        "lang": "ar",
+        "url": "https://www.khabaronline.ir/",
+        "category_urls": [
+            "https://www.khabaronline.ir/",
+            "https://www.khabaronline.ir/news/",
+            "https://www.khabaronline.ir/service/World",
+            "https://www.khabaronline.ir/service/Politics",
+            "https://www.khabaronline.ir/service/World/americas",
+            "https://www.khabaronline.ir/service/World/middle-east",
+            "https://www.khabaronline.ir/service/World/asia",
+            "https://www.khabaronline.ir/service/World/central-asia-caucuss",
+            "https://www.khabaronline.ir/service/World/europe"
+        ]
+    },
+    {
+        "country": "Iran",
+        "ISO": "IRN",
+        "lang": "ar",
+        "url": "http://jamejamonline.ir/",
+        "category_urls": [
+            "http://jamejamonline.ir/",
+            "http://jamejamonline.ir/online"
+        ]
+    },
+    {
+        "country": "Iran",
+        "ISO": "IRN",
+        "lang": "ar",
+        "url": "http://www.aryanews.com/",
+        "category_urls": [
+            "http://www.aryanews.com/Service/3/%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D9%85%D9%84%D9%84",
+            "http://www.aryanews.com/Service/1/%D8%B3%D9%8A%D8%A7%D8%B3%D9%8A",
+            "http://www.aryanews.com/News",
+            "http://www.aryanews.com"
+        ]
+    },
+    {
+        "country": "Iraq",
+        "ISO": "IRQ",
+        "lang": "ar",
+        "url": "https://www.azzaman.com/",
+        "category_urls": [
+            "https://www.azzaman.com/category/articles/",
+            "https://www.azzaman.com/category/aghlabia/",
+            "https://www.azzaman.com/category/iraqiedition/",
+            "https://www.azzaman.com/category/news/"
+        ]
+    },
+    {
+        "country": "Iraq",
+        "ISO": "IRQ",
+        "lang": "ar",
+        "url": "https://www.zowaa.org/",
+        "category_urls": [
+            "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/",
+            "https://www.zowaa.org/category/%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1-%d8%a7%d9%84%d8%ad%d8%b1%d9%83%d8%a9/"
+        ]
+    },
+    {
+        "country": "Russia",
+        "ISO": "RUS",
+        "lang": "ru",
+        "url": "https://vm.ru/",
+        "category_urls": [
+            "https://vm.ru/news",
+            "https://vm.ru/world",
+            "https://vm.ru/opinion",
+            "https://vm.ru/specialniy-reportazh",
+            "https://vm.ru/army",
+            "https://vm.ru/policy"
+        ]
+    },
+    {
+        "country": "Russia",
+        "ISO": "RUS",
+        "lang": "ru",
+        "url": "https://pravda.ru/",
+        "category_urls": [
+            "https://www.pravda.ru/world/",
+            "https://www.pravda.ru/politics/",
+            "https://www.pravda.ru/economics/"
+        ]
+    },
+    {
+        "country": "Syria",
+        "ISO": "SYR",
+        "lang": "ar",
+        "url": "http://tishreen.news.sy/",
+        "category_urls": [
+            "http://tishreen.news.sy/?cat=73",
+            "http://tishreen.news.sy/?cat=293",
+            "http://tishreen.news.sy/?cat=292",
+            "http://tishreen.news.sy/?cat=75",
+            "http://tishreen.news.sy/"
+        ]
+    },
+    {
+        "country": "Syria",
+        "ISO": "SYR",
+        "lang": "ar",
+        "url": "http://alwatan.sy/",
+        "category_urls": [
+            "http://alwatan.sy/archives/category/ai",
+            "http://alwatan.sy/archives/category/first",
+            "http://alwatan.sy/archives/category/syria",
+            "http://alwatan.sy/archives/category/opinion",
+            "http://tishreen.news.sy/"
+        ]
+    },
+    {
+        "country": "Ukraine",
+        "ISO": "UKR",
+        "lang": "uk",
+        "url": "https://fakty.ua/",
+        "category_urls": [
+            "https://fakty.ua/categories/ukraina",
+            "https://fakty.ua/categories/world",
+            "https://fakty.ua/categories/politics"
+        ]
+    },
+    {
+        "country": "Ukraine",
+        "ISO": "UKR",
+        "lang": "uk",
+        "url": "https://www.segodnya.ua/",
+        "category_urls": [
+            "https://www.segodnya.ua/politics.html",
+            "https://www.segodnya.ua/world.html"
+        ]
+    },
+    {
+        "country": "Poland",
+        "ISO": "POL",
+        "lang": "pl",
+        "url": "https://www.gazeta.pl/",
+        "category_urls": [
+            "http://wiadomosci.gazeta.pl/",
+            "http://next.gazeta.pl/next/"
+        ]
+    },
+    {
+        "country": "Qatar",
+        "ISO": "QAT",
+        "lang": "ar",
+        "url": "https://www.aljazeera.net/",
+        "category_urls": [
+            "https://www.aljazeera.net/news",
+            "https://www.aljazeera.net/news/politics",
+            "https://www.aljazeera.net/programs"
+        ]
+    },
+    {
+        "country": "USA",
+        "ISO": "USA",
+        "lang": "en",
+        "url": "https://www.foxnews.com/",
+        "category_urls": [
+            "https://www.foxnews.com/us",
+            "https://www.foxnews.com/world",
+            "https://www.foxnews.com/opinion",
+            "https://www.foxnews.com/politics"
+        ]
+    },
+    {
+        "country": "USA",
+        "ISO": "USA",
+        "lang": "en",
+        "url": "https://www.nytimes.com/",
+        "category_urls": [
+            "https://www.nytimes.com/section/world",
+            "https://www.nytimes.com/section/us",
+            "https://www.nytimes.com/section/politics",
+            "https://www.nytimes.com/section/opinion"
+        ]
+    },
+    {
+        "country": "Sweden",
+        "ISO": "SWE",
+        "lang": "se",
+        "url": "https://www.aftonbladet.se/",
+        "category_urls": [
+            "https://www.aftonbladet.se/"
+        ]
+    },
+    {
+        "country": "Brazil",
+        "ISO": "BRA",
+        "lang": "pt",
+        "url": "https://oglobo.globo.com/",
+        "category_urls": [
+            "https://oglobo.globo.com/mundo/",
+            "https://oglobo.globo.com/sociedade/",
+            "https://oglobo.globo.com/opiniao/"
+        ]
+    },
+    {
+        "country": "Brazil",
+        "ISO": "BRA",
+        "lang": "pt",
+        "url": "https://www.folha.uol.com.br/",
+        "category_urls": [
+            "https://www1.folha.uol.com.br/cotidiano/coronavirus/",
+            "https://www1.folha.uol.com.br/mundo/",
+            "https://www1.folha.uol.com.br/ultimas-noticias/"
+        ]
+    },
+    {
+        "country": "Hong Kong",
+        "ISO": "HKG",
+        "lang": "zh",
+        "url": "https://hk.appledaily.com/",
+        "category_urls": [
+            "https://hk.feature.appledaily.com/",
+            "https://hk.feature.appledaily.com/wars",
+            "https://hk.appledaily.com/hknsl/",
+            "https://hk.appledaily.com/realtime/local/"
+        ]
+    },
+    {
+        "country": "Hong Kong",
+        "ISO": "HKG",
+        "lang": "zh",
+        "url": "https://orientaldaily.on.cc/",
+        "category_urls": [
+            "https://orientaldaily.on.cc/",
+            "https://orientaldaily.on.cc/cnt/news/",
+            "https://orientaldaily.on.cc/cnt/china_world/"
+        ]
+    },
+    {
+        "country": "Belarus",
+        "ISO": "BLR",
+        "lang": "ru",
+        "url": "https://nn.by/",
+        "category_urls": [
+            "https://nn.by/",
+            "https://nn.by/?c=ca&i=559",
+            "https://nn.by/?c=ca&i=584"
+        ]
+    }
+]
