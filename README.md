@@ -33,7 +33,8 @@ psql "$DATABASE_URL" -f sql/schema.sql
 Seed or sync newspapers and categories from `server/db/newspaper_store.json`:
 
 ```bash
-python scripts/seed_papers.py                   # upsert only
+# Install Python dependencies first: pip install -r requirements.crawler.txt
+python scripts/seed_papers.py            # upsert only
 python scripts/seed_papers.py --prune-missing   # remove categories not in JSON
 python scripts/seed_papers.py --dry-run         # preview changes
 ```
@@ -41,6 +42,30 @@ python scripts/seed_papers.py --dry-run         # preview changes
 Updating sources:
 - Edit `server/db/newspaper_store.json`
 - Re-run one of the commands above to sync changes to the DB
+
+
+## Running the Crawler Locally
+You can run the newspaper crawler on your local machine to populate the database.
+
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.crawler.txt
+    ```
+
+2.  **Set Environment**:
+    Make sure your `DATABASE_URL` is set in the terminal.
+    ```bash
+    export DATABASE_URL='postgres://...'
+    ```
+
+3.  **Run the Script**:
+    ```bash
+    # Crawl with default of 30 articles per paper
+    python -m server.scripts.run_crawl
+
+    # Crawl a smaller number of articles
+    python -m server.scripts.run_crawl --max-articles 5
+    ```
 
 
 ## Local Development

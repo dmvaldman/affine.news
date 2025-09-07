@@ -1,0 +1,43 @@
+name: Crawler
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      max_articles:
+        description: 'Max articles per paper'
+        required: false
+        default: '30'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps (crawler)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.crawler.txt
+
+      - name: Set up env
+        env:
+          GH_MAX: ${{ github.event.inputs.max_articles }}
+        run: |
+          if [ -z "$GH_MAX" ]; then echo "MAX_ARTICLES=30" >> $GITHUB_ENV; else echo "MAX_ARTICLES=$GH_MAX" >> $GITHUB_ENV; fi
+
+      - name: Run crawl
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          python server/scripts/run_crawl.py --max-articles "$MAX_ARTICLES"
+
+

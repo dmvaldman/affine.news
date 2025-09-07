@@ -176,7 +176,21 @@ Phase 5: Decommission GCP (progressively)
   - Vite dev proxy (`web/vite.config.js`) forwards `/api/*` to `http://localhost:3000` during dev.
 
 
-### 12) Work Items (Checklist)
+### 12) Future Refactor: SQLAlchemy ORM
+
+The current Python data layer uses a manual Data Access Object (DAO) pattern (`server/models/Article.py` + `server/db/models/DBArticle.py`). This works but is verbose.
+
+A future improvement would be to refactor this to use an Object-Relational Mapper (ORM) like SQLAlchemy.
+
+- **Benefits**: Reduces boilerplate, consolidates data models and DB logic into a single class per table, provides a more robust and Pythonic API for queries.
+- **Action**:
+  - Add `sqlalchemy` to `requirements.crawler.txt`.
+  - Create a shared DB session factory (`server/db/session.py`).
+  - Refactor `Paper`, `Article`, and `Crawl` models into SQLAlchemy declarative classes.
+  - Update crawler logic to use the ORM session for DB writes and reads.
+
+
+### 13) Work Items (Checklist)
 
 - [ ] Create Neon DB and set `DATABASE_URL` in Vercel and GitHub
 - [x] Port schema to Neon and seed papers
@@ -192,5 +206,6 @@ Phase 5: Decommission GCP (progressively)
 - [ ] Migrate translation to API key or defer
 - [ ] Remove Cloud Tasks, Cloud SQL proxy, and App Engine config
 - [ ] Update documentation and remove unused deps
+- [ ] (Optional) Refactor Python data layer to use SQLAlchemy ORM
 
 
