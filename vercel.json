@@ -18,8 +18,8 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/((?!api/).*)",
-      "dest": "/web/$1"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
