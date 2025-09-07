@@ -77,32 +77,11 @@
         "country": "China",
         "ISO": "CHN",
         "lang": "zh",
-        "url": "http://www.ynet.com/",
-        "category_urls": [
-            "http://news.ynet.com/",
-            "http://report.ynet.com/",
-            "http://youth.ynet.com/"
-        ]
-    },
-    {
-        "country": "China",
-        "ISO": "CHN",
-        "lang": "zh",
         "url": "http://www.chinanews.com/",
         "category_urls": [
             "http://www.chinanews.com/china/",
             "http://world.chinanews.com/",
             "http://youth.ynet.com/"
-        ]
-    },
-    {
-        "country": "China",
-        "ISO": "CHN",
-        "lang": "zh",
-        "url": "http://www.weibo.com/",
-        "category_urls": [
-            "http://www.weibo.com/",
-            "https://www.weibo.com/us"
         ]
     },
     {
@@ -114,12 +93,7 @@
             "https://www.khabaronline.ir/",
             "https://www.khabaronline.ir/news/",
             "https://www.khabaronline.ir/service/World",
-            "https://www.khabaronline.ir/service/Politics",
-            "https://www.khabaronline.ir/service/World/americas",
-            "https://www.khabaronline.ir/service/World/middle-east",
-            "https://www.khabaronline.ir/service/World/asia",
-            "https://www.khabaronline.ir/service/World/central-asia-caucuss",
-            "https://www.khabaronline.ir/service/World/europe"
+            "https://www.khabaronline.ir/service/Politics"
         ]
     },
     {
@@ -130,18 +104,6 @@
         "category_urls": [
             "http://jamejamonline.ir/",
             "http://jamejamonline.ir/online"
-        ]
-    },
-    {
-        "country": "Iran",
-        "ISO": "IRN",
-        "lang": "ar",
-        "url": "http://www.aryanews.com/",
-        "category_urls": [
-            "http://www.aryanews.com/Service/3/%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D9%85%D9%84%D9%84",
-            "http://www.aryanews.com/Service/1/%D8%B3%D9%8A%D8%A7%D8%B3%D9%8A",
-            "http://www.aryanews.com/News",
-            "http://www.aryanews.com"
         ]
     },
     {
@@ -195,19 +157,6 @@
         "country": "Syria",
         "ISO": "SYR",
         "lang": "ar",
-        "url": "http://tishreen.news.sy/",
-        "category_urls": [
-            "http://tishreen.news.sy/?cat=73",
-            "http://tishreen.news.sy/?cat=293",
-            "http://tishreen.news.sy/?cat=292",
-            "http://tishreen.news.sy/?cat=75",
-            "http://tishreen.news.sy/"
-        ]
-    },
-    {
-        "country": "Syria",
-        "ISO": "SYR",
-        "lang": "ar",
         "url": "http://alwatan.sy/",
         "category_urls": [
             "http://alwatan.sy/archives/category/ai",
@@ -226,16 +175,6 @@
             "https://fakty.ua/categories/ukraina",
             "https://fakty.ua/categories/world",
             "https://fakty.ua/categories/politics"
-        ]
-    },
-    {
-        "country": "Ukraine",
-        "ISO": "UKR",
-        "lang": "uk",
-        "url": "https://www.segodnya.ua/",
-        "category_urls": [
-            "https://www.segodnya.ua/politics.html",
-            "https://www.segodnya.ua/world.html"
         ]
     },
     {
@@ -284,15 +223,6 @@
         ]
     },
     {
-        "country": "Sweden",
-        "ISO": "SWE",
-        "lang": "se",
-        "url": "https://www.aftonbladet.se/",
-        "category_urls": [
-            "https://www.aftonbladet.se/"
-        ]
-    },
-    {
         "country": "Brazil",
         "ISO": "BRA",
         "lang": "pt",
@@ -312,18 +242,6 @@
             "https://www1.folha.uol.com.br/cotidiano/coronavirus/",
             "https://www1.folha.uol.com.br/mundo/",
             "https://www1.folha.uol.com.br/ultimas-noticias/"
-        ]
-    },
-    {
-        "country": "Hong Kong",
-        "ISO": "HKG",
-        "lang": "zh",
-        "url": "https://hk.appledaily.com/",
-        "category_urls": [
-            "https://hk.feature.appledaily.com/",
-            "https://hk.feature.appledaily.com/wars",
-            "https://hk.appledaily.com/hknsl/",
-            "https://hk.appledaily.com/realtime/local/"
         ]
     },
     {
