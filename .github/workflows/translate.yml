@@ -1,0 +1,35 @@
+name: Translate Articles
+
+on:
+  schedule:
+    # Runs 30 minutes past the hour, every 6 hours.
+    # This should be staggered after the crawl job.
+    - cron: '30 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r crawler/requirements.crawler.txt
+
+      - name: Run translation script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GOOGLE_PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          TRANSLATE_PROVIDER: "google"
+        run: |
+          python -m crawler.scripts.run_translate

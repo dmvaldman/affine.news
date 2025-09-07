@@ -31,6 +31,9 @@ $(function() {
         opens: 'left',
         startDate: moment().subtract(6, 'days'),
         endDate: moment(),
+        locale: {
+          format: 'YYYY-MM-DD'
+        },
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -100,8 +103,8 @@ function search(){
 
     const stat_params = {
         query: query_str,
-        date_start: moment(date_start).subtract(10, 'days').format('MM/DD/YYYY'),
-        date_end: moment(date_end).add(10, 'days').format('MM/DD/YYYY')
+        date_start: moment(date_start).subtract(10, 'days').format('YYYY-MM-DD'),
+        date_end: moment(date_end).add(10, 'days').format('YYYY-MM-DD')
     }
 
     Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))

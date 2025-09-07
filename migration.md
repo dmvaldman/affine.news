@@ -199,10 +199,11 @@ A future improvement would be to refactor this to use an Object-Relational Mappe
 - [x] Add Vite dev proxy and document local debugging with `vercel dev`
 - [x] Add Neon schema (`sql/schema.sql`) and apply to Neon
 - [x] Add idempotent JSON→DB sync script (`scripts/seed_papers.py`) and document usage
-- [ ] Add translator provider abstraction and configure `TRANSLATE_PROVIDER`
-- [ ] Store `GOOGLE_TRANSLATE_API_KEY` in GitHub and Vercel and wire usage
-- [ ] Refactor `crawler/services/translate.py` to use provider abstraction
-- [ ] Add GitHub Actions crawler workflow and script
+- [x] Add translator provider abstraction and configure TRANSLATE_PROVIDER
+- [x] Store GOOGLE_TRANSLATE_API_KEY in GitHub and Vercel and wire usage
+- [x] Refactor `crawler/services/translate.py` to use provider abstraction
+- [x] Add GitHub Actions crawler workflow and script
+- [x] Add GitHub Actions translation workflow and script
 - [ ] Migrate translation to API key or defer
 - [ ] Remove Cloud Tasks, Cloud SQL proxy, and App Engine config
 - [ ] Update documentation and remove unused deps

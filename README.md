@@ -67,8 +67,24 @@ You can run the newspaper crawler on your local machine to populate the database
     python -m crawler.scripts.run_crawl --max-articles 5
     ```
 
+## Running Translation Locally
+To translate untranslated articles, you can run the translation script locally.
 
-## Local Development
+1.  **Set Environment**:
+    Make sure your `DATABASE_URL`, `GOOGLE_PROJECT_ID`, and `GOOGLE_TRANSLATE_API_KEY` are set.
+    ```bash
+    export DATABASE_URL='postgres://...'
+    export GOOGLE_PROJECT_ID='your-gcp-project-id'
+    export GOOGLE_TRANSLATE_API_KEY='your-api-key'
+    ```
+
+2.  **Run the Script**:
+    ```bash
+    python -m crawler.scripts.run_translate
+    ```
+
+
+## Local Development (API & Frontend)
 Run API (Vercel) and Frontend (Vite) side-by-side:
 
 ```bash

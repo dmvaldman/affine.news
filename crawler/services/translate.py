@@ -1,96 +1,65 @@
-from google.cloud import translate
 from psycopg2.extras import DictCursor
 
 from crawler.db.db import conn
-from crawler.models.Paper import Papers
+from crawler.services.translator import get_translator, translate_text
 
 
 target_lang = 'en'
-project = 'affine-news'
-location = 'global'
-
-
-def location_path(project_id, location):
-    # might as well use an f-string, the new library supports python >=3.6
-    return f"projects/{project_id}/locations/{location}"
-
-
-def get_paper_uuids():
-    papers = Papers()
-    papers.load()
-
-    uuids = [paper.uuid for paper in papers]
-    return uuids
-
-
-def run():
-    paper_uuids = get_paper_uuids()
-    for paper_uuid in paper_uuids:
-        translate(paper_uuid)
-
 
 def translate_paper_by_uuid(paper_uuid):
-    translate_client = translate.TranslationServiceClient.from_service_account_json('env/affine-news-97580ef473e5.json')
-    parent = location_path(project, location)
+    """
+    Finds all untranslated articles for a given paper and translates their titles.
+    """
+    try:
+        translate_client = get_translator()
+    except (ImportError, Exception) as e:
+        print(f"Could not initialize translator, skipping translation. Error: {e}")
+        return
 
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
-            SELECT a.url, a.lang, a.title, a.text, a.title_translated FROM article a
+            SELECT a.url, a.lang, a.title FROM article a
             JOIN paper p on p.uuid = a.paper_uuid
-            WHERE title_translated is NULL
+            WHERE a.title_translated IS NULL
             AND p.uuid=%s
-        ''', (paper_uuid, ))
-
+        ''', (paper_uuid,))
         results = c.fetchall()
 
     num_results = len(results)
-    print('Number of articles to translate', num_results, paper_uuid)
+    if num_results > 0:
+        print(f'Found {num_results} articles to translate for paper {paper_uuid}')
 
     for index, result in enumerate(results):
-        if result['title_translated']:
-            print('title already translated', result['url'])
+        source_lang = result['lang']
+        title_to_translate = result['title']
+
+        if not title_to_translate:
+            print(f"Skipping article with no title: {result['url']}")
             continue
 
-        source_lang = result['lang']
-
+        translated_title = None
         if source_lang != target_lang:
-            to_translate = [
-                result['title']
-            ]
-
-            if not result['title']:
-                print('no title', result['url'])
-                continue
-
-            if len(result['title']) > 2000:
-                print('length too long', result['url'])
-                continue
-
-            keywords_translated = translate_client.translate_text(
-                parent=parent,
-                contents=to_translate,
-                mime_type="text/plain",
-                source_language_code=source_lang,
-                target_language_code=target_lang)
-
-            title_text = keywords_translated.translations[0].translated_text
+            try:
+                translated_title = translate_text(
+                    translate_client,
+                    title_to_translate,
+                    target_lang=target_lang,
+                    source_lang=source_lang
+                )
+            except Exception as e:
+                print(f"Error translating article {result['url']}: {e}")
+                continue # Skip this article
         else:
-            title_text = result['title']
+            # If the source is already in the target language, just copy the title
+            translated_title = title_to_translate
 
-        print('translation:', result['url'], title_text)
+        if translated_title:
+            print(f"  -> Translated title for {result['url']}")
+            with conn.cursor() as c:
+                c.execute('''
+                    UPDATE article SET title_translated=%s WHERE url=%s
+                ''', (translated_title, result['url']))
 
-        with conn.cursor(cursor_factory=DictCursor) as c:
-            c.execute('''
-                UPDATE article SET
-                    title_translated=%s
-                WHERE url=%s
-            ''', (
-                title_text,
-                result['url']
-            ))
-
-        if index % 10 == 0:
-            print('Progress:', index/num_results)
-
-    print('done')
+    # Commit all translations for this paper in one transaction
     conn.commit()
+    print(f'Finished translation for paper {paper_uuid}')

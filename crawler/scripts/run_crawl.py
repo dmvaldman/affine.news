@@ -1,6 +1,10 @@
 import argparse
 import os
 import sys
+from dotenv import load_dotenv
+
+# Load .env file from the project root
+load_dotenv()
 
 from crawler.services.crawl import get_paper_uuids, crawl_paper_by_uuid
 

@@ -12,4 +12,6 @@ feedparser>=6.0.10
 feedfinder2>=0.0.4
 jieba3k>=0.35.1
 Pillow>=10.4.0
+google-cloud-translate>=2.0.0
+python-dotenv>=1.0.0
 
