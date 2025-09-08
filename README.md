@@ -1,8 +1,8 @@
 # Affine News (Vercel + Neon)
 
 Modernized stack:
-- Frontend: Vite (web/)
-- APIs: Vercel Functions (api/query.js, api/stats.js)
+- Frontend: Vanilla SPA (index.html, js/app.js, css/app.css) in `web/`
+- APIs: Vercel Functions (`web/api/*.js`)
 - DB: Neon Postgres
 
 
@@ -30,17 +30,17 @@ Create tables on Neon (once):
 psql "$DATABASE_URL" -f sql/schema.sql
 ```
 
-Seed or sync newspapers and categories from `server/db/newspaper_store.json`:
+Seed or sync newspapers and categories from `crawler/db/newspaper_store.json`:
 
 ```bash
-# Install Python dependencies first: pip install -r requirements.crawler.txt
+# Install Python dependencies first: pip install -r crawler/requirements.crawler.txt
 python scripts/seed_papers.py            # upsert only
 python scripts/seed_papers.py --prune-missing   # remove categories not in JSON
 python scripts/seed_papers.py --dry-run         # preview changes
 ```
 
 Updating sources:
-- Edit `server/db/newspaper_store.json`
+- Edit `crawler/db/newspaper_store.json`
 - Re-run one of the commands above to sync changes to the DB
 
 
@@ -84,38 +84,33 @@ To translate untranslated articles, you can run the translation script locally.
     ```
 
 
-## Local Development (API & Frontend)
-Run API (Vercel) and Frontend (Vite) side-by-side:
+## Quick Start (web-only SPA + Vercel Functions)
+
+Local (from `web/`):
 
 ```bash
-# Terminal 1 (root)
-export DATABASE_URL='postgres://USER:PASSWORD@HOST/DB?sslmode=require'
-vercel dev  # starts serverless APIs on http://localhost:3000
+cd web
+# 1) Set env for local dev (not committed)
+echo "DATABASE_URL=postgres://USER:PASSWORD@HOST/DB?sslmode=require" > .env.local
 
-# Terminal 2 (web/)
-cd web && npm install && npm run dev  # http://localhost:5173
+# 2) Link once (select your existing Vercel project)
+vercel link
+
+# 3) Run dev server (serves SPA at / and functions at /api/*)
+vercel dev  # http://localhost:3000
 ```
 
-The Vite dev server proxies `/api/*` to `http://localhost:3000`.
+Deploy:
+- Vercel Dashboard → Project → Settings → Root Directory: `web`
+- Add Environment Variable: `DATABASE_URL`
+- Push to your main branch (or click Deploy)
 
+Routing (web/vercel.json):
+- `/api/*` → serverless functions in `web/api`
+- `/css/*` and `/js/*` → static assets
+- `/(.*)` → `index.html` (SPA fallback)
 
-## Debugging APIs (VS Code)
-Use the JavaScript Debug Terminal (auto-attach) or attach to a specific port.
-
-Option A (auto-attach):
-1. VS Code → Run and Debug → JavaScript Debug Terminal
-2. In that terminal: `NODE_OPTIONS=--inspect=0 vercel dev`
-3. Set breakpoints in `api/query.js` or `api/stats.js` and trigger requests
-
-Option B (manual attach):
-1. Start: `NODE_OPTIONS=--inspect=9230 vercel dev`
-2. Add a VS Code launch config to attach to port `9230`
-
-
-## Deployment
-- Vercel Project → Settings → Environment Variables → add `DATABASE_URL`
-- Deploy the repo; APIs and frontend will build on Vercel
-
-Notes:
-- Keep `DATABASE_URL` out of the Vite client (do not prefix with `VITE_`)
-- Use Neon “pooled” connection string with `sslmode=require`
+Troubleshooting:
+- 404 at `/`: ensure `web/vercel.json` has the catch‑all route to `/index.html`
+- 404 on `/api/*`: confirm files in `web/api` and retry `vercel dev` from `web/`
+- Hanging requests: ensure `web/.env.local` contains a valid `DATABASE_URL`
