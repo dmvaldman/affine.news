@@ -1,5 +1,5 @@
 const searchButtonEl = document.getElementById("submitQuery");
-const searchQueryEl = document.getElementById("search");
+const searchBarEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 
 const url_base = "/api/";
@@ -73,22 +73,30 @@ function formatData(data){
     return formattedData
 }
 
-searchQueryEl.onkeypress = function(e){
-    let code = (e.keyCode ? e.keyCode : e.which);
-    if (code == 13) {
-        search()
+searchBarEl.addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') {
+        search();
     }
+});
+
+searchButtonEl.onclick = async function(e){
+    search();
 }
 
-searchButtonEl.onclick = function(e){
-    search()
-}
+async function search(){
+    searchButtonEl.disabled = true;
+    searchButtonEl.innerHTML = '<div class="loader"></div>';
 
-function search(){
     const articles_url = new URL(url_base + "query", window.location.origin)
     const stats_url = new URL(url_base + "stats", window.location.origin)
 
-    let query_str = searchQueryEl.value
+    let query_str = searchBarEl.value
+
+    if (query_str == '') {
+        searchButtonEl.disabled = false;
+        searchButtonEl.innerHTML = 'Search';
+        return
+    }
 
     const dates = $('input[name="dates"]').val().split(' - ')
 
@@ -110,92 +118,85 @@ function search(){
     Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))
     Object.keys(stat_params).forEach(key => stats_url.searchParams.append(key, stat_params[key]))
 
-    fetch(articles_url)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(data){
+    const response = await fetch(articles_url)
+    const data = await response.json()
 
-            map.updateChoropleth(formatData(data), {reset: true})
+    map.updateChoropleth(formatData(data), {reset: true})
 
-            searchResultsEl.innerHTML = ''
+    searchResultsEl.innerHTML = ''
 
-            for (let country in data){
-                let countryEl = document.createElement('ul')
-                let anchorEl = document.createElement('a')
-                let toggleEl = document.createElement('div')
+    for (let country in data){
+        let countryEl = document.createElement('ul')
+        let anchorEl = document.createElement('a')
+        let toggleEl = document.createElement('div')
 
-                anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
-                anchorEl.href = '#' + country
-                anchorEl.name = country
-                anchorEl.id = country
-                anchorEl.classList.add('iso')
+        anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
+        anchorEl.href = '#' + country
+        anchorEl.name = country
+        anchorEl.id = country
+        anchorEl.classList.add('iso')
 
 
-                toggleEl.textContent = '[–]';
-                toggleEl.classList.add('toggle')
+        toggleEl.textContent = '[–]';
+        toggleEl.classList.add('toggle')
 
-                function toggle(){
-                    let toggleState = true;
-                    return function(){
-                        if (toggleState)
-                            toggleEl.textContent = '[+]'
-                        else
-                            toggleEl.textContent = '[–]'
+        function toggle(){
+            let toggleState = true;
+            return function(){
+                if (toggleState)
+                    toggleEl.textContent = '[+]'
+                else
+                    toggleEl.textContent = '[–]'
 
-                        toggleState = !toggleState;
+                toggleState = !toggleState;
 
-                        let items = countryEl.getElementsByTagName('li')
-                        for (let item of items){
-                            item.classList.toggle('collapse')
-                        }
-                    }
+                let items = countryEl.getElementsByTagName('li')
+                for (let item of items){
+                    item.classList.toggle('collapse')
                 }
-
-                toggleEl.addEventListener('click', toggle())
-
-
-                countryEl.appendChild(anchorEl)
-                countryEl.appendChild(toggleEl)
-
-                for (let result in data[country]){
-                    let date = new Date(data[country][result].publish_at).toDateString()
-                    let url = data[country][result].article_url
-
-                    let resultEl = document.createElement('li')
-
-                    let dateEl = document.createElement('div')
-                    let dateTextEl = document.createTextNode(date)
-                    dateEl.classList.add('date')
-                    dateEl.appendChild(dateTextEl)
-
-                    let urlEl = document.createElement('a')
-                    let textEl = document.createTextNode(data[country][result].title)
-                    urlEl.title = data[country][result].title
-                    urlEl.appendChild(textEl)
-
-                    if (data[country][result].lang == 'en')
-                        urlEl.href = url
-                    else
-                        urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
-
-                    resultEl.appendChild(dateEl)
-                    resultEl.appendChild(urlEl)
-
-                    countryEl.appendChild(resultEl)
-                }
-
-                searchResultsEl.appendChild(countryEl)
             }
-        })
+        }
 
-    fetch(stats_url)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(data){
-            console.log('stats response', data)
-        })
+        toggleEl.addEventListener('click', toggle())
+
+
+        countryEl.appendChild(anchorEl)
+        countryEl.appendChild(toggleEl)
+
+        for (let result in data[country]){
+            let date = new Date(data[country][result].publish_at).toDateString()
+            let url = data[country][result].article_url
+
+            let resultEl = document.createElement('li')
+
+            let dateEl = document.createElement('div')
+            let dateTextEl = document.createTextNode(date)
+            dateEl.classList.add('date')
+            dateEl.appendChild(dateTextEl)
+
+            let urlEl = document.createElement('a')
+            let textEl = document.createTextNode(data[country][result].title)
+            urlEl.title = data[country][result].title
+            urlEl.appendChild(textEl)
+
+            if (data[country][result].lang == 'en')
+                urlEl.href = url
+            else
+                urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
+
+            resultEl.appendChild(dateEl)
+            resultEl.appendChild(urlEl)
+
+            countryEl.appendChild(resultEl)
+        }
+
+        searchResultsEl.appendChild(countryEl)
+    }
+
+    searchButtonEl.disabled = false;
+    searchButtonEl.innerHTML = 'Search';
+
+    console.log('articles response', data)
 }
 
 
