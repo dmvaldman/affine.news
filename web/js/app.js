@@ -4,26 +4,92 @@ const searchResultsEl = document.getElementById("searchResults");
 
 const url_base = "/api/";
 
-let map = new Datamap({
-    element: document.getElementById('map'),
-    projection: 'mercator',
-    fills: {
-        defaultFill: 'rgba(182,184,196,0.6)'
-    },
-    responsive: true,
-    geographyConfig: {
-        highlightOnHover: false
-    },
-    done: function(datamap) {
-        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            let el = document.getElementById(geography.id)
-            if (el) el.click()
-        })
-    }
+let map; // Will be initialized after fetching paper data
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dates = $('input[name="dates"]').val().split(' - ');
+    updateMapForDateRange(dates[0], dates[1]);
 });
 
+async function updateMapForDateRange(date_start, date_end) {
+    try {
+        const url = new URL('/api/papers', window.location.origin);
+        url.searchParams.append('date_start', date_start);
+        url.searchParams.append('date_end', date_end);
+
+        const response = await fetch(url);
+        const papersByCountry = await response.json();
+
+        const mapElement = document.getElementById('map');
+        mapElement.innerHTML = ''; // Clear the map container
+
+        initializeMap(papersByCountry);
+    } catch (error) {
+        console.error('Failed to fetch paper data:', error);
+        initializeMap({}); // Initialize map even if data fetch fails
+    }
+}
+
+
+function initializeMap(papersByCountry) {
+    const mapData = {};
+    const allCountries = Datamap.prototype.worldTopo.objects.world.geometries.map(g => g.id);
+
+    allCountries.forEach(countryIso => {
+        if (!papersByCountry[countryIso]) {
+            mapData[countryIso] = { fillKey: 'noData' };
+        }
+    });
+
+    map = new Datamap({
+        element: document.getElementById('map'),
+        projection: 'mercator',
+        fills: {
+            defaultFill: 'rgba(182,184,196,0.6)',
+            noData: 'url(#diagonalStripes)'
+        },
+        data: mapData,
+        responsive: true,
+        geographyConfig: {
+            highlightOnHover: true,
+            highlightFillColor: 'rgba(2, 56, 111, 0.8)',
+            popupTemplate: function(geography, data) {
+                let urls = papersByCountry[geography.id];
+                let hoverinfo = `<div class="hoverinfo"><strong>${geography.properties.name}</strong>`;
+                if (urls && urls.length > 0) {
+                    hoverinfo += '<ul>';
+                    urls.forEach(url => {
+                        hoverinfo += `<li>${url}</li>`;
+                    });
+                    hoverinfo += '</ul>';
+                }
+                hoverinfo += '</div>';
+                return hoverinfo;
+            }
+        },
+        done: function(datamap) {
+            // Add the pattern for the diagonal stripes
+            const svg = datamap.svg.node();
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.innerHTML = `
+                <pattern id="diagonalStripes" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <path d="M-1,1 l2,-2 M0,10 l10,-10 M9,11 l2,-2" style="stroke:#888; stroke-width:1" />
+                </pattern>
+            `;
+            svg.insertBefore(defs, svg.firstChild);
+
+            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                let el = document.getElementById(geography.id)
+                if (el) el.click()
+            })
+        }
+    });
+}
+
 window.addEventListener('resize', function(){
-    map.resize()
+    if (map) {
+        map.resize()
+    }
 })
 
 $(function() {
@@ -41,6 +107,10 @@ $(function() {
             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()]
         }
+    }).on('apply.daterangepicker', function(ev, picker) {
+        const startDate = picker.startDate.format('YYYY-MM-DD');
+        const endDate = picker.endDate.format('YYYY-MM-DD');
+        updateMapForDateRange(startDate, endDate);
     });
 });
 

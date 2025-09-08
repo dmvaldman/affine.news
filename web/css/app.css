@@ -89,11 +89,30 @@ body {
   padding:10px;
 }
 
+#searchResults {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.hoverinfo {
+    padding: 10px;
+    border-radius: 3px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.hoverinfo ul {
+    margin-top: 5px;
+    margin-bottom: 0;
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
 #searchResults ul {
   font-size: 15px;
   padding-bottom: 5px;
   padding-inline-start: 0;
-  overflow-y: scroll;
 }
 
 #searchResults .iso {
