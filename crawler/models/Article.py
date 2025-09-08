@@ -16,9 +16,7 @@ class Article:
         self.publish_at = publish_at or date.today()
         self.paper_uuid = paper_uuid
         self.crawl_uuid = crawl_uuid
-
         self.title_translated = None
-        self.text_translated = None
 
     def __str__(self):
         return 'url: {}'.format(self.url)

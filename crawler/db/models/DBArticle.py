@@ -21,7 +21,7 @@ class DBArticle:
                         publish_at,
                         paper_uuid,
                         crawl_uuid
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """, (
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) """, (
                         article.url,
                         article.img_url,
                         article.title,
