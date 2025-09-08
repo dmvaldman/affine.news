@@ -2,6 +2,7 @@ import uuid
 from enum import Enum
 from datetime import date
 import newspaper
+from newspaper import Config
 from crawler.models.Article import Article
 
 
@@ -38,14 +39,16 @@ class Crawler:
 
         crawl.save()
 
+        config = Config()
+        config.request_timeout = 20
+        config.memoize_articles = True
+        config.fetch_images = False
+
         try:
             paper_build = newspaper.build(
                 paper.url,
+                config=config,
                 language=paper.lang,
-                memoize_articles=True,
-                fetch_images=False,
-                request_timeout=20,
-                min_word_count=100,
                 category_urls=paper.category_urls)
         except Exception as e:
             print(f"Error crawling {paper.url}: {e}", e)
@@ -58,7 +61,7 @@ class Crawler:
         for paper_article in paper_build.articles:
             articles_index += 1
 
-            if self.max_articles is not None and articles_index > self.max_articles:
+            if self.max_articles is not None and count_success > self.max_articles:
                 break
 
             try:
@@ -91,9 +94,10 @@ class Crawler:
 
         crawl.update_status(CrawlStatus.COMPLETED)
 
-        if len(paper_build.articles) > 0:
+        total_articles = count_success + count_failure
+        if total_articles > 0:
             if verbose:
-                success_rate = 100 * count_success / (count_failure + count_success)
+                success_rate = 100 * count_success / total_articles
                 print('Success: {}, Failure: {}, Rate: {}%:'.format(count_success, count_failure, success_rate))
         else:
             if verbose:
@@ -108,9 +112,12 @@ class Crawler:
         article.download()
 
         if article.download_state != 0:
-            raise Exception(f'Download Failed for {article.url} (state: {article.download_state})')
+            raise Exception(f'Download Failed for {article.url} (state: {article.download_exception_msg})')
 
-        article.parse()
+        try:
+            article.parse()
+        except Exception as e:
+            raise Exception(f'Parsing Failed for {article.url}: {e}')
 
         return article
 
