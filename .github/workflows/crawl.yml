@@ -2,7 +2,7 @@ name: Crawler
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 15 * * *'
   workflow_dispatch:
     inputs:
       max_articles:

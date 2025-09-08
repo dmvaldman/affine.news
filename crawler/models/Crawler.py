@@ -58,7 +58,7 @@ class Crawler:
         for paper_article in paper_build.articles:
             articles_index += 1
 
-            if self.max_articles is not None and articles_index > self.max_articles:
+            if self.max_articles is not None and count_success > self.max_articles:
                 break
 
             try:
