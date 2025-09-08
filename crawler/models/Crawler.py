@@ -67,7 +67,7 @@ class Crawler:
             except Exception as err:
                 count_failure += 1
                 if verbose:
-                    print(err)
+                    print(f"Failed to process article: {err}")
                 continue
 
             img_url = paper_article.meta_img or paper_article.top_img or ''
@@ -107,8 +107,8 @@ class Crawler:
 
         article.download()
 
-        if article.download_state == 1:
-            raise Exception('Download Failed for', article.url)
+        if article.download_state != 0:
+            raise Exception(f'Download Failed for {article.url} (state: {article.download_state})')
 
         article.parse()
 
