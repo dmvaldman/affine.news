@@ -29,7 +29,7 @@
         "category_urls": [
             "https://elpais.com/internacional/",
             "https://elpais.com/espana/",
-            "https://elpais.com/sociedad/"
+            "https://elpais.com/opinion/"
         ]
     },
     {
@@ -40,7 +40,7 @@
         "category_urls": [
             "https://www.abc.es/espana/",
             "https://www.abc.es/internacional/",
-            "https://www.abc.es/sociedad/"
+            "https://www.abc.es/opinion/"
         ]
     },
     {
@@ -69,8 +69,7 @@
         "url": "http://www.cankaoxiaoxi.com/",
         "category_urls": [
             "http://china.cankaoxiaoxi.com/",
-            "http://world.cankaoxiaoxi.com/",
-            "http://mil.cankaoxiaoxi.com/"
+            "http://world.cankaoxiaoxi.com/"
         ]
     },
     {
@@ -80,8 +79,7 @@
         "url": "http://www.chinanews.com/",
         "category_urls": [
             "http://www.chinanews.com/china/",
-            "http://world.chinanews.com/",
-            "http://youth.ynet.com/"
+            "https://www.chinanews.com.cn/world/"
         ]
     },
     {
@@ -91,7 +89,6 @@
         "url": "https://www.khabaronline.ir/",
         "category_urls": [
             "https://www.khabaronline.ir/",
-            "https://www.khabaronline.ir/news/",
             "https://www.khabaronline.ir/service/World",
             "https://www.khabaronline.ir/service/Politics"
         ]
@@ -103,7 +100,8 @@
         "url": "http://jamejamonline.ir/",
         "category_urls": [
             "http://jamejamonline.ir/",
-            "http://jamejamonline.ir/online"
+            "https://jamejamonline.ir/fa/world",
+            "https://jamejamonline.ir/fa/politics"
         ]
     },
     {
@@ -112,10 +110,8 @@
         "lang": "ar",
         "url": "https://www.azzaman.com/",
         "category_urls": [
-            "https://www.azzaman.com/category/articles/",
-            "https://www.azzaman.com/category/aghlabia/",
-            "https://www.azzaman.com/category/iraqiedition/",
-            "https://www.azzaman.com/category/news/"
+            "https://www.azzaman.com/category/news/",
+            "https://www.azzaman.com/category/articles/"
         ]
     },
     {
@@ -136,10 +132,7 @@
         "category_urls": [
             "https://vm.ru/news",
             "https://vm.ru/world",
-            "https://vm.ru/opinion",
-            "https://vm.ru/specialniy-reportazh",
-            "https://vm.ru/army",
-            "https://vm.ru/policy"
+            "https://vm.ru/opinion"
         ]
     },
     {
@@ -162,8 +155,7 @@
             "http://alwatan.sy/archives/category/ai",
             "http://alwatan.sy/archives/category/first",
             "http://alwatan.sy/archives/category/syria",
-            "http://alwatan.sy/archives/category/opinion",
-            "http://tishreen.news.sy/"
+            "http://alwatan.sy/archives/category/opinion"
         ]
     },
     {
@@ -195,7 +187,7 @@
         "category_urls": [
             "https://www.aljazeera.net/news",
             "https://www.aljazeera.net/news/politics",
-            "https://www.aljazeera.net/programs"
+            "https://www.aljazeera.net/opinion/"
         ]
     },
     {
@@ -239,9 +231,9 @@
         "lang": "pt",
         "url": "https://www.folha.uol.com.br/",
         "category_urls": [
-            "https://www1.folha.uol.com.br/cotidiano/coronavirus/",
             "https://www1.folha.uol.com.br/mundo/",
-            "https://www1.folha.uol.com.br/ultimas-noticias/"
+            "https://www1.folha.uol.com.br/ultimas-noticias/",
+            "https://www1.folha.uol.com.br/opiniao/"
         ]
     },
     {
