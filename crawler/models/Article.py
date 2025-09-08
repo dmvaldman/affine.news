@@ -7,12 +7,11 @@ class Articles:
 
 
 class Article:
-    def __init__(self, url='', text='', img_url='', title='', publish_at=None, lang='',
+    def __init__(self, url='', img_url='', title='', publish_at=None, lang='',
                  paper_uuid=None, crawl_uuid=None):
         self.url = url
         self.img_url = img_url
         self.title = title
-        self.text = text
         self.lang = lang
         self.publish_at = publish_at or date.today()
         self.paper_uuid = paper_uuid

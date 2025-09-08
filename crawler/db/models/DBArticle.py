@@ -18,9 +18,7 @@ class DBArticle:
                         title,
                         title_translated,
                         lang,
-                        text,
                         publish_at,
-                        text_translated,
                         paper_uuid,
                         crawl_uuid
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """, (
@@ -29,9 +27,7 @@ class DBArticle:
                         article.title,
                         article.title_translated,
                         article.lang,
-                        article.text.lower(),
                         article.publish_at.isoformat(),
-                        article.text_translated,
                         str(article.paper_uuid),
                         str(article.crawl_uuid)
                     )

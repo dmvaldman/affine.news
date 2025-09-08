@@ -23,7 +23,7 @@ def main():
         sys.exit(1)
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    json_path = os.path.join(repo_root, 'server', 'db', 'newspaper_store.json')
+    json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
     with open(json_path, 'r') as f:
         papers_json = json.load(f)
 
@@ -63,7 +63,7 @@ def main():
                             """
                             INSERT INTO category_set (paper_uuid, url)
                             VALUES (%s, %s)
-                            ON CONFLICT ON CONSTRAINT uq_category_set_paper_url DO NOTHING
+                            ON CONFLICT (paper_uuid, url) DO NOTHING
                             """,
                             (paper_uuid, url)
                         )

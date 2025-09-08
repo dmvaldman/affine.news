@@ -25,7 +25,7 @@ class Crawler:
         todays_date = date.today()
 
         crawl = Crawl(
-            start_at=todays_date,
+            created_at=todays_date,
             max_articles=self.max_articles,
             status=CrawlStatus.STARTED,
             paper_uuid=paper.uuid)
@@ -70,21 +70,12 @@ class Crawler:
                     print(err)
                 continue
 
-            if not paper_article.text:
-                text = paper_article.meta_description
-            else:
-                text = paper_article.text
-
-            if not text:
-                continue
-
             img_url = paper_article.meta_img or paper_article.top_img or ''
 
             article = Article(
                 url=paper_article.url,
                 title=paper_article.title,
                 img_url=img_url,
-                text=text,
                 publish_at=paper_article.publish_date or todays_date,
                 lang=paper.lang,
                 paper_uuid=paper.uuid,
@@ -125,15 +116,15 @@ class Crawler:
 
 
 class Crawl:
-    def __init__(self, start_at=None, max_articles=0, status=None, paper_uuid=None):
+    def __init__(self, created_at=None, max_articles=0, status=None, paper_uuid=None):
         self.uuid = uuid.uuid4()
         self.max_articles = max_articles
-        self.start_at = start_at
+        self.created_at = created_at
         self.status = status
         self.paper_uuid = paper_uuid
 
     def __str__(self):
-        return 'Crawl of {} on {}. Status {}'.format(self.paper_uuid.split('-')[0], self.start_at, self.status)
+        return 'Crawl of {} on {}. Status {}'.format(self.paper_uuid.split('-')[0], self.created_at, self.status)
 
     def cache_hit(self):
         from crawler.db.models.DBCrawl import DBCrawl

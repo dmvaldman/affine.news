@@ -9,13 +9,13 @@ class DBCrawl:
             c.execute("""
                 INSERT INTO crawl (
                     uuid,
-                    start_at,
+                    created_at,
                     status,
                     max_articles,
                     paper_uuid
                 ) VALUES (%s, %s, %s, %s, %s)""", (
                     str(crawl.uuid),
-                    crawl.start_at.isoformat(),
+                    crawl.created_at.isoformat(),
                     crawl.status.value,
                     crawl.max_articles,
                     str(crawl.paper_uuid)
@@ -33,12 +33,12 @@ class DBCrawl:
                 SELECT * FROM crawl
                 WHERE paper_uuid=%s
                 AND status=%s
-                AND start_at>=%s
+                AND created_at>=%s
                 AND max_articles=%s
             ''', (
                 str(crawl.paper_uuid),
                 CrawlStatus.COMPLETED.value,
-                crawl.start_at.isoformat(),
+                crawl.created_at.isoformat(),
                 crawl.max_articles
             ))
             return c.fetchone()

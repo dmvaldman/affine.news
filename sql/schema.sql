@@ -5,18 +5,20 @@ CREATE TABLE IF NOT EXISTS paper (
     url TEXT,
     country TEXT,
     ISO TEXT,
-    lang TEXT
+    lang TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS category_set (
     paper_uuid TEXT,
     url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     FOREIGN KEY(paper_uuid) REFERENCES paper(uuid)
 );
 
 CREATE TABLE IF NOT EXISTS crawl (
     uuid TEXT PRIMARY KEY,
-    start_at TIMESTAMP,
+    created_at TIMESTAMP,
     status INTEGER,
     max_articles INTEGER,
     paper_uuid TEXT,
@@ -29,11 +31,7 @@ CREATE TABLE IF NOT EXISTS article (
     title TEXT,
     title_translated TEXT,
     lang TEXT,
-    keywords TEXT,
-    text TEXT,
     publish_at TIMESTAMP,
-    text_translated TEXT,
-    keywords_translated TEXT,
     paper_uuid TEXT,
     crawl_uuid TEXT,
     FOREIGN KEY(paper_uuid) REFERENCES paper(uuid),
