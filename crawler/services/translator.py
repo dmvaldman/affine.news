@@ -9,22 +9,6 @@ def get_translator():
     provider = os.environ.get('TRANSLATE_PROVIDER', 'google')
 
     if provider == 'google':
-        # The library automatically uses GOOGLE_API_KEY if it's set,
-        # or falls back to other authentication methods.
-        # For GitHub Actions, we will provide an API key.
-        # No need for service account JSON file anymore.
-        api_key = os.environ.get('GOOGLE_TRANSLATE_API_KEY')
-        if not api_key:
-            # For local dev or other auth methods, this might not be set.
-            # The client can sometimes still work if gcloud is configured.
-            print("Warning: GOOGLE_TRANSLATE_API_KEY not set. Translation may fail.")
-
-        # The client uses Application Default Credentials by default,
-        # which can include an API key set in the environment.
-        # Let's be explicit if we can.
-        # Note: google-cloud-translate v2 doesn't directly accept an api_key in constructor.
-        # It relies on GOOGLE_API_KEY env var or `gcloud auth application-default login`.
-        # For our use case, setting the env var in the GitHub Action is the way.
         return translate.TranslationServiceClient()
     else:
         raise NotImplementedError(f"Translator provider '{provider}' is not supported.")

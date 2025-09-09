@@ -444,5 +444,32 @@
         "category_urls": [
             "https://www.theaustralian.com.au/world"
         ]
+    },
+    {
+        "country": "Israel",
+        "ISO": "ISR",
+        "lang": "he",
+        "url": "https://www.ynet.co.il",
+        "category_urls": [
+            "https://www.ynetnews.com/category/3083"
+        ]
+    },
+    {
+        "country": "Israel",
+        "ISO": "ISR",
+        "lang": "he",
+        "url": "https://www.haaretz.co.il",
+        "category_urls": [
+            "https://www.haaretz.co.il/news/world"
+        ]
+    },
+    {
+        "country": "Israel",
+        "ISO": "ISR",
+        "lang": "he",
+        "url": "https://www.i24news.tv/",
+        "category_urls": [
+            "https://www.i24news.tv/he/news/international"
+        ]
     }
 ]
