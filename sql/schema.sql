@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS category_set (
     paper_uuid TEXT,
     url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid)
+    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS crawl (
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS crawl (
     status INTEGER,
     max_articles INTEGER,
     paper_uuid TEXT,
-    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid)
+    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS article (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS article (
     publish_at TIMESTAMP,
     paper_uuid TEXT,
     crawl_uuid TEXT,
-    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid),
+    FOREIGN KEY(paper_uuid) REFERENCES paper(uuid) ON DELETE CASCADE,
     FOREIGN KEY(crawl_uuid) REFERENCES crawl(uuid)
 );
 

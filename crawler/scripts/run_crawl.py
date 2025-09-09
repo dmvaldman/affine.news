@@ -1,10 +1,15 @@
 import argparse
 import os
 import sys
+import nltk
 from dotenv import load_dotenv
 
 # Load .env file from the project root
 load_dotenv()
+
+# Download the 'punkt' tokenizer models from NLTK, if not already present.
+# This is required by the newspaper library for parsing some articles.
+nltk.download('punkt')
 
 from crawler.services.crawl import get_paper_uuids, crawl_paper_by_uuid
 

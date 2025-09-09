@@ -31,9 +31,9 @@ class Crawler:
             paper_uuid=paper.uuid)
 
         if crawl.cache_hit():
+            crawl.update_status(CrawlStatus.COMPLETED)
             if verbose:
                 print('Cache hit', crawl)
-            crawl.update_status(CrawlStatus.COMPLETED)
             return crawl
 
         crawl.save()
@@ -110,7 +110,10 @@ class Crawler:
         if article.download_state == 1:
             raise Exception('Download Failed for', article.url)
 
-        article.parse()
+        try:
+            article.parse()
+        except Exception as e:
+            raise Exception(f'Parsing Failed for {article.url}: {e}')
 
         return article
 

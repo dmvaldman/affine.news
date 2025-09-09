@@ -1,6 +1,6 @@
 psycopg2-binary>=2.9.9
 requests>=2.31.0
-lxml>=4.9.3,<5.0.0
+lxml==4.9.4
 beautifulsoup4>=4.12.2
 python-dateutil>=2.8.2
 PyYAML>=6.0.1
@@ -8,11 +8,13 @@ pythainlp>=4.0.2
 tinysegmenter==0.3
 tldextract>=5.1.2
 cssselect>=1.2.0
-feedparser>=6.0.10
+feedparser==6.0.11
 feedfinder2>=0.0.4
-jieba3k>=0.35.1
-Pillow>=10.4.0
+idna==3.7
+jieba3k==0.35.1
+lxml==4.9.4
+newspaper3k==0.2.8
+Pillow==10.4.0
 google-cloud-translate>=2.0.0
 python-dotenv>=1.0.0
-newspaper3k>=0.2.8
 

@@ -566,5 +566,221 @@
         "category_urls": [
             "https://www.lanacion.com.ar/el-mundo/"
         ]
+    },
+    {
+        "country": "Costa Rica",
+        "ISO": "CRI",
+        "lang": "es",
+        "url": "https://www.nacion.com/",
+        "category_urls": [
+            "https://www.nacion.com/el-mundo/"
+        ]
+    },
+    {
+        "country": "Panama",
+        "ISO": "PAN",
+        "lang": "es",
+        "url": "https://www.prensa.com/",
+        "category_urls": [
+            "https://www.prensa.com/mundo/"
+        ]
+    },
+    {
+        "country": "Peru",
+        "ISO": "PER",
+        "lang": "es",
+        "url": "https://elcomercio.pe/",
+        "category_urls": [
+            "https://elcomercio.pe/mundo/"
+        ]
+    },
+    {
+        "country": "Colombia",
+        "ISO": "COL",
+        "lang": "es",
+        "url": "https://www.eltiempo.com/",
+        "category_urls": [
+            "https://www.eltiempo.com/mundo"
+        ]
+    },
+    {
+        "country": "Venezuela",
+        "ISO": "VEN",
+        "lang": "es",
+        "url": "https://www.el-nacional.com/",
+        "category_urls": [
+            "https://www.el-nacional.com/mundo/"
+        ]
+    },
+    {
+        "country": "Indonesia",
+        "ISO": "IDN",
+        "lang": "id",
+        "url": "https://www.antaranews.com/",
+        "category_urls": [
+            "https://www.antaranews.com/dunia"
+        ]
+    },
+    {
+        "country": "Indonesia",
+        "ISO": "IDN",
+        "lang": "en",
+        "url": "https://www.thejakartapost.com/",
+        "category_urls": [
+            "https://www.thejakartapost.com/world"
+        ]
+    },
+    {
+        "country": "Thailand",
+        "ISO": "THA",
+        "lang": "th",
+        "url": "https://www.thairath.co.th/",
+        "category_urls": [
+            "https://www.thairath.co.th/news/foreign"
+        ]
+    },
+    {
+        "country": "Vietnam",
+        "ISO": "VNM",
+        "lang": "vi",
+        "url": "https://vnexpress.net/",
+        "category_urls": [
+            "https://vnexpress.net/the-gioi"
+        ]
+    },
+    {
+        "country": "Pakistan",
+        "ISO": "PAK",
+        "lang": "en",
+        "url": "https://www.dawn.com/",
+        "category_urls": [
+            "https://www.dawn.com/world"
+        ]
+    },
+    {
+        "country": "Afghanistan",
+        "ISO": "AFG",
+        "lang": "en",
+        "url": "https://tolonews.com/",
+        "category_urls": [
+            "https://tolonews.com/world"
+        ]
+    },
+    {
+        "country": "Kazakhstan",
+        "ISO": "KAZ",
+        "lang": "ru",
+        "url": "https://tengrinews.kz/",
+        "category_urls": [
+            "https://tengrinews.kz/world/"
+        ]
+    },
+    {
+        "country": "Sweden",
+        "ISO": "SWE",
+        "lang": "sv",
+        "url": "https://www.dn.se/",
+        "category_urls": [
+            "https://www.dn.se/varlden/"
+        ]
+    },
+    {
+        "country": "Norway",
+        "ISO": "NOR",
+        "lang": "no",
+        "url": "https://www.aftenposten.no/",
+        "category_urls": [
+            "https://www.aftenposten.no/verden"
+        ]
+    },
+    {
+        "country": "Finland",
+        "ISO": "FIN",
+        "lang": "fi",
+        "url": "https://www.hs.fi/",
+        "category_urls": [
+            "https://www.hs.fi/ulkomaat/"
+        ]
+    },
+    {
+        "country": "Lithuania",
+        "ISO": "LTU",
+        "lang": "lt",
+        "url": "https://www.delfi.lt/",
+        "category_urls": [
+            "https://www.delfi.lt/news/daily/world/"
+        ]
+    },
+    {
+        "country": "Latvia",
+        "ISO": "LVA",
+        "lang": "lv",
+        "url": "https://www.delfi.lv/",
+        "category_urls": [
+            "https://www.delfi.lv/news/arzemes/"
+        ]
+    },
+    {
+        "country": "Estonia",
+        "ISO": "EST",
+        "lang": "et",
+        "url": "https://www.postimees.ee/",
+        "category_urls": [
+            "https://www.postimees.ee/valismaa"
+        ]
+    },
+    {
+        "country": "Morocco",
+        "ISO": "MAR",
+        "lang": "ar",
+        "url": "https://www.hespress.com/",
+        "category_urls": [
+            "https://www.hespress.com/internacional"
+        ]
+    },
+    {
+        "country": "Egypt",
+        "ISO": "EGY",
+        "lang": "ar",
+        "url": "https://www.ahram.org.eg/",
+        "category_urls": [
+            "https://gate.ahram.org.eg/Category/4/%D8%B9%D8%B1%D8%A8-%D9%88%D8%B9%D8%A7%D9%84%D9%85.aspx"
+        ]
+    },
+    {
+        "country": "Greece",
+        "ISO": "GRC",
+        "lang": "el",
+        "url": "https://www.protothema.gr/",
+        "category_urls": [
+            "https://www.protothema.gr/world/"
+        ]
+    },
+    {
+        "country": "Croatia",
+        "ISO": "HRV",
+        "lang": "hr",
+        "url": "https://www.jutarnji.hr/",
+        "category_urls": [
+            "https://www.jutarnji.hr/globus"
+        ]
+    },
+    {
+        "country": "Romania",
+        "ISO": "ROU",
+        "lang": "ro",
+        "url": "https://adevarul.ro/",
+        "category_urls": [
+            "https://adevarul.ro/international"
+        ]
+    },
+    {
+        "country": "Serbia",
+        "ISO": "SRB",
+        "lang": "sr",
+        "url": "https://www.blic.rs/",
+        "category_urls": [
+            "https://www.blic.rs/vesti/svet"
+        ]
     }
 ]
