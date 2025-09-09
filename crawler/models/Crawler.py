@@ -99,6 +99,9 @@ class Crawler:
             if verbose:
                 print('Crawl failure for ', paper)
 
+        crawl.stats['downloaded'] = count_success
+        crawl.stats['failed'] = count_failure
+
         return crawl
 
     def crawl_article(self, article, verbose=True):
@@ -125,6 +128,7 @@ class Crawl:
         self.created_at = created_at
         self.status = status
         self.paper_uuid = paper_uuid
+        self.stats = {}
 
     def __str__(self):
         return 'Crawl of {} on {}. Status {}'.format(self.paper_uuid.split('-')[0], self.created_at, self.status)

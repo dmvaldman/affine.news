@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from dotenv import load_dotenv
 
 # Load .env file from the project root
@@ -15,6 +16,7 @@ def main():
     - Fetches all paper UUIDs.
     - Iterates through each paper and translates untranslated articles.
     """
+    start_time = time.time()
     # These environment variables are required for the script to run.
     required_env_vars = [
         'DATABASE_URL',
@@ -44,7 +46,9 @@ def main():
             print(f"An error occurred while processing paper {paper_uuid}: {e}", file=sys.stderr)
             # Continue to the next paper
 
+    end_time = time.time()
     print("Translation job finished.")
+    print(f"Total time elapsed: {end_time - start_time:.2f} seconds")
 
 
 if __name__ == '__main__':
