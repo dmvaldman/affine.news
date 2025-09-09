@@ -48,13 +48,19 @@ function initializeMap(papersByCountry) {
         projection: 'mercator',
         fills: {
             defaultFill: 'rgba(182,184,196,0.6)',
-            noData: 'url(#diagonalStripes)'
+            noData: 'rgba(222, 222, 222, 0.6)'
         },
         data: currentMapData,
         responsive: true,
+        height: null,
+        width: null,
         geographyConfig: {
             highlightOnHover: true,
             highlightFillColor: 'rgba(2, 56, 111, 0.8)',
+            borderColor: '#666',
+            borderWidth: 0.5,
+            highlightBorderColor: 'rgba(0, 0, 0, 0.4)',
+            highlightBorderWidth: 1,
             popupTemplate: function(geography, data) {
                 let urls = papersByCountry[geography.id];
                 let hoverinfo = `<div class="hoverinfo"><strong>${geography.properties.name}</strong>`;
@@ -68,22 +74,6 @@ function initializeMap(papersByCountry) {
                 hoverinfo += '</div>';
                 return hoverinfo;
             }
-        },
-        done: function(datamap) {
-            // Add the pattern for the diagonal stripes
-            const svg = datamap.svg.node();
-            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            defs.innerHTML = `
-                <pattern id="diagonalStripes" patternUnits="userSpaceOnUse" width="10" height="10">
-                    <path d="M-1,1 l2,-2 M0,10 l10,-10 M9,11 l2,-2" style="stroke:#888; stroke-width:1" />
-                </pattern>
-            `;
-            svg.insertBefore(defs, svg.firstChild);
-
-            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                let el = document.getElementById(geography.id)
-                if (el) el.click()
-            })
         }
     });
 }

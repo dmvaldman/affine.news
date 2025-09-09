@@ -13,24 +13,34 @@ body {
 .container{
   width: 90%;
   max-width: 1000px;
+  height: 100vh;
   margin: 0 auto;
-  padding-top: 20px;
-  padding-bottom: 20px;
   position: relative;
-}
-
-#map {
-  height: 50%;
-  padding-top:20px;
-  padding-bottom:20px;
+  padding:20px;
 }
 
 #searchContainer {
+  height: 50px;
   width: 100%;
   position: relative;
-
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+#map {
+  height: calc(50% - 25px);
+  margin: 0 auto;
+  position: relative; /* Keep for positioning of tooltips */
+  padding-top: 20px;
+  padding-bottom: 20px !important;
+}
+
+#searchResults {
+  height: calc(50% - 25px);
+  overflow-y: auto;
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #queryContainer {
@@ -48,7 +58,6 @@ body {
   border-radius: 5px 0 0 5px;
   outline: none;
   color: #3b3b3b;
-  display:inline-block;
   float: left;
 }
 
@@ -66,7 +75,6 @@ body {
   border-radius: 0 5px 5px 0;
   cursor: pointer;
   font-size: 18px;
-  display: inline-block;
   float:left;
 }
 
@@ -87,11 +95,6 @@ body {
   border: 3px solid black;
   border-radius: 5px;
   padding:10px;
-}
-
-#searchResults {
-  max-height: 50vh;
-  overflow-y: auto;
 }
 
 .hoverinfo {
