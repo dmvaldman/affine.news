@@ -5,9 +5,7 @@
         "lang": "it",
         "url": "https://www.corriere.it/",
         "category_urls": [
-            "https://www.corriere.it/",
-            "https://www.corriere.it/esteri/",
-            "https://www.corriere.it/politica"
+            "https://www.corriere.it/esteri/"
         ]
     },
     {
@@ -16,8 +14,6 @@
         "lang": "it",
         "url": "https://www.repubblica.it/",
         "category_urls": [
-            "https://www.repubblica.it/cronaca",
-            "https://www.repubblica.it/politica",
             "https://www.repubblica.it/esteri"
         ]
     },
@@ -27,9 +23,7 @@
         "lang": "es",
         "url": "https://elpais.com/",
         "category_urls": [
-            "https://elpais.com/internacional/",
-            "https://elpais.com/espana/",
-            "https://elpais.com/opinion/"
+            "https://elpais.com/internacional/"
         ]
     },
     {
@@ -38,9 +32,7 @@
         "lang": "es",
         "url": "https://www.abc.es/",
         "category_urls": [
-            "https://www.abc.es/espana/",
-            "https://www.abc.es/internacional/",
-            "https://www.abc.es/opinion/"
+            "https://www.abc.es/internacional/"
         ]
     },
     {
@@ -49,8 +41,7 @@
         "lang": "tr",
         "url": "http://www.hurriyet.com.tr/",
         "category_urls": [
-            "http://www.hurriyet.com.tr/dunya/",
-            "http://www.hurriyet.com.tr/gundem/"
+            "http://www.hurriyet.com.tr/dunya/"
         ]
     },
     {
@@ -66,19 +57,8 @@
         "country": "China",
         "ISO": "CHN",
         "lang": "zh",
-        "url": "http://www.cankaoxiaoxi.com/",
-        "category_urls": [
-            "http://china.cankaoxiaoxi.com/",
-            "http://world.cankaoxiaoxi.com/"
-        ]
-    },
-    {
-        "country": "China",
-        "ISO": "CHN",
-        "lang": "zh",
         "url": "http://www.chinanews.com/",
         "category_urls": [
-            "http://www.chinanews.com/china/",
             "https://www.chinanews.com.cn/world/"
         ]
     },
@@ -88,9 +68,7 @@
         "lang": "ar",
         "url": "https://www.khabaronline.ir/",
         "category_urls": [
-            "https://www.khabaronline.ir/",
-            "https://www.khabaronline.ir/service/World",
-            "https://www.khabaronline.ir/service/Politics"
+            "https://www.khabaronline.ir/service/World"
         ]
     },
     {
@@ -99,9 +77,7 @@
         "lang": "ar",
         "url": "http://jamejamonline.ir/",
         "category_urls": [
-            "http://jamejamonline.ir/",
-            "https://jamejamonline.ir/fa/world",
-            "https://jamejamonline.ir/fa/politics"
+            "https://jamejamonline.ir/fa/world"
         ]
     },
     {
@@ -110,8 +86,7 @@
         "lang": "ar",
         "url": "https://www.azzaman.com/",
         "category_urls": [
-            "https://www.azzaman.com/category/news/",
-            "https://www.azzaman.com/category/articles/"
+            "https://www.azzaman.com/category/news/"
         ]
     },
     {
@@ -120,8 +95,7 @@
         "lang": "ar",
         "url": "https://www.zowaa.org/",
         "category_urls": [
-            "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/",
-            "https://www.zowaa.org/category/%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1-%d8%a7%d9%84%d8%ad%d8%b1%d9%83%d8%a9/"
+            "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/"
         ]
     },
     {
@@ -142,8 +116,7 @@
         "url": "https://pravda.ru/",
         "category_urls": [
             "https://www.pravda.ru/world/",
-            "https://www.pravda.ru/politics/",
-            "https://www.pravda.ru/economics/"
+            "https://www.pravda.ru/politics/"
         ]
     },
     {
@@ -152,10 +125,7 @@
         "lang": "ar",
         "url": "http://alwatan.sy/",
         "category_urls": [
-            "http://alwatan.sy/archives/category/ai",
-            "http://alwatan.sy/archives/category/first",
-            "http://alwatan.sy/archives/category/syria",
-            "http://alwatan.sy/archives/category/opinion"
+            "http://alwatan.sy/archives/category/ai"
         ]
     },
     {
@@ -175,8 +145,7 @@
         "lang": "pl",
         "url": "https://www.gazeta.pl/",
         "category_urls": [
-            "http://wiadomosci.gazeta.pl/",
-            "http://next.gazeta.pl/next/"
+            "http://wiadomosci.gazeta.pl/"
         ]
     },
     {
@@ -185,9 +154,7 @@
         "lang": "ar",
         "url": "https://www.aljazeera.net/",
         "category_urls": [
-            "https://www.aljazeera.net/news",
-            "https://www.aljazeera.net/news/politics",
-            "https://www.aljazeera.net/opinion/"
+            "https://www.aljazeera.net/news"
         ]
     },
     {
@@ -198,7 +165,6 @@
         "category_urls": [
             "https://www.foxnews.com/us",
             "https://www.foxnews.com/world",
-            "https://www.foxnews.com/opinion",
             "https://www.foxnews.com/politics"
         ]
     },
@@ -210,8 +176,7 @@
         "category_urls": [
             "https://www.nytimes.com/section/world",
             "https://www.nytimes.com/section/us",
-            "https://www.nytimes.com/section/politics",
-            "https://www.nytimes.com/section/opinion"
+            "https://www.nytimes.com/section/politics"
         ]
     },
     {
@@ -220,9 +185,7 @@
         "lang": "pt",
         "url": "https://oglobo.globo.com/",
         "category_urls": [
-            "https://oglobo.globo.com/mundo/",
-            "https://oglobo.globo.com/sociedade/",
-            "https://oglobo.globo.com/opiniao/"
+            "https://oglobo.globo.com/mundo/"
         ]
     },
     {
@@ -231,9 +194,7 @@
         "lang": "pt",
         "url": "https://www.folha.uol.com.br/",
         "category_urls": [
-            "https://www1.folha.uol.com.br/mundo/",
-            "https://www1.folha.uol.com.br/ultimas-noticias/",
-            "https://www1.folha.uol.com.br/opiniao/"
+            "https://www1.folha.uol.com.br/mundo/"
         ]
     },
     {
@@ -242,9 +203,8 @@
         "lang": "zh",
         "url": "https://orientaldaily.on.cc/",
         "category_urls": [
-            "https://orientaldaily.on.cc/",
-            "https://orientaldaily.on.cc/cnt/news/",
-            "https://orientaldaily.on.cc/cnt/china_world/"
+            "https://orientaldaily.on.cc/section/%E5%85%A9%E5%B2%B8%E5%9C%8B%E9%9A%9B/359/20250909",
+            "https://orientaldaily.on.cc/cnt/news/"
         ]
     },
     {
@@ -253,9 +213,236 @@
         "lang": "ru",
         "url": "https://nn.by/",
         "category_urls": [
-            "https://nn.by/",
-            "https://nn.by/?c=ca&i=559",
             "https://nn.by/?c=ca&i=584"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.people.com.cn/",
+        "category_urls": [
+            "http://world.people.com.cn/"
+        ]
+    },
+    {
+        "country": "Ukraine",
+        "ISO": "UKR",
+        "lang": "uk",
+        "url": "https://www.pravda.com.ua/",
+        "category_urls": [
+            "https://www.pravda.com.ua/news/",
+            "https://www.eurointegration.com.ua/"
+        ]
+    },
+    {
+        "country": "Poland",
+        "ISO": "POL",
+        "lang": "pl",
+        "url": "https://www.rp.pl/",
+        "category_urls": [
+            "https://www.rp.pl/swiat"
+        ]
+    },
+    {
+        "country": "Hong Kong",
+        "ISO": "HKG",
+        "lang": "zh",
+        "url": "http://www.takungpao.com.hk/",
+        "category_urls": [
+            "http://www.takungpao.com.hk/international/"
+        ]
+    },
+    {
+        "country": "Belarus",
+        "ISO": "BLR",
+        "lang": "ru",
+        "url": "https://www.belta.by/",
+        "category_urls": [
+            "http://belta.by/world/"
+        ]
+    },
+    {
+        "country": "Nigeria",
+        "ISO": "NGA",
+        "lang": "en",
+        "url": "https://guardian.ng/",
+        "category_urls": [
+            "https://guardian.ng/category/news/world/"
+        ]
+    },
+    {
+        "country": "Nigeria",
+        "ISO": "NGA",
+        "lang": "en",
+        "url": "https://www.premiumtimesng.com/",
+        "category_urls": [
+            "https://www.premiumtimesng.com/category/foreign"
+        ]
+    },
+    {
+        "country": "South Africa",
+        "ISO": "ZAF",
+        "lang": "en",
+        "url": "https://mg.co.za/",
+        "category_urls": [
+            "https://mg.co.za/section/africa/",
+            "https://mg.co.za/section/world/"
+        ]
+    },
+    {
+        "country": "South Africa",
+        "ISO": "ZAF",
+        "lang": "en",
+        "url": "https://www.news24.com/",
+        "category_urls": [
+            "https://www.news24.com/world"
+        ]
+    },
+    {
+        "country": "Kenya",
+        "ISO": "KEN",
+        "lang": "en",
+        "url": "https://nation.africa/kenya",
+        "category_urls": [
+            "https://nation.africa/kenya/news/world"
+        ]
+    },
+    {
+        "country": "Kenya",
+        "ISO": "KEN",
+        "lang": "en",
+        "url": "https://www.standardmedia.co.ke/",
+        "category_urls": [
+            "https://www.standardmedia.co.ke/category/5/world"
+        ]
+    },
+    {
+        "country": "Egypt",
+        "ISO": "EGY",
+        "lang": "ar",
+        "url": "https://www.youm7.com/",
+        "category_urls": [
+            "https://www.youm7.com/Section/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1-%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9/286/1"
+        ]
+    },
+    {
+        "country": "United Kingdom",
+        "ISO": "GBR",
+        "lang": "en",
+        "url": "https://www.bbc.com",
+        "category_urls": [
+            "https://www.bbc.com/world"
+        ]
+    },
+    {
+        "country": "United Kingdom",
+        "ISO": "GBR",
+        "lang": "en",
+        "url": "https://www.theguardian.com",
+        "category_urls": [
+            "https://www.theguardian.com/world",
+            "https://www.theguardian.com/us-news"
+        ]
+    },
+    {
+        "country": "Germany",
+        "ISO": "DEU",
+        "lang": "de",
+        "url": "https://www.spiegel.de/",
+        "category_urls": [
+            "https://www.spiegel.de/ausland/",
+            "https://www.spiegel.de/thema/meinung/"
+        ]
+    },
+    {
+        "country": "France",
+        "ISO": "FRA",
+        "lang": "fr",
+        "url": "https://www.lemonde.fr/",
+        "category_urls": [
+            "https://www.lemonde.fr/international/"
+        ]
+    },
+    {
+        "country": "France",
+        "ISO": "FRA",
+        "lang": "fr",
+        "url": "https://www.lefigaro.fr/",
+        "category_urls": [
+            "https://www.lefigaro.fr/international"
+        ]
+    },
+    {
+        "country": "India",
+        "ISO": "IND",
+        "lang": "en",
+        "url": "https://timesofindia.indiatimes.com/",
+        "category_urls": [
+            "https://timesofindia.indiatimes.com/world"
+        ]
+    },
+    {
+        "country": "India",
+        "ISO": "IND",
+        "lang": "en",
+        "url": "https://www.thehindu.com/",
+        "category_urls": [
+            "https://www.thehindu.com/news/international/"
+        ]
+    },
+    {
+        "country": "Japan",
+        "ISO": "JPN",
+        "lang": "ja",
+        "url": "https://www.asahi.com/",
+        "category_urls": [
+            "https://www.asahi.com/international"
+        ]
+    },
+    {
+        "country": "Japan",
+        "ISO": "JPN",
+        "lang": "ja",
+        "url": "https://www.yomiuri.co.jp/",
+        "category_urls": [
+            "https://www.yomiuri.co.jp/world/"
+        ]
+    },
+    {
+        "country": "Canada",
+        "ISO": "CAN",
+        "lang": "en",
+        "url": "https://www.theglobeandmail.com/",
+        "category_urls": [
+            "https://www.theglobeandmail.com/world/"
+        ]
+    },
+    {
+        "country": "Canada",
+        "ISO": "CAN",
+        "lang": "en",
+        "url": "https://www.cbc.ca/news",
+        "category_urls": [
+            "https://www.cbc.ca/news/world"
+        ]
+    },
+    {
+        "country": "Australia",
+        "ISO": "AUS",
+        "lang": "en",
+        "url": "https://www.smh.com.au/",
+        "category_urls": [
+            "https://www.smh.com.au/world"
+        ]
+    },
+    {
+        "country": "Australia",
+        "ISO": "AUS",
+        "lang": "en",
+        "url": "https://www.theaustralian.com.au/",
+        "category_urls": [
+            "https://www.theaustralian.com.au/world"
         ]
     }
 ]
