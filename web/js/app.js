@@ -5,11 +5,7 @@ const searchResultsEl = document.getElementById("searchResults");
 const url_base = "/api/";
 
 let map; // Will be initialized after fetching paper data
-
-document.addEventListener('DOMContentLoaded', () => {
-    const dates = $('input[name="dates"]').val().split(' - ');
-    updateMapForDateRange(dates[0], dates[1]);
-});
+let currentMapData = {}; // Holds the base state of the map for the current date range
 
 async function updateMapForDateRange(date_start, date_end) {
     try {
@@ -33,13 +29,19 @@ async function updateMapForDateRange(date_start, date_end) {
 
 function initializeMap(papersByCountry) {
     const mapData = {};
-    const allCountries = Datamap.prototype.worldTopo.objects.world.geometries.map(g => g.id);
+    const allCountries = Datamap.prototype.worldTopo.objects.world.geometries
+        .map(g => g.id)
+        .filter(id => id !== '-99'); // Exclude the invalid country code
 
     allCountries.forEach(countryIso => {
         if (!papersByCountry[countryIso]) {
             mapData[countryIso] = { fillKey: 'noData' };
+        } else {
+            mapData[countryIso] = { fillKey: 'defaultFill' };
         }
     });
+
+    currentMapData = mapData;
 
     map = new Datamap({
         element: document.getElementById('map'),
@@ -48,7 +50,7 @@ function initializeMap(papersByCountry) {
             defaultFill: 'rgba(182,184,196,0.6)',
             noData: 'url(#diagonalStripes)'
         },
-        data: mapData,
+        data: currentMapData,
         responsive: true,
         geographyConfig: {
             highlightOnHover: true,
@@ -112,35 +114,36 @@ $(function() {
         const endDate = picker.endDate.format('YYYY-MM-DD');
         updateMapForDateRange(startDate, endDate);
     });
+
+    // Trigger initial map load after daterangepicker is initialized
+    const initialDates = $('input[name="dates"]').val().split(' - ');
+    updateMapForDateRange(initialDates[0], initialDates[1]);
 });
 
 function formatData(data){
-    let formattedData = {}
-    let lengthMin = -Infinity
-    let lengthMax = Infinity
-
-    for (let iso in data){
-        formattedData[iso] = iso
-
-        let length = data[iso].length
-        if (length > lengthMin) lengthMin = length
-        if (length < lengthMax) lengthMax = length
+    const formattedData = {};
+    const articlesByCountry = Object.values(data);
+    if (articlesByCountry.length === 0) {
+        return {};
     }
 
-    let paletteScale = d3.scale.linear()
-            .domain([lengthMin,lengthMax])
-            .range([
-                "#02386F",
-                "#a0a0f6"
-                ]
-            );
+    const lengths = articlesByCountry.map(articles => articles.length);
+    const lengthMin = Math.min(...lengths);
+    const lengthMax = Math.max(...lengths);
+
+    // Create a color scale. Handle the edge case of only one value.
+    const domain = (lengthMin === lengthMax) ? [0, lengthMax] : [lengthMin, lengthMax];
+    const paletteScale = d3.scale.linear()
+            .domain(domain)
+            .range(["#a0a0f6", "#02386F"]); // Light to dark
 
     for (let iso in data){
-        formattedData[iso] = Object.assign({}, data[iso])
-        formattedData[iso]['fillColor'] = paletteScale(data[iso].length)
+        formattedData[iso] = {
+            fillColor: paletteScale(data[iso].length)
+        };
     }
 
-    return formattedData
+    return formattedData;
 }
 
 searchBarEl.addEventListener('keyup', function(e) {
@@ -191,7 +194,9 @@ async function search(){
     const response = await fetch(articles_url)
     const data = await response.json()
 
-    map.updateChoropleth(formatData(data), {reset: true})
+    const formattedSearchData = formatData(data);
+    const newMapData = { ...currentMapData, ...formattedSearchData };
+    map.updateChoropleth(newMapData);
 
     searchResultsEl.innerHTML = ''
 
