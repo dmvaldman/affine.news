@@ -19,7 +19,6 @@ def main():
     required_env_vars = [
         'DATABASE_URL',
         'GOOGLE_PROJECT_ID',
-        'GOOGLE_TRANSLATE_API_KEY'
     ]
 
     missing_vars = [var for var in required_env_vars if not os.environ.get(var)]

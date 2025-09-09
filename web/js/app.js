@@ -200,6 +200,13 @@ async function search(){
 
     searchResultsEl.innerHTML = ''
 
+    if (Object.keys(data).length === 0) {
+        searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
+        searchButtonEl.disabled = false;
+        searchButtonEl.innerHTML = 'Search';
+        return;
+    }
+
     for (let country in data){
         let countryEl = document.createElement('ul')
         let anchorEl = document.createElement('a')
