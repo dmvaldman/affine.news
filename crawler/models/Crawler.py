@@ -42,7 +42,7 @@ class Crawler:
             paper_build = newspaper.build(
                 paper.url,
                 language=paper.lang,
-                memoize_articles=True,
+                memoize_articles=False,
                 fetch_images=False,
                 request_timeout=20,
                 min_word_count=100,

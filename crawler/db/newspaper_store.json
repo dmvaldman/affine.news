@@ -36,6 +36,15 @@
         ]
     },
     {
+        "country": "Spain",
+        "ISO": "ESP",
+        "lang": "es",
+        "url": "https://www.elmundo.es/",
+        "category_urls": [
+            "https://www.elmundo.es/internacional/"
+        ]
+    },
+    {
         "country": "Turkey",
         "ISO": "TUR",
         "lang": "tr",
@@ -48,9 +57,18 @@
         "country": "Turkey",
         "ISO": "TUR",
         "lang": "tr",
-        "url": "https://www.sabah.com.tr/",
+        "url": "https://www.milliyet.com.tr/",
         "category_urls": [
-            "https://www.sabah.com.tr/dunya"
+            "https://www.milliyet.com.tr/dunya/"
+        ]
+    },
+    {
+        "country": "Turkey",
+        "ISO": "TUR",
+        "lang": "tr",
+        "url": "https://www.cumhuriyet.com.tr/",
+        "category_urls": [
+            "https://www.cumhuriyet.com.tr/dunya/"
         ]
     },
     {
@@ -104,9 +122,7 @@
         "lang": "ru",
         "url": "https://vm.ru/",
         "category_urls": [
-            "https://vm.ru/news",
-            "https://vm.ru/world",
-            "https://vm.ru/opinion"
+            "https://vm.ru/world"
         ]
     },
     {
@@ -115,8 +131,7 @@
         "lang": "ru",
         "url": "https://pravda.ru/",
         "category_urls": [
-            "https://www.pravda.ru/world/",
-            "https://www.pravda.ru/politics/"
+            "https://www.pravda.ru/world/"
         ]
     },
     {
@@ -134,9 +149,7 @@
         "lang": "uk",
         "url": "https://fakty.ua/",
         "category_urls": [
-            "https://fakty.ua/categories/ukraina",
-            "https://fakty.ua/categories/world",
-            "https://fakty.ua/categories/politics"
+            "https://fakty.ua/categories/world"
         ]
     },
     {
@@ -163,9 +176,7 @@
         "lang": "en",
         "url": "https://www.foxnews.com/",
         "category_urls": [
-            "https://www.foxnews.com/us",
-            "https://www.foxnews.com/world",
-            "https://www.foxnews.com/politics"
+            "https://www.foxnews.com/world"
         ]
     },
     {
@@ -174,9 +185,25 @@
         "lang": "en",
         "url": "https://www.nytimes.com/",
         "category_urls": [
-            "https://www.nytimes.com/section/world",
-            "https://www.nytimes.com/section/us",
-            "https://www.nytimes.com/section/politics"
+            "https://www.nytimes.com/section/world"
+        ]
+    },
+    {
+        "country": "United States",
+        "ISO": "USA",
+        "lang": "en",
+        "url": "https://www.cnn.com/",
+        "category_urls": [
+            "https://www.cnn.com/world"
+        ]
+    },
+    {
+        "country": "United States",
+        "ISO": "USA",
+        "lang": "en",
+        "url": "https://www.washingtonpost.com/",
+        "category_urls": [
+            "https://www.washingtonpost.com/world/"
         ]
     },
     {
@@ -203,8 +230,7 @@
         "lang": "zh",
         "url": "https://orientaldaily.on.cc/",
         "category_urls": [
-            "https://orientaldaily.on.cc/section/%E5%85%A9%E5%B2%B8%E5%9C%8B%E9%9A%9B/359/20250909",
-            "https://orientaldaily.on.cc/cnt/news/"
+            "https://orientaldaily.on.cc/section/%E5%85%A9%E5%B2%B8%E5%9C%8B%E9%9A%9B/359/20250909"
         ]
     },
     {
@@ -223,6 +249,15 @@
         "url": "http://www.people.com.cn/",
         "category_urls": [
             "http://world.people.com.cn/"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "zh",
+        "url": "http://www.xinhuanet.com/",
+        "category_urls": [
+            "http://www.xinhuanet.com/world/"
         ]
     },
     {
@@ -272,21 +307,11 @@
         ]
     },
     {
-        "country": "Nigeria",
-        "ISO": "NGA",
-        "lang": "en",
-        "url": "https://www.premiumtimesng.com/",
-        "category_urls": [
-            "https://www.premiumtimesng.com/category/foreign"
-        ]
-    },
-    {
         "country": "South Africa",
         "ISO": "ZAF",
         "lang": "en",
         "url": "https://mg.co.za/",
         "category_urls": [
-            "https://mg.co.za/section/africa/",
             "https://mg.co.za/section/world/"
         ]
     },
@@ -327,6 +352,15 @@
         ]
     },
     {
+        "country": "Egypt",
+        "ISO": "EGY",
+        "lang": "ar",
+        "url": "https://www.almasryalyoum.com/",
+        "category_urls": [
+            "https://www.almasryalyoum.com/section/index/2"
+        ]
+    },
+    {
         "country": "United Kingdom",
         "ISO": "GBR",
         "lang": "en",
@@ -341,8 +375,7 @@
         "lang": "en",
         "url": "https://www.theguardian.com",
         "category_urls": [
-            "https://www.theguardian.com/world",
-            "https://www.theguardian.com/us-news"
+            "https://www.theguardian.com/world"
         ]
     },
     {
@@ -351,8 +384,16 @@
         "lang": "de",
         "url": "https://www.spiegel.de/",
         "category_urls": [
-            "https://www.spiegel.de/ausland/",
-            "https://www.spiegel.de/thema/meinung/"
+            "https://www.spiegel.de/ausland/"
+        ]
+    },
+    {
+        "country": "Germany",
+        "ISO": "DEU",
+        "lang": "de",
+        "url": "https://www.zeit.de/",
+        "category_urls": [
+            "https://www.zeit.de/politik/ausland/"
         ]
     },
     {
@@ -392,6 +433,33 @@
         ]
     },
     {
+        "country": "Mexico",
+        "ISO": "MEX",
+        "lang": "es",
+        "url": "https://www.eluniversal.com.mx/",
+        "category_urls": [
+            "https://www.eluniversal.com.mx/mundo/"
+        ]
+    },
+    {
+        "country": "South Korea",
+        "ISO": "KOR",
+        "lang": "ko",
+        "url": "https://www.chosun.com/",
+        "category_urls": [
+            "https://www.chosun.com/international/"
+        ]
+    },
+    {
+        "country": "Mexico",
+        "ISO": "MEX",
+        "lang": "es",
+        "url": "https://www.milenio.com/",
+        "category_urls": [
+            "https://www.milenio.com/internacional"
+        ]
+    },
+    {
         "country": "Japan",
         "ISO": "JPN",
         "lang": "ja",
@@ -425,6 +493,15 @@
         "url": "https://www.cbc.ca/news",
         "category_urls": [
             "https://www.cbc.ca/news/world"
+        ]
+    },
+    {
+        "country": "Canada",
+        "ISO": "CAN",
+        "lang": "fr",
+        "url": "https://www.lapresse.ca/",
+        "category_urls": [
+            "https://www.lapresse.ca/international/"
         ]
     },
     {
@@ -470,6 +547,24 @@
         "url": "https://www.i24news.tv/",
         "category_urls": [
             "https://www.i24news.tv/he/news/international"
+        ]
+    },
+    {
+        "country": "Argentina",
+        "ISO": "ARG",
+        "lang": "es",
+        "url": "https://www.clarin.com/",
+        "category_urls": [
+            "https://www.clarin.com/mundo/"
+        ]
+    },
+    {
+        "country": "Argentina",
+        "ISO": "ARG",
+        "lang": "es",
+        "url": "https://www.lanacion.com.ar/",
+        "category_urls": [
+            "https://www.lanacion.com.ar/el-mundo/"
         ]
     }
 ]
