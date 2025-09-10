@@ -46,6 +46,8 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
 
     def normalize_host(host):
         """Normalizes a host string by removing 'www.'."""
+        if host is None:
+            return ''
         return host.replace('www.', '')
 
     def get_comparable_url_string(url_obj):
@@ -230,14 +232,14 @@ def main():
     if args.accepted_log and accepted_file:
         accepted_file.write("\n\n--- Accepted Links Summary ---\n")
         for url, count in accepted_stats.items():
-            accepted_file.write(f"{url}: {count}\n")
+            accepted_file.write(f"{count}:\t {url}\n")
         accepted_file.close()
         print(f"\nAccepted URLs written to {args.accepted_log}")
 
     if args.rejected_log and rejected_file:
         rejected_file.write("\n\n--- Rejected Links Summary ---\n")
         for url, count in rejected_stats.items():
-            rejected_file.write(f"{url}: {count}\n")
+            rejected_file.write(f"{count}:\t {url}\n")
         rejected_file.close()
         print(f"Rejected URLs written to {args.rejected_log}")
 
