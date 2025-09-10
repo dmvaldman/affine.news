@@ -93,6 +93,7 @@
         ],
         "whitelist": [
             "https://www.khabaronline.ir/news/"
+        ]
     },
     {
         "country": "Iran",
@@ -127,7 +128,7 @@
             "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/"
         ],
         "whitelist": [
-            "https://www.zowaa.org"
+            "https://zowaa.org"
         ]
     },
     {
@@ -178,9 +179,12 @@
         "lang": "uk",
         "url": "https://www.kyivpost.com",
         "category_urls": [
-            "https://www.kyivpost.com/category/world",
+           "https://www.kyivpost.com/category/world"
+        ],
+        "whitelist": [
+            "https://www.kyivpost.com/post/",
+            "https://www.kyivpost.com/topic/"
         ]
-
     },
     {
         "country": "Poland",
@@ -218,7 +222,7 @@
             "https://www.nytimes.com/section/world"
         ],
         "whitelist": [
-            "https://www.nytimes.com/YYYY/MM/DD/world"
+            "^https://www.nytimes.com/\\d{4}/\\d{2}/\\d{2}/.*"
         ]
     },
     {
@@ -230,7 +234,12 @@
             "https://www.cnn.com/world"
         ],
         "whitelist": [
-            "https://www.cnn.com/YYYY/MM/DD/world"
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/world/.*",
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/europe/.*",
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/asia/.*",
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/africa/.*",
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/americas/.*",
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/middleeast/.*"
         ]
     },
     {
@@ -311,7 +320,7 @@
             "https://www.rp.pl/swiat"
         ],
         "whitelist": [
-            "https://www.rp.pl/"
+            "https://www.rp.pl/wydarzenia/swiat/"
         ]
     },
     {
