@@ -78,6 +78,9 @@
         "url": "http://www.chinanews.com/",
         "category_urls": [
             "https://www.chinanews.com.cn/world/"
+        ],
+        "whitelist": [
+            "https://www.chinanews.com.cn/gj/"
         ]
     },
     {
@@ -87,7 +90,9 @@
         "url": "https://www.khabaronline.ir/",
         "category_urls": [
             "https://www.khabaronline.ir/service/World"
-        ]
+        ],
+        "whitelist": [
+            "https://www.khabaronline.ir/news/"
     },
     {
         "country": "Iran",
@@ -96,6 +101,9 @@
         "url": "http://jamejamonline.ir/",
         "category_urls": [
             "https://jamejamonline.ir/fa/world"
+        ],
+        "whitelist": [
+            "https://jamejamonline.ir/fa/news/"
         ]
     },
     {
@@ -105,6 +113,9 @@
         "url": "https://www.azzaman.com/",
         "category_urls": [
             "https://www.azzaman.com/category/news/"
+        ],
+        "whitelist": [
+            "https://www.azzaman.com"
         ]
     },
     {
@@ -114,6 +125,9 @@
         "url": "https://www.zowaa.org/",
         "category_urls": [
             "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/"
+        ],
+        "whitelist": [
+            "https://www.zowaa.org"
         ]
     },
     {
@@ -123,6 +137,9 @@
         "url": "https://vm.ru/",
         "category_urls": [
             "https://vm.ru/world"
+        ],
+        "whitelist": [
+            "https://vm.ru/news/"
         ]
     },
     {
@@ -138,9 +155,9 @@
         "country": "Syria",
         "ISO": "SYR",
         "lang": "ar",
-        "url": "http://alwatan.sy/",
+        "url": "https://sana.sy/",
         "category_urls": [
-            "http://alwatan.sy/archives/category/ai"
+            "https://sana.sy/international/"
         ]
     },
     {
@@ -150,7 +167,20 @@
         "url": "https://fakty.ua/",
         "category_urls": [
             "https://fakty.ua/categories/world"
+        ],
+        "whitelist": [
+            "https://fakty.ua"
         ]
+    },
+    {
+        "country": "Ukraine",
+        "ISO": "UKR",
+        "lang": "uk",
+        "url": "https://www.kyivpost.com",
+        "category_urls": [
+            "https://www.kyivpost.com/category/world",
+        ]
+
     },
     {
         "country": "Poland",
@@ -158,7 +188,7 @@
         "lang": "pl",
         "url": "https://www.gazeta.pl/",
         "category_urls": [
-            "http://wiadomosci.gazeta.pl/"
+            "https://wiadomosci.gazeta.pl/swiat/"
         ]
     },
     {
@@ -186,6 +216,9 @@
         "url": "https://www.nytimes.com/",
         "category_urls": [
             "https://www.nytimes.com/section/world"
+        ],
+        "whitelist": [
+            "https://www.nytimes.com/YYYY/MM/DD/world"
         ]
     },
     {
@@ -195,6 +228,9 @@
         "url": "https://www.cnn.com/",
         "category_urls": [
             "https://www.cnn.com/world"
+        ],
+        "whitelist": [
+            "https://www.cnn.com/YYYY/MM/DD/world"
         ]
     },
     {
@@ -231,6 +267,9 @@
         "url": "https://orientaldaily.on.cc/",
         "category_urls": [
             "https://orientaldaily.on.cc/section/%E5%85%A9%E5%B2%B8%E5%9C%8B%E9%9A%9B/359/20250909"
+        ],
+        "whitelist": [
+            "https://orientaldaily.on.cc/content/"
         ]
     },
     {
@@ -240,6 +279,9 @@
         "url": "https://nn.by/",
         "category_urls": [
             "https://nn.by/?c=ca&i=584"
+        ],
+        "whitelist": [
+            "https://nn.by/"
         ]
     },
     {
@@ -255,19 +297,9 @@
         "country": "China",
         "ISO": "CHN",
         "lang": "zh",
-        "url": "http://www.xinhuanet.com/",
+        "url": "http://www.news.cn/",
         "category_urls": [
-            "http://www.xinhuanet.com/world/"
-        ]
-    },
-    {
-        "country": "Ukraine",
-        "ISO": "UKR",
-        "lang": "uk",
-        "url": "https://www.pravda.com.ua/",
-        "category_urls": [
-            "https://www.pravda.com.ua/news/",
-            "https://www.eurointegration.com.ua/"
+            "http://www.news.cn/world/"
         ]
     },
     {
@@ -277,6 +309,9 @@
         "url": "https://www.rp.pl/",
         "category_urls": [
             "https://www.rp.pl/swiat"
+        ],
+        "whitelist": [
+            "https://www.rp.pl/"
         ]
     },
     {
@@ -286,6 +321,9 @@
         "url": "http://www.takungpao.com.hk/",
         "category_urls": [
             "http://www.takungpao.com.hk/international/"
+        ],
+        "whitelist": [
+            "http://www.takungpao.com.hk/news/"
         ]
     },
     {
@@ -313,6 +351,9 @@
         "url": "https://mg.co.za/",
         "category_urls": [
             "https://mg.co.za/section/world/"
+        ],
+        "whitelist": [
+            "https://mg.co.za/world/"
         ]
     },
     {
@@ -340,6 +381,13 @@
         "url": "https://www.standardmedia.co.ke/",
         "category_urls": [
             "https://www.standardmedia.co.ke/category/5/world"
+        ],
+        "whitelist": [
+            "https://www.standardmedia.co.ke/world/",
+            "https://www.standardmedia.co.ke/europe/",
+            "https://www.standardmedia.co.ke/asia/",
+            "https://www.standardmedia.co.ke/africa/",
+            "https://www.standardmedia.co.ke/america/"
         ]
     },
     {
@@ -349,6 +397,9 @@
         "url": "https://www.youm7.com/",
         "category_urls": [
             "https://www.youm7.com/Section/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1-%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9/286/1"
+        ],
+        "whitelist": [
+            "https://www.youm7.com/story/"
         ]
     },
     {
@@ -358,6 +409,9 @@
         "url": "https://www.almasryalyoum.com/",
         "category_urls": [
             "https://www.almasryalyoum.com/section/index/2"
+        ],
+        "whitelist": [
+            "https://www.almasryalyoum.com/news/"
         ]
     },
     {
@@ -366,7 +420,10 @@
         "lang": "en",
         "url": "https://www.bbc.com",
         "category_urls": [
-            "https://www.bbc.com/world"
+            "https://www.bbc.com/news/world"
+        ],
+        "whitelist": [
+            "https://www.bbc.com/news/articles"
         ]
     },
     {
@@ -376,6 +433,9 @@
         "url": "https://www.theguardian.com",
         "category_urls": [
             "https://www.theguardian.com/world"
+        ],
+        "whitelist": [
+            "https://www.theguardian.com/us-news/"
         ]
     },
     {
@@ -466,6 +526,9 @@
         "url": "https://www.asahi.com/",
         "category_urls": [
             "https://www.asahi.com/international"
+        ],
+        "whitelist": [
+            "https://www.asahi.com/articles/"
         ]
     },
     {
@@ -607,9 +670,12 @@
         "country": "Venezuela",
         "ISO": "VEN",
         "lang": "es",
-        "url": "https://www.el-nacional.com/",
+        "url": "https://www.elnacional.com/",
         "category_urls": [
-            "https://www.el-nacional.com/mundo/"
+            "https://www.elnacional.com/mundo/"
+        ],
+        "whitelist": [
+            "https://www.elnacional.com/"
         ]
     },
     {
@@ -618,7 +684,7 @@
         "lang": "id",
         "url": "https://www.antaranews.com/",
         "category_urls": [
-            "https://www.antaranews.com/dunia"
+            "https://www.antaranews.com/berita/"
         ]
     },
     {
@@ -646,6 +712,9 @@
         "url": "https://vnexpress.net/",
         "category_urls": [
             "https://vnexpress.net/the-gioi"
+        ],
+        "whitelist": [
+            "https://vnexpress.net/"
         ]
     },
     {
@@ -655,6 +724,9 @@
         "url": "https://www.dawn.com/",
         "category_urls": [
             "https://www.dawn.com/world"
+        ],
+        "whitelist": [
+            "https://www.dawn.com/news/"
         ]
     },
     {
@@ -664,6 +736,9 @@
         "url": "https://tolonews.com/",
         "category_urls": [
             "https://tolonews.com/world"
+        ],
+        "whitelist": [
+            "https://tolonews.com/"
         ]
     },
     {
@@ -672,7 +747,7 @@
         "lang": "ru",
         "url": "https://tengrinews.kz/",
         "category_urls": [
-            "https://tengrinews.kz/world/"
+            "https://tengrinews.kz/world_news/"
         ]
     },
     {
@@ -699,7 +774,7 @@
         "lang": "fi",
         "url": "https://www.hs.fi/",
         "category_urls": [
-            "https://www.hs.fi/ulkomaat/"
+            "https://www.hs.fi/maailma/"
         ]
     },
     {
@@ -718,6 +793,9 @@
         "url": "https://www.delfi.lv/",
         "category_urls": [
             "https://www.delfi.lv/news/arzemes/"
+        ],
+        "whitelist": [
+            "https://www.delfi.lv/"
         ]
     },
     {
@@ -726,16 +804,7 @@
         "lang": "et",
         "url": "https://www.postimees.ee/",
         "category_urls": [
-            "https://www.postimees.ee/valismaa"
-        ]
-    },
-    {
-        "country": "Morocco",
-        "ISO": "MAR",
-        "lang": "ar",
-        "url": "https://www.hespress.com/",
-        "category_urls": [
-            "https://www.hespress.com/internacional"
+            "https://maailm.postimees.ee/"
         ]
     },
     {
@@ -771,7 +840,7 @@
         "lang": "ro",
         "url": "https://adevarul.ro/",
         "category_urls": [
-            "https://adevarul.ro/international"
+            "https://adevarul.ro/stiri-externe/"
         ]
     },
     {
