@@ -74,21 +74,35 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
         # If urlparse fails for any reason, conservatively reject the link
         return False
 
-    # 5. After confirming domain, check for common article URL patterns.
-    path = urlparse(full_url).path
+    # 7. After confirming domain, check for common article URL patterns.
+    path = full_url_obj.path
     slug = path.rstrip('/').split('/')[-1]
+    if not slug: return False
     decoded_slug = unquote(slug)
 
-    if not (
-        re.search(r'\.(s?html?)$', path) or
+    # Heuristic: A short, non-random, purely alphabetic slug is often a category name.
+    # This can have false positives (e.g., /news/impeachment) but is effective for many sites.
+    # We check for overriding factors like a date in the path to reduce false positives.
+    is_likely_category_slug = (
+        len(decoded_slug) <= 12 and
+        decoded_slug.isalpha() and
+        not detector(decoded_slug)
+    )
+    if is_likely_category_slug:
+        # If it looks like a category, reject it unless there's a date in the path.
+        if not re.search(r'(/\d{4}/\d{1,2}[/-]\d{1,2}/|\d{4}-\d{1,2}-\d{1,2})', path):
+            return False
+
+    # If it doesn't look like a category slug, check for other strong article indicators.
+    if (re.search(r'\.(s?html?)$', path) or
         re.search(r'(/\d{4}/\d{1,2}[/-]\d{1,2}/|\d{4}-\d{1,2}-\d{1,2})', path) or
         re.search(r'\d{6,}', path) or
         len(decoded_slug) > MIN_SLUG_LENGTH or
-        detector(slug) # Use the new random string detector
-    ):
-        return False
+        detector(slug)):
+        return True
 
-    return True
+    # Default to rejecting if no strong signals are found.
+    return False
 
 def main():
     """
