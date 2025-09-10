@@ -116,7 +116,7 @@
             "https://www.azzaman.com/category/news/"
         ],
         "whitelist": [
-            "https://www.azzaman.com"
+            "^https://www.azzaman.com/[^/]+-[^/]+/?$"
         ]
     },
     {
@@ -128,7 +128,7 @@
             "https://www.zowaa.org/category/%d8%a7%d9%84%d8%a7%d8%ae%d8%a8%d8%a7%d8%b1/"
         ],
         "whitelist": [
-            "https://zowaa.org"
+            "^https://zowaa.org/[^/]+-[^/]+/?$"
         ]
     },
     {
@@ -173,7 +173,7 @@
             "https://fakty.ua/categories/world"
         ],
         "whitelist": [
-            "https://fakty.ua"
+            "^https://fakty.ua/\\d{6}-.*"
         ]
     },
     {
@@ -756,7 +756,7 @@
             "https://tolonews.com/world"
         ],
         "whitelist": [
-            "https://tolonews.com/"
+            "https://tolonews.com/world-"
         ]
     },
     {
@@ -813,7 +813,7 @@
             "https://www.delfi.lv/news/arzemes/"
         ],
         "whitelist": [
-            "https://www.delfi.lv/"
+            "https://www.delfi.lv/46713439/arzemes/"
         ]
     },
     {

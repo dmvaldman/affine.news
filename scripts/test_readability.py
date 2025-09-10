@@ -44,6 +44,10 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
     except ValueError:
         return False # Invalid URL
 
+    # Early exit for root domains or URLs identical to the category page.
+    if not full_url_obj.path or full_url_obj.path == '/' or full_url_obj == base_url_obj:
+        return False
+
     def normalize_host(host):
         """Normalizes a host string by removing 'www.'."""
         if host is None:
@@ -85,16 +89,14 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
     if not slug: return False
     decoded_slug = unquote(slug)
 
-    # Heuristic: A short, non-random, purely alphabetic slug is often a category name.
-    # This can have false positives (e.g., /news/impeachment) but is effective for many sites.
-    # We check for overriding factors like a date in the path to reduce false positives.
-    is_likely_category_slug = (
-        len(decoded_slug) <= 12 and
-        decoded_slug.isalpha() and
-        not detector(decoded_slug)
-    )
-    if is_likely_category_slug:
-        # If it looks like a category, reject it unless there's a date in the path.
+    # Simplified Category URL Heuristic:
+    # A URL is likely a category page if its slug is short and non-random,
+    # and the overall URL is not much longer than the base category URL.
+    is_short_low_entropy_slug = len(decoded_slug) < 16 and not detector(decoded_slug)
+    is_short_overall_url = len(str(full_url_obj)) < (len(base_url) * 2)
+
+    if is_short_low_entropy_slug and is_short_overall_url:
+        # Override: If a date is in the path, it's probably an article, not a category page.
         if not re.search(r'(/\d{4}/\d{1,2}[/-]\d{1,2}/|\d{4}-\d{1,2}-\d{1,2})', path):
             return False
 
