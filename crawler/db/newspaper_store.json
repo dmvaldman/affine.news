@@ -320,7 +320,7 @@
             "https://www.rp.pl/swiat"
         ],
         "whitelist": [
-            "https://www.rp.pl/wydarzenia/swiat/"
+            "https://www.rp.pl/"
         ]
     },
     {
@@ -351,6 +351,9 @@
         "url": "https://guardian.ng/",
         "category_urls": [
             "https://guardian.ng/category/news/world/"
+        ],
+        "whitelist": [
+            "https://guardian.ng/news/world/"
         ]
     },
     {
@@ -429,10 +432,10 @@
         "lang": "en",
         "url": "https://www.bbc.com",
         "category_urls": [
-            "https://www.bbc.com/news/world"
+            "https://www.bbc.com/news/world/"
         ],
         "whitelist": [
-            "https://www.bbc.com/news/articles"
+            "https://www.bbc.com/news/articles/"
         ]
     },
     {
@@ -441,7 +444,7 @@
         "lang": "en",
         "url": "https://www.theguardian.com",
         "category_urls": [
-            "https://www.theguardian.com/world"
+            "https://www.theguardian.com/world/"
         ],
         "whitelist": [
             "https://www.theguardian.com/us-news/"
@@ -601,6 +604,9 @@
         "url": "https://www.ynet.co.il",
         "category_urls": [
             "https://www.ynetnews.com/category/3083"
+        ],
+        "whitelist": [
+            "https://www.ynetnews.com/article"
         ]
     },
     {
@@ -646,6 +652,9 @@
         "url": "https://www.nacion.com/",
         "category_urls": [
             "https://www.nacion.com/el-mundo/"
+        ],
+        "whitelist": [
+            "^https://www.nacion.com/.*story/?$"
         ]
     },
     {
