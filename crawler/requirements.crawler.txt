@@ -1,7 +1,6 @@
 psycopg2-binary>=2.9.9
 requests>=2.31.0
 lxml==4.9.4
-beautifulsoup4>=4.12.2
 python-dateutil>=2.8.2
 PyYAML>=6.0.1
 pythainlp>=4.0.2
@@ -15,6 +14,8 @@ jieba3k==0.35.1
 lxml==4.9.4
 newspaper3k==0.2.8
 Pillow==10.4.0
+beautifulsoup4==4.12.3
+random-string-detector==1.1.1
 google-cloud-translate>=2.0.0
 python-dotenv>=1.0.0
 

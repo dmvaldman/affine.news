@@ -1,0 +1,153 @@
+import json
+import os
+import requests
+from bs4 import BeautifulSoup
+import re
+import warnings
+from urllib.parse import urlparse, unquote, urlunparse
+from random_string_detector import RandomStringDetector
+import argparse
+import sys
+
+# Suppress warnings from BeautifulSoup
+warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
+
+# Heuristics for identifying article links
+MIN_HEADLINE_LENGTH = 20
+MIN_SLUG_LENGTH = 20 # Lowered threshold for decoded Unicode slugs
+
+def is_likely_article(tag, base_url, detector):
+    """Applies a set of heuristics to determine if a link is a news article."""
+    href = tag.get('href')
+    text = tag.get_text(strip=True)
+
+    if not href or not text:
+        return False
+
+    # 1. Text length check
+    if len(text) < MIN_HEADLINE_LENGTH:
+        return False
+
+    # 3. Text is not just the URL
+    if text.strip() == href.strip():
+        return False
+
+    # 4. Check if the link belongs to the same domain by comparing the 'netloc'.
+    full_url = requests.compat.urljoin(base_url, href)
+    try:
+        base_domain = urlparse(base_url).netloc.replace('www.', '')
+        link_domain = urlparse(full_url).netloc.replace('www.', '')
+        if base_domain != link_domain:
+            return False
+    except Exception:
+        # If urlparse fails for any reason, conservatively reject the link
+        return False
+
+    # 5. After confirming domain, check for common article URL patterns.
+    path = urlparse(full_url).path
+    slug = path.rstrip('/').split('/')[-1]
+    decoded_slug = unquote(slug)
+
+    if not (
+        re.search(r'\.(s?html?)$', path) or
+        re.search(r'(/\d{4}/\d{1,2}[/-]\d{1,2}/|\d{4}-\d{1,2}-\d{1,2})', path) or
+        re.search(r'\d{6,}', path) or
+        len(decoded_slug) > MIN_SLUG_LENGTH or
+        detector(slug) # Use the new random string detector
+    ):
+        return False
+
+    return True
+
+def main():
+    """
+    Iterates through newspaper_store.json, fetches each category URL,
+    and uses BeautifulSoup with heuristics to find likely article links.
+    """
+    parser = argparse.ArgumentParser(description='Test article link extraction from category pages.')
+    parser.add_argument('--output', nargs='?', const='logs.txt', default='logs.txt',
+                        help='File to write output to. Defaults to logs.txt if flag is present without a filename.')
+    args = parser.parse_args()
+
+    # Determine output stream (file or stdout)
+    output_file = None
+    if args.output:
+        output_file = open(args.output, 'w', encoding='utf-8')
+    else:
+        output_file = sys.stdout
+
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
+
+    try:
+        with open(json_path, 'r') as f:
+            papers_json = json.load(f)
+    except FileNotFoundError:
+        print(f"Error: Could not find newspaper_store.json at {json_path}", file=output_file)
+        return
+    except json.JSONDecodeError:
+        print(f"Error: Could not parse newspaper_store.json. Please check for syntax errors.", file=output_file)
+        return
+
+    detector = RandomStringDetector()
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    }
+
+    for paper in papers_json:
+        paper_url = paper.get('url')
+        print(f"\n--- Testing Paper: {paper_url} ---", file=output_file)
+
+        category_urls = paper.get('category_urls', [])
+        if not category_urls:
+            print("  No category URLs found.", file=output_file)
+            continue
+
+        for category_url in category_urls:
+            print(f"  -> Fetching category: {category_url}", file=output_file)
+            processed_urls = set() # Keep track of URLs without query params
+            try:
+                response = requests.get(category_url, headers=headers, timeout=15)
+                response.raise_for_status()
+                # Use response.content and let BeautifulSoup handle the decoding.
+                # This is more robust than response.text for sites with non-UTF8 encodings.
+                html_content = response.content
+
+                soup = BeautifulSoup(html_content, 'lxml')
+                all_links = soup.find_all('a')
+
+                print(f"     - Found {len(all_links)} total links. Applying heuristics...", file=output_file)
+
+                article_links = 0
+                for link in all_links:
+                    if is_likely_article(link, category_url, detector):
+                        href = link.get('href')
+                        title = link.get_text(strip=True)
+                        full_url = requests.compat.urljoin(category_url, href)
+
+                        # Normalize URL by removing query parameters for de-duplication
+                        parsed_url = urlparse(full_url)
+                        clean_url = urlunparse(parsed_url._replace(query="", fragment=""))
+
+                        if clean_url not in processed_urls:
+                            processed_urls.add(clean_url)
+                            article_links += 1
+                            decoded_url = unquote(full_url) # Decode for printing
+                            print(f"{title[:70]:<70} ({decoded_url})", file=output_file)
+
+                print(f"Identified {article_links} likely article(s).", file=output_file)
+                if article_links == 0:
+                    print("No likely article links found.", file=output_file)
+                print("\n" + "-" * 30 + "\n", file=output_file)
+
+            except requests.exceptions.RequestException as e:
+                print(f"     ! Error fetching URL: {e}", file=output_file)
+            except Exception as e:
+                print(f"     ! An unexpected error occurred: {e}", file=output_file)
+
+    if args.output and output_file:
+        output_file.close()
+        print(f"\nOutput written to {args.output}")
+
+if __name__ == '__main__':
+    main()
