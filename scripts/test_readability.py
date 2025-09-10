@@ -4,10 +4,11 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import warnings
-from urllib.parse import urlparse, unquote, urlunparse
+from urllib.parse import unquote
 from random_string_detector import RandomStringDetector
 import argparse
 import sys
+from yarl import URL
 
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
@@ -37,44 +38,46 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
     if text.strip() == href.strip():
         return False
 
-    full_url = requests.compat.urljoin(base_url, href)
+    try:
+        base_url_obj = URL(base_url)
+        full_url_obj = URL(requests.compat.urljoin(base_url, href))
+    except ValueError:
+        return False # Invalid URL
 
-    def strip_protocol_and_www(url):
-        return url.replace('https://', '').replace('http://', '').replace('www.', '')
+    def normalize_host(host):
+        """Normalizes a host string by removing 'www.'."""
+        return host.replace('www.', '')
 
-    # 4. Apply the new path validation logic.
+    def get_comparable_url_string(url_obj):
+        """Returns a string representation of the URL without protocol and www for prefix matching."""
+        return normalize_host(url_obj.host) + url_obj.path_qs
+
+    # 4. Path Validation Logic:
+    # A whitelist match is a definitive "yes". Check this first.
     if whitelist:
-        # If a whitelist is present, the URL must start with one of its entries.
-        matched = False
+        full_url_str = str(full_url_obj)
         for pattern in whitelist:
             try:
-                # For regex, we assume the user will handle protocol agnosticism if needed (e.g., with https?://)
-                if re.match(pattern, full_url):
-                    matched = True
-                    break
+                if re.match(pattern, full_url_str):
+                    return True # Whitelist match = instant pass
             except re.error:
-                # Not a valid regex, treat as a prefix, being agnostic to protocol and www
-                if strip_protocol_and_www(full_url).startswith(strip_protocol_and_www(pattern)):
-                    matched = True
-                    break
-        if not matched:
-            return False
-    else:
-        # If no whitelist, URL must be an extension of the category_url, being agnostic to protocol and www.
-        if not strip_protocol_and_www(full_url).startswith(strip_protocol_and_www(base_url)):
-            return False
+                comparable_full_url = get_comparable_url_string(full_url_obj)
+                comparable_pattern = get_comparable_url_string(URL(pattern))
+                if comparable_full_url.startswith(comparable_pattern):
+                    return True # Whitelist match = instant pass
+
+    # If no whitelist match, check if it's a valid extension of the category URL.
+    is_valid_extension = get_comparable_url_string(full_url_obj).startswith(get_comparable_url_string(base_url_obj))
+    if not is_valid_extension:
+        return False # Fails category check and didn't match whitelist
 
     # 5. Check if the link belongs to the same domain by comparing the 'netloc'.
-    try:
-        base_domain = urlparse(base_url).netloc.replace('www.', '')
-        link_domain = urlparse(full_url).netloc.replace('www.', '')
-        if base_domain != link_domain:
-            return False
-    except Exception:
-        # If urlparse fails for any reason, conservatively reject the link
+    base_domain = normalize_host(base_url_obj.host)
+    link_domain = normalize_host(full_url_obj.host)
+    if base_domain != link_domain:
         return False
 
-    # 7. After confirming domain, check for common article URL patterns.
+    # After confirming domain, check for common article URL patterns.
     path = full_url_obj.path
     slug = path.rstrip('/').split('/')[-1]
     if not slug: return False
@@ -148,6 +151,8 @@ def main():
     }
 
     processed_urls = set() # Global set to track all unique URLs across all papers
+    accepted_stats = {} # {category_url: count}
+    rejected_stats = {} # {category_url: count}
 
     for paper in papers_json:
         paper_url = paper.get('url')
@@ -165,6 +170,10 @@ def main():
             print(f"  -> Fetching category: {category_url}", file=accepted_file)
             if rejected_file:
                 print(f"  -> Fetching category: {category_url}", file=rejected_file)
+
+            accepted_stats[category_url] = 0
+            rejected_stats[category_url] = 0
+
             processed_urls_per_category = set()
             try:
                 response = requests.get(category_url, headers=headers, timeout=15)
@@ -180,21 +189,27 @@ def main():
                 rejected_links = 0
                 for link in all_links:
                     href = link.get('href')
+                    if not href: continue
                     title = link.get_text(strip=True)
-                    full_url = requests.compat.urljoin(category_url, href)
+
+                    try:
+                        full_url_obj = URL(requests.compat.urljoin(category_url, href))
+                    except ValueError:
+                        continue # Skip malformed URLs
 
                     # Normalize URL by removing query parameters for de-duplication
-                    parsed_url = urlparse(full_url)
-                    clean_url = urlunparse(parsed_url._replace(query="", fragment=""))
+                    clean_url = str(full_url_obj.with_query(None).with_fragment(None))
 
                     if clean_url not in processed_urls:
                         processed_urls.add(clean_url)
-                        decoded_url = unquote(full_url)
+                        decoded_url = unquote(str(full_url_obj))
 
                         if is_likely_article(link, category_url, detector, whitelist=paper.get('whitelist', [])):
+                            accepted_stats[category_url] += 1
                             article_links += 1
                             print(f"{title[:70]:<70} ({decoded_url})", file=accepted_file)
                         elif rejected_file:
+                            rejected_stats[category_url] += 1
                             rejected_links += 1
                             print(f"{title[:70]:<70} ({decoded_url})", file=rejected_file)
 
@@ -213,10 +228,16 @@ def main():
                 print(f"     ! An unexpected error occurred: {e}", file=accepted_file)
 
     if args.accepted_log and accepted_file:
+        accepted_file.write("\n\n--- Accepted Links Summary ---\n")
+        for url, count in accepted_stats.items():
+            accepted_file.write(f"{url}: {count}\n")
         accepted_file.close()
         print(f"\nAccepted URLs written to {args.accepted_log}")
 
     if args.rejected_log and rejected_file:
+        rejected_file.write("\n\n--- Rejected Links Summary ---\n")
+        for url, count in rejected_stats.items():
+            rejected_file.write(f"{url}: {count}\n")
         rejected_file.close()
         print(f"Rejected URLs written to {args.rejected_log}")
 

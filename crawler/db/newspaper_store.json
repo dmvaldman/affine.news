@@ -150,6 +150,9 @@
         "url": "https://pravda.ru/",
         "category_urls": [
             "https://www.pravda.ru/world/"
+        ],
+        "whitelist": [
+            "^https://www.pravda.ru/news/world/.*"
         ]
     },
     {
@@ -652,9 +655,6 @@
         "url": "https://www.nacion.com/",
         "category_urls": [
             "https://www.nacion.com/el-mundo/"
-        ],
-        "whitelist": [
-            "^https://www.nacion.com/.*story/?$"
         ]
     },
     {
