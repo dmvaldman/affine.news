@@ -21,11 +21,12 @@ def is_likely_article(tag, base_url, detector, whitelist=None):
     href = tag.get('href')
     text = tag.get_text(strip=True)
 
-    if not href or not text:
+    if not href:
         return False
 
-    # Check if the text is purely numeric
-    if text.isdigit():
+    # If the text is not blank, check that it contains at least one letter.
+    # This filters out things like "(22)" or "..." but allows empty titles.
+    if text and not any(c.isalpha() for c in text):
         return False
 
     # 1. Text length check
@@ -127,7 +128,7 @@ def main():
         print(e, file=accepted_file)
         return
 
-    detector = RandomStringDetector()
+    detector = RandomStringDetector(allow_numbers=True)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
