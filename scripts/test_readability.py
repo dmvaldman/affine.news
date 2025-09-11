@@ -14,28 +14,47 @@ from yarl import URL
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
 # Heuristics for identifying article links
-MIN_HEADLINE_LENGTH = 0
+MIN_HEADLINE_LENGTH = 14
 MIN_SLUG_LENGTH = 20 # Lowered threshold for decoded Unicode slugs
 
-def is_likely_article(tag, base_url, detector, whitelist=None):
-    """Applies a set of heuristics to determine if a link is a news article."""
-    href = tag.get('href')
-    text = tag.get_text(strip=True)
+def find_title_for_link(tag):
+    """
+    Finds the best title for a link by looking at the text of the link itself
+    and all of its direct siblings, returning whichever is longest.
+    """
+    # Base case for recursion to prevent errors at the top of the DOM tree
+    if not tag:
+        return ""
 
+    # Prioritize the link's own text if it's a decent length
+    best_text = tag.get_text(strip=True, separator=' ')
+    if len(best_text) > 4:
+        return best_text
+
+    if tag.parent:
+        # Check siblings for a better title, and return immediately if a good one is found.
+        for sibling in tag.parent.find_all(recursive=False):
+            sibling_text = sibling.get_text(strip=True, separator=' ')
+            if len(sibling_text) > len(best_text):
+                best_text = sibling_text
+
+        # If, after checking all siblings, we still have a very short title, recurse.
+        if len(best_text) < 5:
+          return find_title_for_link(tag.parent)
+
+    return best_text
+
+def is_likely_article(href, text, base_url, detector, whitelist=None):
+    """Applies a set of heuristics to determine if a link is a news article."""
     if not href:
         return False
 
     # If the text is not blank, check that it contains at least one letter.
-    # This filters out things like "(22)" or "..." but allows empty titles.
     if text and not any(c.isalpha() for c in text):
         return False
 
     # 1. Text length check
     if len(text) < MIN_HEADLINE_LENGTH:
-        return False
-
-    # 3. Text is not just the URL
-    if text.strip() == href.strip():
         return False
 
     try:
@@ -194,7 +213,8 @@ def main():
                 for link in all_links:
                     href = link.get('href')
                     if not href: continue
-                    title = link.get_text(strip=True)
+
+                    title = find_title_for_link(link)
 
                     try:
                         full_url_obj = URL(requests.compat.urljoin(category_url, href))
@@ -208,7 +228,7 @@ def main():
                         processed_urls.add(clean_url)
                         decoded_url = unquote(str(full_url_obj))
 
-                        if is_likely_article(link, category_url, detector, whitelist=paper.get('whitelist', [])):
+                        if is_likely_article(href, title, category_url, detector, whitelist=paper.get('whitelist', [])):
                             accepted_stats[category_url] += 1
                             article_links += 1
                             print(f"{title[:70]:<70} ({decoded_url})", file=accepted_file)
