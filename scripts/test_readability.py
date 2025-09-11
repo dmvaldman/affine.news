@@ -9,6 +9,9 @@ from random_string_detector import RandomStringDetector
 import argparse
 import sys
 from yarl import URL
+import dateparser
+from datetime import datetime
+from crawler.services.date_extractor import extract_date_from_node, find_date_in_url
 
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
@@ -43,6 +46,51 @@ def find_title_for_link(tag):
           return find_title_for_link(tag.parent)
 
     return best_text
+
+def find_date_recursively(tag, depth=0, max_depth=1):
+    """
+    Recursively searches up the DOM tree from a starting tag to find a date,
+    mirroring the logic for finding a title.
+    """
+    if not tag or depth >= max_depth:
+        return None
+
+    # 1. Check the tag itself for a date.
+    date = extract_date_from_node(tag)
+    if date:
+        return date
+
+    # 2. Check a few nearby siblings for a date to avoid performance issues.
+    if tag.parent:
+        for sibling in tag.find_next_siblings(limit=5):
+            if sibling.name: # Ensure it's a tag
+                date = extract_date_from_node(sibling)
+                if date:
+                    return date
+        for sibling in tag.find_previous_siblings(limit=5):
+            if sibling.name: # Ensure it's a tag
+                date = extract_date_from_node(sibling)
+                if date:
+                    return date
+
+    # 3. Recurse to the parent if no date was found.
+    return find_date_recursively(tag.parent, depth + 1, max_depth)
+
+
+def find_publish_date(link_tag, url_obj):
+    """Orchestrates finding a publish date from the DOM or URL."""
+    # 1. If not in the DOM, look for date in the URL
+    date_from_url = find_date_in_url(str(url_obj))
+    if date_from_url:
+        return date_from_url
+
+    # 2. Look for date in the DOM recursively, starting from the link
+    date_from_dom = find_date_recursively(link_tag)
+    if date_from_dom:
+        return date_from_dom.strftime('%d-%m-%Y')
+
+    return "No date found"
+
 
 def is_likely_article(href, text, base_url, detector, whitelist=None):
     """Applies a set of heuristics to determine if a link is a news article."""
@@ -176,6 +224,7 @@ def main():
     processed_urls = set() # Global set to track all unique URLs across all papers
     accepted_stats = {} # {category_url: count}
     rejected_stats = {} # {category_url: count}
+    dates_found_stats = {} # {category_url: count of dates found}
 
     for paper in papers_json:
         paper_url = paper.get('url')
@@ -196,6 +245,7 @@ def main():
 
             accepted_stats[category_url] = 0
             rejected_stats[category_url] = 0
+            dates_found_stats[category_url] = 0
 
             processed_urls_per_category = set()
             try:
@@ -228,14 +278,20 @@ def main():
                         processed_urls.add(clean_url)
                         decoded_url = unquote(str(full_url_obj))
 
+                        # OPTIMIZATION: Only search for a date if the link is a likely article.
                         if is_likely_article(href, title, category_url, detector, whitelist=paper.get('whitelist', [])):
+                            # Now that we think it's an article, run the expensive date search.
+                            date_str = find_publish_date(link, full_url_obj)
+                            if date_str != "No date found":
+                                dates_found_stats[category_url] += 1
                             accepted_stats[category_url] += 1
                             article_links += 1
-                            print(f"{title[:70]:<70} ({decoded_url})", file=accepted_file)
+                            print(f"[{date_str}] {title[:70]:<70} ({decoded_url})", file=accepted_file)
                         elif rejected_file:
                             rejected_stats[category_url] += 1
                             rejected_links += 1
-                            print(f"{title[:70]:<70} ({decoded_url})", file=rejected_file)
+                            # We don't search for a date on rejected links to save time.
+                            print(f"[No date searched] {title[:70]:<70} ({decoded_url})", file=rejected_file)
 
 
                 print(f"Identified {article_links} likely article(s).", file=accepted_file)
@@ -254,7 +310,8 @@ def main():
     if args.accepted_log and accepted_file:
         accepted_file.write("\n\n--- Accepted Links Summary ---\n")
         for url, count in accepted_stats.items():
-            accepted_file.write(f"{count}:\t {url}\n")
+            dates_found = dates_found_stats.get(url, 0)
+            accepted_file.write(f"{count} accepted ({dates_found} with dates):\t {url}\n")
         accepted_file.close()
         print(f"\nAccepted URLs written to {args.accepted_log}")
 

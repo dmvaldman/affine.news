@@ -18,4 +18,6 @@ beautifulsoup4==4.12.3
 random-string-detector==1.1.1
 google-cloud-translate>=2.0.0
 python-dotenv>=1.0.0
+yarl==1.9.4
+dateparser==1.2.0
 
