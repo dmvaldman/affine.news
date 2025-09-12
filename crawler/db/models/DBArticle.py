@@ -8,7 +8,7 @@ class DBArticle:
         pass
 
     @staticmethod
-    def create(article):
+    def save(article):
         with conn.cursor(cursor_factory=DictCursor) as c:
             try:
                 c.execute("""
@@ -21,7 +21,17 @@ class DBArticle:
                         publish_at,
                         paper_uuid,
                         crawl_uuid
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) """, (
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (url) DO UPDATE SET
+                        url=EXCLUDED.url,
+                        img_url=EXCLUDED.img_url,
+                        title=EXCLUDED.title,
+                        title_translated=EXCLUDED.title_translated,
+                        lang=EXCLUDED.lang,
+                        publish_at=EXCLUDED.publish_at,
+                        paper_uuid=EXCLUDED.paper_uuid,
+                        crawl_uuid=EXCLUDED.crawl_uuid
+                    """, (
                         article.url,
                         article.img_url,
                         article.title,

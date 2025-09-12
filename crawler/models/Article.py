@@ -30,4 +30,4 @@ class Article:
 
     def save(self):
         from crawler.db.models.DBArticle import DBArticle
-        DBArticle.create(self)
+        DBArticle.save(self)
