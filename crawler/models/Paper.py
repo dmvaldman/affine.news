@@ -37,7 +37,8 @@ class Papers:
 
     def save(self):
         from crawler.db.models.DBPaper import DBPaper
-        DBPaper.create_many(self.papers)
+        for paper in self.papers:
+            DBPaper.save(paper)
 
 
 class Paper:
@@ -67,7 +68,7 @@ class Paper:
 
     def save(self):
         from crawler.db.models.DBPaper import DBPaper
-        DBPaper.create(self)
+        DBPaper.save(self)
 
     @staticmethod
     def load_from_url(url):

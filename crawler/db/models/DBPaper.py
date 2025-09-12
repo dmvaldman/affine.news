@@ -1,4 +1,3 @@
-import uuid
 from crawler.models.Paper import Paper
 from crawler.db.db import conn
 from psycopg2.extras import DictCursor
@@ -43,6 +42,18 @@ def get_papers_from_rows(results):
 
 
 class DBPaper:
+    def __init__(self, uuid, url, country, iso, lang, category_urls=None, whitelist=None):
+        self.uuid = uuid
+        self.url = url
+        self.country = country
+        self.iso = iso
+        self.lang = lang
+        self.category_urls = category_urls or []
+        self.whitelist = whitelist or []
+
+    def __repr__(self):
+        return f"DBPaper(uuid={self.uuid}, url={self.url}, country={self.country}, iso={self.iso}, lang={self.lang}, category_urls={self.category_urls}, whitelist={self.whitelist})"
+
     @staticmethod
     def get_all():
         with conn.cursor(cursor_factory=DictCursor) as c:
@@ -72,33 +83,43 @@ class DBPaper:
                     ''', (uuid,))
             return get_papers_from_rows(c.fetchall())[0]
 
-    @staticmethod
-    def create(paper):
-        paper_uuid = uuid.uuid4()
-        with conn.cursor(cursor_factory=DictCursor) as c:
-            c.execute("""INSERT INTO paper (
-                uuid
-                url,
-                country,
-                iso,
-                lang) VALUES (%s, %s, %s, %s, %s)""", (
-                    str(paper_uuid),
-                    paper.url,
-                    paper.country,
-                    paper.iso,
-                    paper.lang
-                )
+    def save(self):
+        """
+        Saves the current state of the paper object back to the database.
+        This method performs an "upsert" (insert or update).
+        """
+        with conn.cursor() as cur:
+            # First, upsert the core paper details
+            cur.execute(
+                """
+                INSERT INTO paper (uuid, url, country, iso, lang, whitelist)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (uuid) DO UPDATE SET
+                    url = EXCLUDED.url,
+                    country = EXCLUDED.country,
+                    iso = EXCLUDED.iso,
+                    lang = EXCLUDED.lang,
+                    whitelist = EXCLUDED.whitelist;
+                """,
+                (self.uuid, self.url, self.country, self.iso, self.lang, self.whitelist)
             )
 
-            for category_url in paper.category_urls:
-                c.execute('''INSERT INTO category_set VALUES (%s, %s)''', (str(paper_uuid), category_url))
+            # Second, manage category_urls
+            # Delete categories that are no longer in the list for this paper
+            tuple_list = tuple(self.category_urls) or ('',)
+            cur.execute("DELETE FROM category_set WHERE paper_uuid = %s AND url NOT IN %s", (self.uuid, tuple_list))
 
-        conn.commit()
-
-    @staticmethod
-    def create_many(papers):
-        for paper in papers:
-            DBPaper.create(paper)
+            # Insert new categories, ignoring ones that already exist
+            if self.category_urls:
+                for url in self.category_urls:
+                    cur.execute(
+                        """
+                        INSERT INTO category_set (paper_uuid, url)
+                        VALUES (%s, %s)
+                        ON CONFLICT (paper_uuid, url) DO NOTHING
+                        """,
+                        (self.uuid, url)
+                    )
 
     @staticmethod
     def update(paper, **kwargs):

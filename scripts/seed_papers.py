@@ -55,15 +55,19 @@ def main():
                 else:
                     c.execute(
                         """
-                        INSERT INTO paper (uuid, url, country, ISO, lang)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO paper (uuid, url, country, ISO, lang, whitelist)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                         ON CONFLICT (uuid) DO UPDATE SET url = EXCLUDED.url,
                                                       country = EXCLUDED.country,
                                                       ISO = EXCLUDED.ISO,
-                                                      lang = EXCLUDED.lang
+                                                      lang = EXCLUDED.lang,
+                                                      whitelist = EXCLUDED.whitelist
                         """,
-                        (paper_uuid, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang'])
+                        (paper_uuid, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang'], paper_json.get('whitelist', []))
                     )
+
+                if 'category_urls' not in paper_json:
+                    continue
 
                 if args.prune_categories:
                     if args.dry_run:

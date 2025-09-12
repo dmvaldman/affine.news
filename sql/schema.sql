@@ -2,10 +2,11 @@
 
 CREATE TABLE IF NOT EXISTS paper (
     uuid TEXT PRIMARY KEY,
-    url TEXT,
+    url TEXT UNIQUE,
     country TEXT,
     ISO TEXT,
     lang TEXT,
+    whitelist TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
