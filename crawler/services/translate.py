@@ -6,7 +6,7 @@ from crawler.services.translator import get_translator, translate_text
 
 target_lang = 'en'
 
-def translate_paper_by_uuid(paper_uuid):
+def translate_paper(paper):
     """
     Finds all untranslated articles for a given paper and translates their titles.
     """
@@ -16,18 +16,19 @@ def translate_paper_by_uuid(paper_uuid):
         print(f"Could not initialize translator, skipping translation. Error: {e}")
         return
 
+    # Get articles to translate
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
             SELECT a.url, a.lang, a.title FROM article a
             JOIN paper p on p.uuid = a.paper_uuid
             WHERE a.title_translated IS NULL
             AND p.uuid=%s
-        ''', (paper_uuid,))
+        ''', (paper.uuid,))
         results = c.fetchall()
 
     num_results = len(results)
     if num_results > 0:
-        print(f'Found {num_results} articles to translate for paper {paper_uuid}')
+        print(f'Found {num_results} articles to translate for {paper}')
 
     for index, result in enumerate(results):
         source_lang = result['lang']
@@ -62,4 +63,4 @@ def translate_paper_by_uuid(paper_uuid):
 
     # Commit all translations for this paper in one transaction
     conn.commit()
-    print(f'Finished translation for paper {paper_uuid}')
+    print(f'Finished translation for {paper}')

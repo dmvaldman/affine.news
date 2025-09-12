@@ -18,7 +18,7 @@ class Crawler:
         for paper in papers:
             self.crawl_paper(paper, verbose=verbose)
 
-    def crawl_paper(self, paper, verbose=True):
+    def crawl_paper(self, paper, verbose=True, ignore_cache=False):
         if verbose:
             print('Building', paper)
 
@@ -30,7 +30,7 @@ class Crawler:
             status=CrawlStatus.STARTED,
             paper_uuid=paper.uuid)
 
-        if crawl.cache_hit():
+        if ignore_cache and crawl.cache_hit():
             crawl.update_status(CrawlStatus.COMPLETED)
             if verbose:
                 print('Cache hit', crawl)
@@ -82,7 +82,7 @@ class Crawler:
                 crawl_uuid=crawl.uuid
             )
 
-            if article.cache_hit():
+            if ignore_cache and article.cache_hit():
                 if verbose:
                     print('Article cache hit', article)
                 continue

@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 # Load .env file from the project root
 load_dotenv()
 
-from crawler.services.crawl import get_paper_uuids
-from crawler.services.translate import translate_paper_by_uuid
+from crawler.services.translate import translate_paper, get_papers
 
 
 def main():
@@ -31,19 +30,19 @@ def main():
 
     print("Starting translation job...")
 
-    paper_uuids = get_paper_uuids()
+    papers = get_papers()
 
-    if not paper_uuids:
+    if not papers:
         print("No papers found in the database to translate.")
         return
 
-    print(f"Found {len(paper_uuids)} papers to process.")
+    print(f"Found {len(papers)} papers to process.")
 
-    for paper_uuid in paper_uuids:
+    for paper in papers:
         try:
-            translate_paper_by_uuid(paper_uuid)
+            translate_paper(paper)
         except Exception as e:
-            print(f"An error occurred while processing paper {paper_uuid}: {e}", file=sys.stderr)
+            print(f"An error occurred while processing paper {paper}: {e}", file=sys.stderr)
             # Continue to the next paper
 
     end_time = time.time()

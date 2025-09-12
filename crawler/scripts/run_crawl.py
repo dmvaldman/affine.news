@@ -13,11 +13,12 @@ try:
 except nltk.downloader.DownloadError:
     nltk.download('punkt', quiet=True)
 
-from crawler.services.crawl import get_paper_uuids, crawl_paper_by_uuid
+from crawler.services.crawl import get_papers, crawl_paper
 
 def main():
     parser = argparse.ArgumentParser(description='Run crawler over papers')
-    parser.add_argument('--max-articles', type=int, default=30)
+    parser.add_argument('--max-articles', type=int, default=5)
+    parser.add_argument('--ignore-cache', action='store_true', default=False)
     args = parser.parse_args()
 
     if not os.environ.get('DATABASE_URL'):
@@ -25,14 +26,14 @@ def main():
         sys.exit(1)
 
     overall_start_time = time.time()
-    uuids = get_paper_uuids()
+    papers = get_papers()
     all_stats = []
     total_downloaded = 0
     total_failed = 0
 
-    for paper_uuid in uuids:
+    for paper in papers:
         paper_start_time = time.time()
-        crawl_result = crawl_paper_by_uuid(paper_uuid, max_articles=args.max_articles)
+        crawl_result = crawl_paper(paper, max_articles=args.max_articles, ignore_cache=args.ignore_cache)
         paper_elapsed_time = time.time() - paper_start_time
 
         if crawl_result and crawl_result.stats:
@@ -41,7 +42,7 @@ def main():
 
             # Since we don't have the paper object here, we'll use the UUID for the report
             all_stats.append({
-                "id": paper_uuid[:8], # Use a shortened UUID for readability
+                "id": paper.uuid[:8], # Use a shortened UUID for readability
                 "downloaded": downloaded,
                 "failed": failed,
                 "elapsed": paper_elapsed_time
