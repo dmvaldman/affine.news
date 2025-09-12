@@ -233,23 +233,6 @@
         "country": "United States",
         "ISO": "USA",
         "lang": "en",
-        "url": "https://www.cnn.com/",
-        "category_urls": [
-            "https://www.cnn.com/world"
-        ],
-        "whitelist": [
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/world/.*",
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/europe/.*",
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/asia/.*",
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/africa/.*",
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/americas/.*",
-            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/middleeast/.*"
-        ]
-    },
-    {
-        "country": "United States",
-        "ISO": "USA",
-        "lang": "en",
         "url": "https://www.washingtonpost.com/",
         "category_urls": [
             "https://www.washingtonpost.com/world/"
@@ -656,6 +639,9 @@
         "url": "https://www.nacion.com/",
         "category_urls": [
             "https://www.nacion.com/el-mundo/"
+        ],
+        "whitelist": [
+            "https://www.nacion.com/el-mundo/"
         ]
     },
     {
@@ -703,7 +689,7 @@
         "lang": "id",
         "url": "https://www.antaranews.com/",
         "category_urls": [
-            "https://www.antaranews.com/berita/"
+            "https://www.antaranews.com/dunia"
         ]
     },
     {

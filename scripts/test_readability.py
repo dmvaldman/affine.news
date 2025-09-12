@@ -9,9 +9,6 @@ from random_string_detector import RandomStringDetector
 import argparse
 import sys
 from yarl import URL
-import dateparser
-from datetime import datetime
-from crawler.services.date_extractor import extract_date_from_node, find_date_in_url
 
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
@@ -46,50 +43,6 @@ def find_title_for_link(tag):
           return find_title_for_link(tag.parent)
 
     return best_text
-
-def find_date_recursively(tag, depth=0, max_depth=1):
-    """
-    Recursively searches up the DOM tree from a starting tag to find a date,
-    mirroring the logic for finding a title.
-    """
-    if not tag or depth >= max_depth:
-        return None
-
-    # 1. Check the tag itself for a date.
-    date = extract_date_from_node(tag)
-    if date:
-        return date
-
-    # 2. Check a few nearby siblings for a date to avoid performance issues.
-    if tag.parent:
-        for sibling in tag.find_next_siblings(limit=5):
-            if sibling.name: # Ensure it's a tag
-                date = extract_date_from_node(sibling)
-                if date:
-                    return date
-        for sibling in tag.find_previous_siblings(limit=5):
-            if sibling.name: # Ensure it's a tag
-                date = extract_date_from_node(sibling)
-                if date:
-                    return date
-
-    # 3. Recurse to the parent if no date was found.
-    return find_date_recursively(tag.parent, depth + 1, max_depth)
-
-
-def find_publish_date(link_tag, url_obj):
-    """Orchestrates finding a publish date from the DOM or URL."""
-    # 1. If not in the DOM, look for date in the URL
-    date_from_url = find_date_in_url(str(url_obj))
-    if date_from_url:
-        return date_from_url
-
-    # 2. Look for date in the DOM recursively, starting from the link
-    date_from_dom = find_date_recursively(link_tag)
-    if date_from_dom:
-        return date_from_dom.strftime('%d-%m-%Y')
-
-    return "No date found"
 
 
 def is_likely_article(href, text, base_url, detector, whitelist=None):
@@ -184,143 +137,151 @@ def main():
     and uses BeautifulSoup with heuristics to find likely article links.
     """
     parser = argparse.ArgumentParser(description='Test article link extraction from category pages.')
-    parser.add_argument('--accepted-log', nargs='?', const='accepted_logs.txt', default="articles_accepted.txt",
+    parser.add_argument('--accepted-log', nargs='?', const='accepted_logs.txt', default="logs/articles_accepted.txt",
                         help='File to write accepted URLs to. Defaults to accepted_logs.txt.')
-    parser.add_argument('--rejected-log', nargs='?', const='rejected_logs.txt', default="articles_rejected.txt",
+    parser.add_argument('--rejected-log', nargs='?', const='rejected_logs.txt', default="logs/articles_rejected.txt",
                         help='File to write rejected URLs to. Defaults to rejected_logs.txt.')
     args = parser.parse_args()
+
+    # Create log directories if they don't exist
+    if args.accepted_log:
+        log_dir = os.path.dirname(args.accepted_log)
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
+    if args.rejected_log:
+        log_dir = os.path.dirname(args.rejected_log)
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
 
     # Determine output streams (files or stdout)
     accepted_file = None
     if args.accepted_log:
         accepted_file = open(args.accepted_log, 'w', encoding='utf-8')
+        print(f"Logging accepted URLs to: {os.path.abspath(args.accepted_log)}")
     else:
-        accepted_file = sys.stdout # Default to printing accepted to console
+        accepted_file = sys.stdout
 
     rejected_file = None
     if args.rejected_log:
         rejected_file = open(args.rejected_log, 'w', encoding='utf-8')
 
-
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
+    accepted_stats = {}
+    rejected_stats = {}
 
     try:
-        with open(json_path, 'r') as f:
-            papers_json = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Could not find newspaper_store.json at {json_path}", file=accepted_file)
-        return
-    except json.JSONDecodeError as e:
-        print(f"Error: Could not parse newspaper_store.json. Please check for syntax errors.", file=accepted_file)
-        print(e, file=accepted_file)
-        return
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
 
-    detector = RandomStringDetector(allow_numbers=True)
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-    }
+        try:
+            with open(json_path, 'r') as f:
+                papers_json = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: Could not find newspaper_store.json at {json_path}", file=accepted_file)
+            return
+        except json.JSONDecodeError as e:
+            print(f"Error: Could not parse newspaper_store.json. Please check for syntax errors.", file=accepted_file)
+            print(e, file=accepted_file)
+            return
 
-    processed_urls = set() # Global set to track all unique URLs across all papers
-    accepted_stats = {} # {category_url: count}
-    rejected_stats = {} # {category_url: count}
-    dates_found_stats = {} # {category_url: count of dates found}
+        detector = RandomStringDetector(allow_numbers=True)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'DNT': '1', # Do Not Track
+        }
 
-    for paper in papers_json:
-        paper_url = paper.get('url')
-        print(f"\n--- Testing Paper: {paper_url} ---", file=accepted_file)
-        if rejected_file:
-            print(f"\n--- Testing Paper: {paper_url} ---", file=rejected_file)
+        processed_urls = set() # Global set to track all unique URLs across all papers
 
-
-        category_urls = paper.get('category_urls', [])
-        if not category_urls:
-            print("  No category URLs found.", file=accepted_file)
-            continue
-
-        for category_url in category_urls:
-            print(f"  -> Fetching category: {category_url}", file=accepted_file)
+        for paper in papers_json:
+            paper_url = paper.get('url')
+            print(f"\n--- Testing Paper: {paper_url} ---", file=accepted_file)
             if rejected_file:
-                print(f"  -> Fetching category: {category_url}", file=rejected_file)
-
-            accepted_stats[category_url] = 0
-            rejected_stats[category_url] = 0
-            dates_found_stats[category_url] = 0
-
-            processed_urls_per_category = set()
-            try:
-                response = requests.get(category_url, headers=headers, timeout=15)
-                response.raise_for_status()
-                html_content = response.content
-
-                soup = BeautifulSoup(html_content, 'lxml')
-                all_links = soup.find_all('a')
-
-                print(f"     - Found {len(all_links)} total links. Applying heuristics...", file=accepted_file)
-
-                article_links = 0
-                rejected_links = 0
-                for link in all_links:
-                    href = link.get('href')
-                    if not href: continue
-
-                    title = find_title_for_link(link)
-
-                    try:
-                        full_url_obj = URL(requests.compat.urljoin(category_url, href))
-                    except ValueError:
-                        continue # Skip malformed URLs
-
-                    # Normalize URL by removing query parameters for de-duplication
-                    clean_url = str(full_url_obj.with_query(None).with_fragment(None))
-
-                    if clean_url not in processed_urls:
-                        processed_urls.add(clean_url)
-                        decoded_url = unquote(str(full_url_obj))
-
-                        # OPTIMIZATION: Only search for a date if the link is a likely article.
-                        if is_likely_article(href, title, category_url, detector, whitelist=paper.get('whitelist', [])):
-                            # Now that we think it's an article, run the expensive date search.
-                            date_str = find_publish_date(link, full_url_obj)
-                            if date_str != "No date found":
-                                dates_found_stats[category_url] += 1
-                            accepted_stats[category_url] += 1
-                            article_links += 1
-                            print(f"[{date_str}] {title[:70]:<70} ({decoded_url})", file=accepted_file)
-                        elif rejected_file:
-                            rejected_stats[category_url] += 1
-                            rejected_links += 1
-                            # We don't search for a date on rejected links to save time.
-                            print(f"[No date searched] {title[:70]:<70} ({decoded_url})", file=rejected_file)
+                print(f"\n--- Testing Paper: {paper_url} ---", file=rejected_file)
 
 
-                print(f"Identified {article_links} likely article(s).", file=accepted_file)
+            category_urls = paper.get('category_urls', [])
+            if not category_urls:
+                print("  No category URLs found.", file=accepted_file)
+                continue
+
+            for category_url in category_urls:
+                print(f"  -> Fetching category: {category_url}", file=accepted_file)
                 if rejected_file:
-                    print(f"Identified {rejected_links} rejected article(s).", file=rejected_file)
+                    print(f"  -> Fetching category: {category_url}", file=rejected_file)
 
-                if article_links == 0:
-                    print("No likely article links found.", file=accepted_file)
-                print("\n" + "-" * 30 + "\n", file=accepted_file)
+                accepted_stats[category_url] = 0
+                rejected_stats[category_url] = 0
 
-            except requests.exceptions.RequestException as e:
-                print(f"     ! Error fetching URL: {e}", file=accepted_file)
-            except Exception as e:
-                print(f"     ! An unexpected error occurred: {e}", file=accepted_file)
+                processed_urls_per_category = set()
+                try:
+                    response = requests.get(category_url, headers=headers, timeout=20)
+                    response.raise_for_status()
+                    html_content = response.content
 
-    if args.accepted_log and accepted_file:
-        accepted_file.write("\n\n--- Accepted Links Summary ---\n")
-        for url, count in accepted_stats.items():
-            dates_found = dates_found_stats.get(url, 0)
-            accepted_file.write(f"{count} accepted ({dates_found} with dates):\t {url}\n")
-        accepted_file.close()
-        print(f"\nAccepted URLs written to {args.accepted_log}")
+                    soup = BeautifulSoup(html_content, 'lxml')
+                    all_links = soup.find_all('a')
 
-    if args.rejected_log and rejected_file:
-        rejected_file.write("\n\n--- Rejected Links Summary ---\n")
-        for url, count in rejected_stats.items():
-            rejected_file.write(f"{count}:\t {url}\n")
-        rejected_file.close()
-        print(f"Rejected URLs written to {args.rejected_log}")
+                    print(f"     - Found {len(all_links)} total links. Applying heuristics...", file=accepted_file)
+
+                    article_links = 0
+                    rejected_links = 0
+                    for link in all_links:
+                        href = link.get('href')
+                        if not href: continue
+
+                        title = find_title_for_link(link)
+
+                        try:
+                            full_url_obj = URL(requests.compat.urljoin(category_url, href))
+                        except ValueError:
+                            continue # Skip malformed URLs
+
+                        # Normalize URL by removing query parameters for de-duplication
+                        clean_url = str(full_url_obj.with_query(None).with_fragment(None))
+
+                        if clean_url not in processed_urls:
+                            processed_urls.add(clean_url)
+                            decoded_url = unquote(str(full_url_obj))
+
+                            if is_likely_article(href, title, category_url, detector, whitelist=paper.get('whitelist', [])):
+                                accepted_stats[category_url] += 1
+                                article_links += 1
+                                print(f"{title[:70]:<70} ({decoded_url})", file=accepted_file)
+                            elif rejected_file:
+                                rejected_stats[category_url] += 1
+                                rejected_links += 1
+                                print(f"{title[:70]:<70} ({decoded_url})", file=rejected_file)
+
+
+                    print(f"Identified {article_links} likely article(s).", file=accepted_file)
+                    if rejected_file:
+                        print(f"Identified {rejected_links} rejected article(s).", file=rejected_file)
+
+                    if article_links == 0:
+                        print("No likely article links found.", file=accepted_file)
+                    print("\n" + "-" * 30 + "\n", file=accepted_file)
+
+                except requests.exceptions.RequestException as e:
+                    print(f"     ! Error fetching URL: {e}", file=accepted_file)
+                except Exception as e:
+                    print(f"     ! An unexpected error occurred: {e}", file=accepted_file)
+    finally:
+        if accepted_file is not sys.stdout and accepted_file is not None:
+            accepted_file.write("\n\n--- Accepted Links Summary ---\n")
+            for url, count in accepted_stats.items():
+                accepted_file.write(f"{count}:\t {url}\n")
+            accepted_file.close()
+            print(f"\nLog summary written to {os.path.abspath(args.accepted_log)}")
+
+        if rejected_file is not None:
+            rejected_file.write("\n\n--- Rejected Links Summary ---\n")
+            for url, count in rejected_stats.items():
+                rejected_file.write(f"{count}:\t {url}\n")
+            rejected_file.close()
 
 
 if __name__ == '__main__':
