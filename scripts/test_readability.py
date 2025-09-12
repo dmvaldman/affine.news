@@ -1,5 +1,3 @@
-import json
-import os
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -7,15 +5,19 @@ import warnings
 from urllib.parse import unquote
 from random_string_detector import RandomStringDetector
 import argparse
-import sys
 from yarl import URL
+from datetime import date
+
+from crawler.models.Article import Article
+from crawler.models.Crawler import Crawl, CrawlStatus
+from crawler.db.models.DBPaper import DBPaper
 
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
 # Heuristics for identifying article links
 MIN_HEADLINE_LENGTH = 14
-MIN_SLUG_LENGTH = 20 # Lowered threshold for decoded Unicode slugs
+MIN_SLUG_LENGTH = 20
 
 def find_title_for_link(tag):
     """
@@ -131,59 +133,35 @@ def is_likely_article(href, text, base_url, detector, whitelist=None):
     # Default to rejecting if no strong signals are found.
     return False
 
-def main():
-    """
-    Iterates through newspaper_store.json, fetches each category URL,
-    and uses BeautifulSoup with heuristics to find likely article links.
-    """
-    parser = argparse.ArgumentParser(description='Test article link extraction from category pages.')
-    parser.add_argument('--accepted-log', nargs='?', const='accepted_logs.txt', default="logs/articles_accepted.txt",
-                        help='File to write accepted URLs to. Defaults to accepted_logs.txt.')
-    parser.add_argument('--rejected-log', nargs='?', const='rejected_logs.txt', default="logs/articles_rejected.txt",
-                        help='File to write rejected URLs to. Defaults to rejected_logs.txt.')
-    args = parser.parse_args()
+class HeuristicCrawler:
+    def __init__(self, max_articles=None):
+        self.max_articles = max_articles
 
-    # Create log directories if they don't exist
-    if args.accepted_log:
-        log_dir = os.path.dirname(args.accepted_log)
-        if log_dir:
-            os.makedirs(log_dir, exist_ok=True)
-    if args.rejected_log:
-        log_dir = os.path.dirname(args.rejected_log)
-        if log_dir:
-            os.makedirs(log_dir, exist_ok=True)
+    def crawl_paper(self, paper, verbose=True, ignore_cache=False):
+        if verbose:
+            print('HeuristicCrawler building', paper)
 
-    # Determine output streams (files or stdout)
-    accepted_file = None
-    if args.accepted_log:
-        accepted_file = open(args.accepted_log, 'w', encoding='utf-8')
-        print(f"Logging accepted URLs to: {os.path.abspath(args.accepted_log)}")
-    else:
-        accepted_file = sys.stdout
+        todays_date = date.today()
 
-    rejected_file = None
-    if args.rejected_log:
-        rejected_file = open(args.rejected_log, 'w', encoding='utf-8')
+        crawl = Crawl(
+            created_at=todays_date,
+            max_articles=self.max_articles,
+            status=CrawlStatus.STARTED,
+            paper_uuid=paper.uuid
+        )
 
-    accepted_stats = {}
-    rejected_stats = {}
+        if not ignore_cache and crawl.cache_hit():
+            crawl.update_status(CrawlStatus.COMPLETED)
+            if verbose:
+                print('Cache hit', crawl)
+            return crawl
 
-    try:
-        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-        json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
+        crawl.save()
 
-        try:
-            with open(json_path, 'r') as f:
-                papers_json = json.load(f)
-        except FileNotFoundError:
-            print(f"Error: Could not find newspaper_store.json at {json_path}", file=accepted_file)
-            return
-        except json.JSONDecodeError as e:
-            print(f"Error: Could not parse newspaper_store.json. Please check for syntax errors.", file=accepted_file)
-            print(e, file=accepted_file)
-            return
+        # Stats
+        count_success = 0
+        count_rejected = 0
 
-        detector = RandomStringDetector(allow_numbers=True)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -191,98 +169,101 @@ def main():
             'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Connection': 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
-            'DNT': '1', # Do Not Track
+            'DNT': '1',
         }
 
-        processed_urls = set() # Global set to track all unique URLs across all papers
+        processed_urls = set()
+        detector = RandomStringDetector(allow_numbers=True)
 
-        for paper in papers_json:
-            paper_url = paper.get('url')
-            print(f"\n--- Testing Paper: {paper_url} ---", file=accepted_file)
-            if rejected_file:
-                print(f"\n--- Testing Paper: {paper_url} ---", file=rejected_file)
-
-
-            category_urls = paper.get('category_urls', [])
-            if not category_urls:
-                print("  No category URLs found.", file=accepted_file)
+        for category_url in getattr(paper, 'category_urls', []) or []:
+            try:
+                resp = requests.get(category_url, headers=headers, timeout=20)
+                resp.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                if verbose:
+                    print(f"! Error fetching {category_url}: {e}")
                 continue
 
-            for category_url in category_urls:
-                print(f"  -> Fetching category: {category_url}", file=accepted_file)
-                if rejected_file:
-                    print(f"  -> Fetching category: {category_url}", file=rejected_file)
+            soup = BeautifulSoup(resp.content, 'lxml')
+            links = soup.find_all('a')
 
-                accepted_stats[category_url] = 0
-                rejected_stats[category_url] = 0
+            for link in links:
+                if self.max_articles is not None and count_success >= self.max_articles:
+                    break
 
-                processed_urls_per_category = set()
+                href = link.get('href')
+                if not href:
+                    continue
+
+                title = find_title_for_link(link)
                 try:
-                    response = requests.get(category_url, headers=headers, timeout=20)
-                    response.raise_for_status()
-                    html_content = response.content
+                    full_url_obj = URL(requests.compat.urljoin(category_url, href))
+                except ValueError:
+                    continue
 
-                    soup = BeautifulSoup(html_content, 'lxml')
-                    all_links = soup.find_all('a')
+                clean_url = str(full_url_obj.with_query(None).with_fragment(None))
+                if clean_url in processed_urls:
+                    continue
+                processed_urls.add(clean_url)
 
-                    print(f"     - Found {len(all_links)} total links. Applying heuristics...", file=accepted_file)
+                decoded_url = unquote(str(full_url_obj))
+                if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
+                    # Build Article with today's date and no img
+                    article = Article(
+                        url=decoded_url,
+                        title=title,
+                        img_url='',
+                        publish_at=todays_date,
+                        lang=getattr(paper, 'lang', ''),
+                        paper_uuid=paper.uuid,
+                        crawl_uuid=crawl.uuid
+                    )
 
-                    article_links = 0
-                    rejected_links = 0
-                    for link in all_links:
-                        href = link.get('href')
-                        if not href: continue
+                    if not ignore_cache and article.cache_hit():
+                        if verbose:
+                            print('Article cache hit', article)
+                        continue
 
-                        title = find_title_for_link(link)
+                    article.save()
+                    count_success += 1
+                else:
+                    count_rejected += 1
 
-                        try:
-                            full_url_obj = URL(requests.compat.urljoin(category_url, href))
-                        except ValueError:
-                            continue # Skip malformed URLs
+                if self.max_articles is not None and count_success >= self.max_articles:
+                    break
 
-                        # Normalize URL by removing query parameters for de-duplication
-                        clean_url = str(full_url_obj.with_query(None).with_fragment(None))
-
-                        if clean_url not in processed_urls:
-                            processed_urls.add(clean_url)
-                            decoded_url = unquote(str(full_url_obj))
-
-                            if is_likely_article(href, title, category_url, detector, whitelist=paper.get('whitelist', [])):
-                                accepted_stats[category_url] += 1
-                                article_links += 1
-                                print(f"{title[:70]:<70} ({decoded_url})", file=accepted_file)
-                            elif rejected_file:
-                                rejected_stats[category_url] += 1
-                                rejected_links += 1
-                                print(f"{title[:70]:<70} ({decoded_url})", file=rejected_file)
+        crawl.update_status(CrawlStatus.COMPLETED)
+        crawl.stats['downloaded'] = count_success
+        crawl.stats['failed'] = count_rejected
+        return crawl
 
 
-                    print(f"Identified {article_links} likely article(s).", file=accepted_file)
-                    if rejected_file:
-                        print(f"Identified {rejected_links} rejected article(s).", file=rejected_file)
+def main():
+    """
+    Iterates through all papers in the database and runs the HeuristicCrawler on each.
+    """
+    parser = argparse.ArgumentParser(description='Run HeuristicCrawler over papers.')
+    parser.add_argument('--max-articles', type=int, default=30,
+                        help='Maximum number of articles to find per paper.')
+    parser.add_argument('--ignore-cache', action='store_true', default=True,
+                        help='Ignore cache and re-crawl papers.')
+    args = parser.parse_args()
 
-                    if article_links == 0:
-                        print("No likely article links found.", file=accepted_file)
-                    print("\n" + "-" * 30 + "\n", file=accepted_file)
+    papers = DBPaper.get_all()
+    crawler = HeuristicCrawler(max_articles=args.max_articles)
 
-                except requests.exceptions.RequestException as e:
-                    print(f"     ! Error fetching URL: {e}", file=accepted_file)
-                except Exception as e:
-                    print(f"     ! An unexpected error occurred: {e}", file=accepted_file)
-    finally:
-        if accepted_file is not sys.stdout and accepted_file is not None:
-            accepted_file.write("\n\n--- Accepted Links Summary ---\n")
-            for url, count in accepted_stats.items():
-                accepted_file.write(f"{count}:\t {url}\n")
-            accepted_file.close()
-            print(f"\nLog summary written to {os.path.abspath(args.accepted_log)}")
-
-        if rejected_file is not None:
-            rejected_file.write("\n\n--- Rejected Links Summary ---\n")
-            for url, count in rejected_stats.items():
-                rejected_file.write(f"{count}:\t {url}\n")
-            rejected_file.close()
-
+    for paper in papers:
+        print(f"\n--- Starting Heuristic Crawl for: {paper.url} ---")
+        try:
+            crawl_result = crawler.crawl_paper(paper, ignore_cache=args.ignore_cache)
+            if crawl_result:
+                downloaded = crawl_result.stats.get('downloaded', 0)
+                rejected = crawl_result.stats.get('failed', 0) # 'failed' is 'rejected' in this context
+                print(f"  -> Finished: {downloaded} articles accepted, {rejected} links rejected.")
+            else:
+                print("  -> Crawl returned no result.")
+        except Exception as e:
+            print(f"  -> An unexpected error occurred: {e}")
 
 if __name__ == '__main__':
     main()
