@@ -204,10 +204,8 @@ async function search(){
 
         anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
         anchorEl.href = '#' + country
-        anchorEl.name = country
         anchorEl.id = country
         anchorEl.classList.add('iso')
-
 
         toggleEl.textContent = '[–]';
         toggleEl.classList.add('toggle')
@@ -219,7 +217,6 @@ async function search(){
                     toggleEl.textContent = '[+]'
                 else
                     toggleEl.textContent = '[–]'
-
                 toggleState = !toggleState;
 
                 let items = countryEl.getElementsByTagName('li')
@@ -231,13 +228,12 @@ async function search(){
 
         toggleEl.addEventListener('click', toggle())
 
-
         countryEl.appendChild(anchorEl)
         countryEl.appendChild(toggleEl)
 
-        for (let result in data[country]){
-            let date = new Date(data[country][result].publish_at).toDateString()
-            let url = data[country][result].article_url
+        for (let result of data[country]){
+            let date = new Date(result.publish_at).toDateString()
+            let url = result.article_url
 
             let resultEl = document.createElement('li')
 
@@ -247,11 +243,11 @@ async function search(){
             dateEl.appendChild(dateTextEl)
 
             let urlEl = document.createElement('a')
-            let textEl = document.createTextNode(data[country][result].title)
-            urlEl.title = data[country][result].title
+            let textEl = document.createTextNode(result.title)
+            urlEl.title = result.title
             urlEl.appendChild(textEl)
 
-            if (data[country][result].lang == 'en')
+            if (result.lang == 'en')
                 urlEl.href = url
             else
                 urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url

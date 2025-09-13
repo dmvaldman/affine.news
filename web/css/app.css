@@ -27,12 +27,17 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-#map {
+#mapContainer {
+  padding-top: 20px;
+  overflow: hidden;
   height: calc(50% - 25px);
+}
+
+#map {
+  height: 100%;
   margin: 0 auto;
   position: relative; /* Keep for positioning of tooltips */
-  padding-top: 20px;
-  padding-bottom: 20px !important;
+  padding-bottom: 0px !important;
 }
 
 #searchResults {
@@ -40,7 +45,6 @@ body {
   overflow-y: auto;
   position: relative;
   padding-top: 20px;
-  padding-bottom: 20px;
 }
 
 #queryContainer {
@@ -142,6 +146,12 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  padding-left: 6px;
+  border-left: 2px solid #8b94dd;
+}
+
+#searchResults li:last-child {
+  padding-bottom: 0;
 }
 
 #searchResults .collapse {

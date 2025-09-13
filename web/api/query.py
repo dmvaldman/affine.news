@@ -9,6 +9,7 @@ import google.generativeai as genai
 import numpy as np
 
 SIMILARITY_THRESHOLD = 0.5  # Minimum similarity score to be included in results
+CLUSTERING_DISTANCE_THRESHOLD = 0.15 # Cosine distance threshold for clustering
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -66,7 +67,12 @@ class handler(BaseHTTPRequestHandler):
                                 publish_at BETWEEN %s AND %s
                                 AND title_embedding IS NOT NULL
                         )
-                        SELECT *
+                        SELECT
+                            url,
+                            title_translated,
+                            publish_at,
+                            paper_uuid,
+                            similarity
                         FROM articles_with_similarity
                         WHERE similarity > %s
                         ORDER BY similarity DESC
@@ -76,18 +82,25 @@ class handler(BaseHTTPRequestHandler):
                     )
                     results = cur.fetchall()
 
-            # Format results into the byCountry structure
-            by_country = {}
+            if not results:
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({}).encode('utf-8'))
+                return
+
+            # Format results grouped by ISO
+            by_iso = {}
             for row in results:
                 paper_info = papers_data.get(row['paper_uuid'], {})
                 iso = paper_info.get('iso')
                 if not iso:
                     continue
 
-                if iso not in by_country:
-                    by_country[iso] = []
+                if iso not in by_iso:
+                    by_iso[iso] = []
 
-                by_country[iso].append({
+                by_iso[iso].append({
                     "article_url": row['url'],
                     "title": row['title_translated'],
                     "publish_at": row['publish_at'].isoformat(),
@@ -99,7 +112,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps(by_country).encode('utf-8'))
+            self.wfile.write(json.dumps(by_iso).encode('utf-8'))
 
         except Exception as e:
             self.send_response(500)
