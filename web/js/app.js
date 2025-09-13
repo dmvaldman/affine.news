@@ -54,6 +54,24 @@ function initializeMap(papersByCountry) {
         responsive: true,
         height: null,
         width: null,
+        done: function(datamap) {
+            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                const countryId = geography.id;
+                const targetElement = document.getElementById(countryId);
+
+                if (targetElement) {
+                    const containerRect = searchResultsEl.getBoundingClientRect();
+                    const targetRect = targetElement.getBoundingClientRect();
+
+                    const scrollToPosition = targetRect.top - containerRect.top + searchResultsEl.scrollTop;
+
+                    searchResultsEl.scrollTo({
+                        top: scrollToPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        },
         geographyConfig: {
             highlightOnHover: true,
             highlightFillColor: 'rgba(2, 56, 111, 0.8)',
