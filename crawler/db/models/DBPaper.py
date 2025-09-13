@@ -20,6 +20,7 @@ def get_papers_from_rows(results):
                 country=prev_result['country'],
                 iso=prev_result['iso'],
                 uuid=prev_result['uuid'],
+                whitelist=prev_result['whitelist'],
                 category_urls=category_urls)
 
             papers.append(paper)
@@ -35,6 +36,7 @@ def get_papers_from_rows(results):
             country=result['country'],
             iso=result['iso'],
             uuid=result['uuid'],
+            whitelist=result['whitelist'],
             category_urls=category_urls)
         papers.append(paper)
 
@@ -58,7 +60,7 @@ class DBPaper:
     def get_all():
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                SELECT p.uuid, p.country, p.iso, p.lang, p.url, cs.url as category_url FROM paper p
+                SELECT p.uuid, p.country, p.iso, p.lang, p.url, p.whitelist, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
             ''')
             return get_papers_from_rows(c.fetchall())
@@ -67,7 +69,7 @@ class DBPaper:
     def get_paper_by_url(url):
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, cs.url as category_url FROM paper p
+                SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, p.whitelist, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
                 WHERE p.url=%s
                 ''', (url,))
@@ -77,7 +79,7 @@ class DBPaper:
     def get_paper_by_uuid(uuid):
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''
-                    SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, cs.url as category_url FROM paper p
+                    SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, p.whitelist, cs.url as category_url FROM paper p
                     JOIN category_set cs on cs.paper_uuid = p.uuid
                     WHERE p.uuid=%s
                     ''', (uuid,))

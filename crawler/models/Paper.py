@@ -41,14 +41,19 @@ class Papers:
             DBPaper.save(paper)
 
 
-class Paper:
-    def __init__(self, url='', iso='', lang='', country='', uuid='', category_urls=None):
+class Paper(object):
+    def __init__(self, url, country=None, iso=None, lang=None, category_urls=None, whitelist=None, uuid=None):
+        if (url is None) or ('http' not in url):
+            raise Exception('Url is required and must be valid')
+
         self.url = url
+        self.country = country
         self.iso = iso
         self.lang = lang
-        self.country = country
+        self.category_urls = category_urls or []
+        self.whitelist = whitelist or []
         self.uuid = uuid
-        self.category_urls = category_urls
+        self.articles = []
 
     def __repr__(self):
         return 'Newspaper {0} from {1} in `{2}` language.'.format(self.url, self.country, self.lang)

@@ -243,7 +243,7 @@ def main():
     Iterates through all papers in the database and runs the HeuristicCrawler on each.
     """
     parser = argparse.ArgumentParser(description='Run HeuristicCrawler over papers.')
-    parser.add_argument('--max-articles', type=int, default=30,
+    parser.add_argument('--max-articles', type=int, default=None,
                         help='Maximum number of articles to find per paper.')
     parser.add_argument('--ignore-cache', action='store_true', default=True,
                         help='Ignore cache and re-crawl papers.')
