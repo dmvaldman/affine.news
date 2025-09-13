@@ -8,6 +8,8 @@ from pgvector.psycopg2 import register_vector
 import google.generativeai as genai
 import numpy as np
 
+SIMILARITY_THRESHOLD = 0.5  # Minimum similarity score to be included in results
+
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # Parse query parameters
@@ -49,23 +51,28 @@ class handler(BaseHTTPRequestHandler):
                     cur.execute("SELECT uuid, iso, lang FROM paper")
                     papers_data = {row['uuid']: {'iso': row['iso'], 'lang': row['lang']} for row in cur.fetchall()}
 
-                    # pgvector uses the <=> operator for cosine distance
+                    # Use a CTE to calculate similarity once and then filter
                     cur.execute(
                         """
-                        SELECT
-                            url,
-                            title_translated,
-                            publish_at,
-                            paper_uuid,
-                            1 - (title_embedding <=> %s) AS similarity
-                        FROM article
-                        WHERE
-                            publish_at BETWEEN %s AND %s
-                            AND title_embedding IS NOT NULL
+                        WITH articles_with_similarity AS (
+                            SELECT
+                                url,
+                                title_translated,
+                                publish_at,
+                                paper_uuid,
+                                1 - (title_embedding <=> %s) AS similarity
+                            FROM article
+                            WHERE
+                                publish_at BETWEEN %s AND %s
+                                AND title_embedding IS NOT NULL
+                        )
+                        SELECT *
+                        FROM articles_with_similarity
+                        WHERE similarity > %s
                         ORDER BY similarity DESC
                         LIMIT 50;
                         """,
-                        (np.array(query_embedding), date_start, date_end)
+                        (np.array(query_embedding), date_start, date_end, SIMILARITY_THRESHOLD)
                     )
                     results = cur.fetchall()
 
