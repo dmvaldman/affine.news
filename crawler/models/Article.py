@@ -8,7 +8,7 @@ class Articles:
 
 class Article:
     def __init__(self, url='', img_url='', title='', publish_at=None, lang='',
-                 paper_uuid=None, crawl_uuid=None):
+                 paper_uuid=None, crawl_uuid=None, title_embedding=None):
         self.url = url
         self.img_url = img_url
         self.title = title
@@ -17,6 +17,7 @@ class Article:
         self.paper_uuid = paper_uuid
         self.crawl_uuid = crawl_uuid
         self.title_translated = None
+        self.title_embedding = None
 
     def __str__(self):
         return 'url: {}'.format(self.url)

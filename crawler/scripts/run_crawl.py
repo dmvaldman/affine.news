@@ -3,7 +3,7 @@ import nltk
 import time
 
 from crawler.models.Crawler import Crawler
-from crawler.models.Paper import Paper, Papers
+from crawler.models.Paper import Papers
 
 # Download 'punkt' tokenizer if needed, but do it quietly.
 try:

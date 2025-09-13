@@ -1,6 +1,5 @@
 import sys
 import time
-from dotenv import load_dotenv
 from psycopg2.extras import DictCursor
 
 from crawler.models.Paper import Papers

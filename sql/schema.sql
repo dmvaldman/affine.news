@@ -35,8 +35,9 @@ CREATE TABLE IF NOT EXISTS article (
     publish_at TIMESTAMP,
     paper_uuid TEXT,
     crawl_uuid TEXT,
+    title_embedding VECTOR(768),
     FOREIGN KEY(paper_uuid) REFERENCES paper(uuid) ON DELETE CASCADE,
-    FOREIGN KEY(crawl_uuid) REFERENCES crawl(uuid)
+    FOREIGN KEY(crawl_uuid) REFERENCES crawl(uuid),
 );
 
 CREATE INDEX IF NOT EXISTS idx_article_publish_at ON article (publish_at);

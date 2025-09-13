@@ -22,4 +22,4 @@ soupsieve==2.5
 tldextract==5.1.2
 urllib3==2.2.2
 yarl==1.9.4
-
+google-generativeai==0.7.2

@@ -1,4 +1,3 @@
-from crawler.models.Article import Article
 from crawler.db.db import conn
 from psycopg2.extras import DictCursor
 
@@ -19,6 +18,7 @@ class DBArticle:
                         title_translated,
                         lang,
                         publish_at,
+                        title_embedding,
                         paper_uuid,
                         crawl_uuid
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -29,6 +29,7 @@ class DBArticle:
                         title_translated=EXCLUDED.title_translated,
                         lang=EXCLUDED.lang,
                         publish_at=EXCLUDED.publish_at,
+                        title_embedding=EXCLUDED.title_embedding
                         paper_uuid=EXCLUDED.paper_uuid,
                         crawl_uuid=EXCLUDED.crawl_uuid
                     """, (
@@ -38,21 +39,14 @@ class DBArticle:
                         article.title_translated,
                         article.lang,
                         article.publish_at.isoformat(),
+                        article.title_embedding,
                         str(article.paper_uuid),
-                        str(article.crawl_uuid)
+                        str(article.crawl_uuid),
                     )
                 )
             except Exception as e:
                 print(e)
         conn.commit()
-
-    @staticmethod
-    def update(article, **kwargs):
-        pass
-
-    @staticmethod
-    def delete(article):
-        pass
 
     @staticmethod
     def cache_hit(article):
