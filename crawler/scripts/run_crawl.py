@@ -1,11 +1,9 @@
 import argparse
-import os
-import sys
 import nltk
 import time
-from dotenv import load_dotenv
 
-load_dotenv()
+from crawler.models.Crawler import Crawler
+from crawler.models.Paper import Paper, Papers
 
 # Download 'punkt' tokenizer if needed, but do it quietly.
 try:
@@ -13,27 +11,23 @@ try:
 except nltk.downloader.DownloadError:
     nltk.download('punkt', quiet=True)
 
-from crawler.services.crawl import get_papers, crawl_paper
-
 def main():
     parser = argparse.ArgumentParser(description='Run crawler over papers')
     parser.add_argument('--max-articles', type=int, default=5)
     parser.add_argument('--ignore-cache', action='store_true', default=False)
     args = parser.parse_args()
 
-    if not os.environ.get('DATABASE_URL'):
-        print('DATABASE_URL env is required', file=sys.stderr)
-        sys.exit(1)
-
     overall_start_time = time.time()
-    papers = get_papers()
+    papers = Papers().load()
     all_stats = []
     total_downloaded = 0
     total_failed = 0
 
+    crawler = Crawler(max_articles=args.max_articles)
+
     for paper in papers:
         paper_start_time = time.time()
-        crawl_result = crawl_paper(paper, max_articles=args.max_articles, ignore_cache=args.ignore_cache)
+        crawl_result = crawler.crawl_paper(paper, ignore_cache=args.ignore_cache)
         paper_elapsed_time = time.time() - paper_start_time
 
         if crawl_result and crawl_result.stats:

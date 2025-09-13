@@ -24,7 +24,7 @@ def main():
         sys.exit(1)
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    json_path = os.path.join(repo_root, 'crawler', 'db', 'newspaper_store.json')
+    json_path = os.path.join(repo_root, 'db', 'newspaper_store.json')
     with open(json_path, 'r') as f:
         papers_json = json.load(f)
 

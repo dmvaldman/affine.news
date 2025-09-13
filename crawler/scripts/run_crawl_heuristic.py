@@ -10,8 +10,7 @@ from datetime import date
 
 from crawler.models.Article import Article
 from crawler.models.Crawler import Crawl, CrawlStatus
-from crawler.db.models.DBPaper import DBPaper
-
+from crawler.models.Paper import Papers
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
@@ -245,11 +244,11 @@ def main():
     parser = argparse.ArgumentParser(description='Run HeuristicCrawler over papers.')
     parser.add_argument('--max-articles', type=int, default=None,
                         help='Maximum number of articles to find per paper.')
-    parser.add_argument('--ignore-cache', action='store_true', default=True,
+    parser.add_argument('--ignore-cache', action='store_true', default=False,
                         help='Ignore cache and re-crawl papers.')
     args = parser.parse_args()
 
-    papers = DBPaper.get_all()
+    papers = Papers().load()
     crawler = HeuristicCrawler(max_articles=args.max_articles)
 
     for paper in papers:

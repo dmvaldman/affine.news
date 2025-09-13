@@ -34,6 +34,7 @@ class Papers:
     def load(self):
         from crawler.db.models.DBPaper import DBPaper
         self.papers = DBPaper.get_all()
+        return self
 
     def save(self):
         from crawler.db.models.DBPaper import DBPaper
