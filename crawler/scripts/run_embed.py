@@ -13,7 +13,12 @@ def main():
 
     try:
         with conn.cursor() as cur:
-            cur.execute("SELECT url, title FROM article WHERE title_embedding IS NULL AND title IS NOT NULL AND title != ''")
+            cur.execute("""
+              SELECT url, title_translated FROM article
+              WHERE title_embedding IS NULL
+              AND title_translated IS NOT NULL
+              AND title_translated != ''
+            """)
             articles_to_embed = cur.fetchall()
 
         print(f"Found {len(articles_to_embed)} articles to embed.")
