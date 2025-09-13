@@ -120,6 +120,7 @@ body {
   font-size: 15px;
   padding-bottom: 5px;
   padding-inline-start: 0;
+  transition: background-color .5s ease-out; /* Smooth transition for background color */
 }
 
 #searchResults .iso {
@@ -191,6 +192,10 @@ input[type=text] {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#searchResults .highlight {
+  background-color: #abbdcf; /* The color it will flash to */
 }
 
 

@@ -69,6 +69,15 @@ function initializeMap(papersByCountry) {
                         top: scrollToPosition,
                         behavior: 'smooth'
                     });
+
+                    // Flash the element using transitions
+                    const ulElement = targetElement.parentElement;
+                    ulElement.classList.add('highlight');
+
+                    // After a short delay, remove the class to fade back out
+                    setTimeout(() => {
+                        ulElement.classList.remove('highlight');
+                    }, 500); // This controls how long the highlight stays on
                 }
             });
         },
