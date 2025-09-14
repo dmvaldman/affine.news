@@ -132,28 +132,11 @@ window.addEventListener('resize', function(){
 })
 
 $(function() {
-    $('input[name="dates"]').daterangepicker({
-        opens: 'left',
-        startDate: moment().subtract(6, 'days'),
-        endDate: moment(),
-        locale: {
-          format: 'YYYY-MM-DD'
-        },
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 3 Days': [moment().subtract(2, 'days'), moment()],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()]
-        }
-    }).on('apply.daterangepicker', function(ev, picker) {
-        const startDate = picker.startDate.format('YYYY-MM-DD');
-        const endDate = picker.endDate.format('YYYY-MM-DD');
-        updateMapForDateRange(startDate, endDate);
-    });
-
-    // Trigger initial map load after daterangepicker is initialized
-    const initialDates = $('input[name="dates"]').val().split(' - ');
-    updateMapForDateRange(initialDates[0], initialDates[1]);
+    // --- Targeted Change: Update initial map load to use a 3-day range ---
+    const endDate = moment().format('YYYY-MM-DD');
+    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD');
+    updateMapForDateRange(startDate, endDate);
+    // --- End Targeted Change ---
 
     // Load daily topics on page load
     loadDailyTopics();
@@ -210,10 +193,12 @@ async function search(){
         return
     }
 
-    const dates = $('input[name="dates"]').val().split(' - ')
-
-    const date_start = dates[0]
-    const date_end = dates[1]
+    // --- Targeted Change: Hardcode date range ---
+    const endDate = moment().format('YYYY-MM-DD');
+    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD'); // Last 3 days
+    const date_start = startDate;
+    const date_end = endDate;
+    // --- End Targeted Change ---
 
     const article_params = {
         query: query_str,
