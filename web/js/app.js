@@ -6,7 +6,7 @@ const topicsContainerEl = document.getElementById("topicsContainer");
 const url_base = "/api/";
 
 let map; // Will be initialized after fetching paper data
-let currentMapData = {}; // Holds the base state of the map for the current date range
+let origMapData = {}; // Holds the base state of the map for the current date range
 let hasSearchedOnce = false;
 
 async function loadDailyTopics() {
@@ -20,7 +20,7 @@ async function loadDailyTopics() {
         const topics = data.topics;
 
         if (topics && topics.length > 0) {
-            topicsContainerEl.innerHTML = '<span>Trending:</span>';
+            // topicsContainerEl.innerHTML = '<span>Trending:</span>';
             topics.forEach(topic => {
                 const topicEl = document.createElement('button');
                 topicEl.classList.add('topic-button');
@@ -58,27 +58,29 @@ async function updateMapForDateRange(date_start, date_end) {
 
 
 function initializeMap(papersByCountry) {
-    const mapData = {};
     const allCountries = Datamap.prototype.worldTopo.objects.world.geometries
         .map(g => g.id)
         .filter(id => id !== '-99'); // Exclude the invalid country code
 
+    const noDataColor = 'rgba(222, 222, 222, 0.6)';
+    const defaultFillColor = 'rgba(182, 184, 196, 0.6)';
+
     allCountries.forEach(countryIso => {
         if (!papersByCountry[countryIso]) {
-            mapData[countryIso] = { fillKey: 'noData' };
+            origMapData[countryIso] = { fillColor: noDataColor };
         } else {
-            mapData[countryIso] = { fillKey: 'defaultFill' };
+            origMapData[countryIso] = { fillColor: defaultFillColor };
         }
     });
 
-    currentMapData = mapData;
+    // Copy because the map updates in place
+    const currentMapData = { ...origMapData };
 
     map = new Datamap({
         element: document.getElementById('map'),
         projection: 'mercator',
         fills: {
-            defaultFill: 'rgba(182,184,196,0.6)',
-            noData: 'rgba(222, 222, 222, 0.6)'
+            defaultFill: defaultFillColor
         },
         data: currentMapData,
         responsive: true,
@@ -214,9 +216,9 @@ async function search(){
 
     const response = await fetch(articles_url)
     const data = await response.json()
-
     const formattedSearchData = formatData(data);
-    const newMapData = { ...currentMapData, ...formattedSearchData };
+    const newMapData = { ...origMapData, ...formattedSearchData };
+
     map.updateChoropleth(newMapData);
 
     searchResultsEl.innerHTML = ''

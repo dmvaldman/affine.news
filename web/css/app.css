@@ -11,7 +11,6 @@ body {
 }
 
 .container{
-  width: 90%;
   max-width: 1200px;
   height: 100vh;
   margin: 0 auto;
@@ -27,23 +26,22 @@ body {
 }
 
 .landing #map,
-.landing #searchResults{
+.landing #searchResults,
+.landing #mapContainer
+{
   display: none;
 }
 
-.landing #mapContainer{
-  display: none;
-}
-
-.landing #topicsContainer{
-  display: flex;
-  justify-content: center;
+.landing #searchContainer,
+.landing #topicsContainer
+{
+    justify-content: center;
 }
 
 #mapContainer {
   padding-top: 20px;
   overflow: hidden;
-  height: calc(50% - 25px);
+  height: 52vw;
 }
 
 #map {
@@ -55,7 +53,7 @@ body {
 
 #searchResults {
   position: relative;
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 
 #searchContainer {
@@ -64,7 +62,6 @@ body {
   margin: 0 auto;
   width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
@@ -94,21 +91,20 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  height: 50px;
+  gap: 4px;
 }
 
 #topicsContainer span {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .topic-button {
-  padding: 6px 12px;
+  padding: 4px 10px;
   border: 1px solid #ccc;
   border-radius: 15px;
   background-color: #fff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: background-color 0.2s, color 0.2s;
 }
 
@@ -125,7 +121,8 @@ body {
 #queryContainer .searchButton {
   height: 100%;
   width: 25%;
-  max-width: 200px;
+  min-width: 70px;
+  max-width: 150px;
   border: 1px solid black;
   background: black;
   text-align: center;
@@ -153,8 +150,9 @@ body {
 
 #searchResults ul {
   font-size: 15px;
-  padding-bottom: 5px;
   padding-inline-start: 0;
+  /* margin-block-start: 12px;
+  margin-block-end: 12px; */
   transition: background-color .5s ease-out; /* Smooth transition for background color */
 }
 
@@ -182,8 +180,8 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  padding-left: 6px;
-  border-left: 2px solid #8b94dd;
+  padding-left: 5px;
+  border-left: 2px solid #cacde4;
 }
 
 #searchResults li:last-child {

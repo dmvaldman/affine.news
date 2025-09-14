@@ -1,4 +1,5 @@
 import { Client } from 'pg'
+import crypto from 'crypto'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -29,7 +30,24 @@ export default async function handler(req, res) {
       if (!papersByCountry[iso]) papersByCountry[iso] = []
       papersByCountry[iso].push(r.url)
     }
-    res.status(200).json(papersByCountry)
+
+    // Serialize once and compute ETag
+    const body = JSON.stringify(papersByCountry)
+    const etag = '"' + crypto.createHash('sha1').update(body).digest('hex') + '"'
+
+    // Caching headers: browser and Vercel edge (CDN)
+    res.setHeader('Content-Type', 'application/json')
+    res.setHeader('Cache-Control', 'public, max-age=3600') // 1 hour browser cache
+    res.setHeader('CDN-Cache-Control', 'public, s-maxage=604800, stale-while-revalidate=86400') // 7d edge cache, 1d SWR
+    res.setHeader('ETag', etag)
+
+    // Conditional request support
+    if (req.headers['if-none-match'] === etag) {
+      res.status(304).end()
+      return
+    }
+
+    res.status(200).send(body)
   } catch (e) {
     console.error(e)
     res.status(500).json({ error: 'Internal error' })
