@@ -12,7 +12,7 @@ body {
 
 .container{
   width: 90%;
-  max-width: 1000px;
+  max-width: 1200px;
   height: 100vh;
   margin: 0 auto;
   position: relative;
@@ -64,18 +64,15 @@ body {
 }
 
 #topicsContainer {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 20px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 #topicsContainer span {
-  font-weight: bold;
-  margin-right: 5px;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .topic-button {
@@ -194,16 +191,6 @@ body {
 
 input[type=text] {
   padding: 4px;
-}
-
-@media (pointer:coarse) {
-    #searchResults li {
-      overflow: visible;
-    }
-
-    #searchResults ul {
-      overflow-x: scroll;
-   }
 }
 
 .loader {
