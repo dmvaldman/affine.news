@@ -19,6 +19,27 @@ body {
   padding: 20px;
 }
 
+.landing .container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.landing #map,
+.landing #searchResults{
+  display: none;
+}
+
+.landing #mapContainer{
+  display: none;
+}
+
+.landing #topicsContainer{
+  display: flex;
+  justify-content: center;
+}
+
 #mapContainer {
   padding-top: 20px;
   overflow: hidden;
@@ -74,6 +95,7 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
+  height: 50px;
 }
 
 #topicsContainer span {

@@ -7,6 +7,7 @@ const url_base = "/api/";
 
 let map; // Will be initialized after fetching paper data
 let currentMapData = {}; // Holds the base state of the map for the current date range
+let hasSearchedOnce = false;
 
 async function loadDailyTopics() {
     try {
@@ -131,14 +132,8 @@ window.addEventListener('resize', function(){
     }
 })
 
-$(function() {
-    // --- Targeted Change: Update initial map load to use a 3-day range ---
-    const endDate = moment().format('YYYY-MM-DD');
-    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD');
-    updateMapForDateRange(startDate, endDate);
-    // --- End Targeted Change ---
-
-    // Load daily topics on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Load topics only
     loadDailyTopics();
 });
 
@@ -193,27 +188,29 @@ async function search(){
         return
     }
 
-    // --- Targeted Change: Hardcode date range ---
+    // Last 3 days
     const endDate = moment().format('YYYY-MM-DD');
-    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD'); // Last 3 days
-    const date_start = startDate;
-    const date_end = endDate;
-    // --- End Targeted Change ---
+    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD');
 
-    const article_params = {
-        query: query_str,
-        date_start: date_start,
-        date_end: date_end
-    }
-
+    const article_params = { query: query_str, date_start: startDate, date_end: endDate };
     const stat_params = {
         query: query_str,
-        date_start: moment(date_start).subtract(10, 'days').format('YYYY-MM-DD'),
-        date_end: moment(date_end).add(10, 'days').format('YYYY-MM-DD')
-    }
+        date_start: moment(startDate).subtract(10, 'days').format('YYYY-MM-DD'),
+        date_end: moment(endDate).add(10, 'days').format('YYYY-MM-DD')
+    };
 
     Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))
     Object.keys(stat_params).forEach(key => stats_url.searchParams.append(key, stat_params[key]))
+
+    // On first search: initialize map under the bar
+    if (!hasSearchedOnce) {
+        // Show map container before initializing so dimensions are available
+        document.body.classList.remove('landing');
+        const end = moment().format('YYYY-MM-DD');
+        const start = moment().subtract(2, 'days').format('YYYY-MM-DD');
+        await updateMapForDateRange(start, end);
+        hasSearchedOnce = true;
+    }
 
     const response = await fetch(articles_url)
     const data = await response.json()
@@ -297,8 +294,6 @@ async function search(){
 
     searchButtonEl.disabled = false;
     searchButtonEl.innerHTML = 'Search';
-
-    console.log('articles response', data)
 }
 
 
