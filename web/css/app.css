@@ -41,8 +41,6 @@ body {
 }
 
 #searchResults {
-  height: calc(50% - 25px);
-  overflow-y: auto;
   position: relative;
   padding-top: 20px;
 }
