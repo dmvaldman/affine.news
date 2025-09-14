@@ -135,8 +135,32 @@ window.addEventListener('resize', function(){
 })
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Enter landing state: hide map/results, center search
+    document.body.classList.add('landing');
     // Load topics only
     loadDailyTopics();
+
+    // --- Modal Logic ---
+    const helpIcon = document.getElementById('helpIcon');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalClose = document.getElementById('modalClose');
+
+    if (helpIcon && modalOverlay && modalClose) {
+        helpIcon.addEventListener('click', () => {
+            modalOverlay.classList.add('visible');
+        });
+
+        modalClose.addEventListener('click', () => {
+            modalOverlay.classList.remove('visible');
+        });
+
+        // Optional: Close modal by clicking on the overlay
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('visible');
+            }
+        });
+    }
 });
 
 function formatData(data){
