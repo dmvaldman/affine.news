@@ -40,6 +40,12 @@ CREATE TABLE IF NOT EXISTS article (
     FOREIGN KEY(crawl_uuid) REFERENCES crawl(uuid),
 );
 
+CREATE TABLE IF NOT EXISTS daily_topics (
+    id SERIAL PRIMARY KEY,
+    topic TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 CREATE INDEX IF NOT EXISTS idx_article_publish_at ON article (publish_at);
 CREATE INDEX IF NOT EXISTS idx_article_paper_uuid ON article (paper_uuid);
 CREATE INDEX IF NOT EXISTS idx_crawl_paper_uuid ON crawl (paper_uuid);

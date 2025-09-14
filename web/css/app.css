@@ -3,7 +3,7 @@
 body {
   margin: 0;
   background: #f2f2f2;
-  font-family: 'Inconsolata';
+  font-family: 'Inconsolata', monospace;
 }
 
 * {
@@ -63,6 +63,37 @@ body {
   outline: none;
   color: #3b3b3b;
   float: left;
+}
+
+#topicsContainer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#topicsContainer span {
+  font-weight: bold;
+  margin-right: 5px;
+  font-size: 15px;
+}
+
+.topic-button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.topic-button:hover {
+  background-color: #02386F;
+  color: white;
+  border-color: #02386F;
 }
 
 #queryContainer .searchQuery:focus{

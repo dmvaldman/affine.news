@@ -1,11 +1,40 @@
 const searchButtonEl = document.getElementById("submitQuery");
 const searchBarEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
+const topicsContainerEl = document.getElementById("topicsContainer");
 
 const url_base = "/api/";
 
 let map; // Will be initialized after fetching paper data
 let currentMapData = {}; // Holds the base state of the map for the current date range
+
+async function loadDailyTopics() {
+    try {
+        const response = await fetch('/static/daily_topics.json');
+        if (!response.ok) {
+            console.error("Could not load daily topics.");
+            return;
+        }
+        const data = await response.json();
+        const topics = data.topics;
+
+        if (topics && topics.length > 0) {
+            topicsContainerEl.innerHTML = '<span>Trending:</span>';
+            topics.forEach(topic => {
+                const topicEl = document.createElement('button');
+                topicEl.classList.add('topic-button');
+                topicEl.textContent = topic;
+                topicEl.onclick = () => {
+                    searchBarEl.value = topic;
+                    search(); // Trigger a search with the topic
+                };
+                topicsContainerEl.appendChild(topicEl);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to fetch or process daily topics:', error);
+    }
+}
 
 async function updateMapForDateRange(date_start, date_end) {
     try {
@@ -123,8 +152,7 @@ $(function() {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
             'Last 3 Days': [moment().subtract(2, 'days'), moment()],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()]
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()]
         }
     }).on('apply.daterangepicker', function(ev, picker) {
         const startDate = picker.startDate.format('YYYY-MM-DD');
@@ -135,6 +163,9 @@ $(function() {
     // Trigger initial map load after daterangepicker is initialized
     const initialDates = $('input[name="dates"]').val().split(' - ');
     updateMapForDateRange(initialDates[0], initialDates[1]);
+
+    // Load daily topics on page load
+    loadDailyTopics();
 });
 
 function formatData(data){

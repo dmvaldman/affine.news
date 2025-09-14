@@ -9,7 +9,6 @@ import google.generativeai as genai
 import numpy as np
 
 SIMILARITY_THRESHOLD = 0.5  # Minimum similarity score to be included in results
-CLUSTERING_DISTANCE_THRESHOLD = 0.15 # Cosine distance threshold for clustering
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
