@@ -13,8 +13,7 @@ debugger;
 
 async function loadDailyTopics() {
     try {
-        const storeId = 'store_nSSyC9tSUO9cRAe6';
-        const blobUrl = `https://blob.vercel-storage.com/daily_topics.json?storeId=${storeId}`;
+        const blobUrl = `https://nssyc9tsuo9crae6.public.blob.vercel-storage.com/daily_topics.json`;
         const response = await fetch(blobUrl);
         if (!response.ok) {
             console.error("Could not load daily topics.");
