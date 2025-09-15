@@ -7,6 +7,7 @@ import json
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from bertopic import BERTopic
+from vercel_blob import put as vercel_put
 
 # Add crawler directory to path to allow imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -77,7 +78,7 @@ def main():
         for topic in final_topics:
             print(f"- {topic}")
 
-        print("Saving topics to database and JSON file...")
+        print("Saving topics to database and uploading to Vercel Blob...")
         with conn.cursor() as cur:
             # Use a single timestamp for the entire batch
             batch_timestamp = datetime.now()
@@ -90,13 +91,16 @@ def main():
 
         conn.commit()
 
-        # Save to a static JSON file for the frontend
-        output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'web', 'static', 'daily_topics.json'))
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump({"topics": final_topics}, f, ensure_ascii=False, indent=2)
+        # Upload to Vercel Blob
+        json_data = json.dumps({"topics": final_topics}, ensure_ascii=False, indent=2)
+        blob = vercel_put(
+            'daily_topics.json',
+            json_data.encode('utf-8'), # Encode the string to bytes
+            {'access': 'public', 'add_random_suffix': 'false', 'token': os.getenv('BLOB_READ_WRITE_TOKEN')}
+        )
 
-        print(f"Successfully saved {len(final_topics)} topics to the database and to {output_path}")
+        print(f"Successfully saved {len(final_topics)} topics to the database.")
+        print(f"Uploaded to Vercel Blob: {blob['url']}")
 
     except psycopg2.Error as e:
         print(f"Database error: {e}", file=sys.stderr)

@@ -1,6 +1,5 @@
 import os
-# from google.cloud import translate
-from google.cloud import translate_v3 as translate
+from google.cloud import translate
 
 def get_translator():
     """

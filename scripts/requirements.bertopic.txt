@@ -11,3 +11,4 @@ hdbscan==0.8.33
 
 google-generativeai==0.7.2
 pydantic==2.8.2
+vercel-blob==0.4.2

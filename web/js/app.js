@@ -9,9 +9,13 @@ let map; // Will be initialized after fetching paper data
 let origMapData = {}; // Holds the base state of the map for the current date range
 let hasSearchedOnce = false;
 
+debugger;
+
 async function loadDailyTopics() {
     try {
-        const response = await fetch('/static/daily_topics.json');
+        const storeId = 'store_nSSyC9tSUO9cRAe6';
+        const blobUrl = `https://blob.vercel-storage.com/daily_topics.json?storeId=${storeId}`;
+        const response = await fetch(blobUrl);
         if (!response.ok) {
             console.error("Could not load daily topics.");
             return;
@@ -135,8 +139,7 @@ window.addEventListener('resize', function(){
 })
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Enter landing state: hide map/results, center search
-    document.body.classList.add('landing');
+    debugger;
     // Load topics only
     loadDailyTopics();
 
