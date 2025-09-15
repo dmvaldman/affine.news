@@ -18,17 +18,22 @@
 
     <!-- Preload the daily topics from Vercel Blob -->
     <link rel="preload" href="https://nssyc9tsuo9crae6.public.blob.vercel-storage.com/daily_topics.json" as="fetch" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Preload the font stylesheet to reduce first-paint delay -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=optional">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=optional" rel="stylesheet">
 </head>
 <body class="landing">
     <div class="container">
+        <div id="tagline">Explore bias in news reporting</div>
         <div id="searchContainer">
             <div id="queryContainer">
-                <input id="search" type="text" class="searchQuery" placeholder="search...">
+                <input id="search" type="text" class="searchQuery" placeholder="search the news...">
                 <button id="submitQuery" type="submit" class="searchButton">Search</button>
             </div>
         </div>
         <div id="topicsContainer"></div>
-        <div id="tagline">Explore bias in news reporting</div>
         <div id="mapContainer">
             <div id="map"></div>
         </div>

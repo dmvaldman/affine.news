@@ -9,8 +9,6 @@ let map; // Will be initialized after fetching paper data
 let origMapData = {}; // Holds the base state of the map for the current date range
 let hasSearchedOnce = false;
 
-debugger;
-
 async function loadDailyTopics() {
     try {
         const blobUrl = `https://nssyc9tsuo9crae6.public.blob.vercel-storage.com/daily_topics.json`;
@@ -138,7 +136,6 @@ window.addEventListener('resize', function(){
 })
 
 document.addEventListener('DOMContentLoaded', () => {
-    debugger;
     // Load topics only
     loadDailyTopics();
 
@@ -189,6 +186,14 @@ function formatData(data){
     }
 
     return formattedData;
+}
+
+function formatDate(input){
+  const d = new Date(input)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  const yy = String(d.getFullYear() % 100).padStart(2, '0')
+  return `${mm}/${dd}/${yy}`
 }
 
 searchBarEl.addEventListener('keyup', function(e) {
@@ -295,18 +300,18 @@ async function search(){
         countryEl.appendChild(toggleEl)
 
         for (let result of articles){
-            let date = new Date(result.publish_at).toDateString()
+            let dateStr = formatDate(result.publish_at)
             let url = result.article_url
 
             let resultEl = document.createElement('li')
 
             let dateEl = document.createElement('div')
-            let dateTextEl = document.createTextNode(date)
+            let dateTextEl = document.createTextNode(dateStr)
             dateEl.classList.add('date')
             dateEl.appendChild(dateTextEl)
 
             let urlEl = document.createElement('a')
-            let textEl = document.createTextNode('(' + parseInt(result.similarity * 100) + ') ' + result.title)
+            let textEl = document.createTextNode(result.title)
             urlEl.title = result.title
             urlEl.appendChild(textEl)
 
@@ -315,7 +320,13 @@ async function search(){
             else
                 urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
 
+            // Add minimal domain (no http/https or www)
+            let domainEl = document.createElement('span')
+            domainEl.className = 'domain'
+            domainEl.textContent = new URL(url).hostname.replace(/^www\./, '') + ' (' + parseInt(result.similarity * 100) + ') '
+
             resultEl.appendChild(dateEl)
+            resultEl.appendChild(domainEl)
             resultEl.appendChild(urlEl)
 
             countryEl.appendChild(resultEl)
