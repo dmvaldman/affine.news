@@ -35,7 +35,7 @@ def generate_topics(grouped_headlines: dict) -> List[str]:
         "Some headlines may be noisy or irrelevant. Ignore them.",
         "Avoid unnecessary adjectives/verbs unless necessary. Stick to the proper nouns.",
         "Use first and last names of people when applicable.",
-        "If a label is generic, ignore it. We want labels that call out specific events/people/places.",
+        "If a label is generic (10 people killed, etc), ignore it. We want labels that call out specific events/people/places.",
         "Return a list of topic labels, at least 2 and at most 6, however many you think are relevant.",
         ""
     ]
