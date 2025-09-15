@@ -8,7 +8,7 @@ from pgvector.psycopg2 import register_vector
 import google.generativeai as genai
 import numpy as np
 
-SIMILARITY_THRESHOLD = 0.5  # Minimum similarity score to be included in results
+SIMILARITY_THRESHOLD = 0.6  # Minimum similarity score to be included in results
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):

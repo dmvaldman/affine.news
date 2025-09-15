@@ -304,7 +304,7 @@ async function search(){
             dateEl.appendChild(dateTextEl)
 
             let urlEl = document.createElement('a')
-            let textEl = document.createTextNode(result.title)
+            let textEl = document.createTextNode('(' + parseInt(result.similarity * 100) + ') ' + result.title)
             urlEl.title = result.title
             urlEl.appendChild(textEl)
 
