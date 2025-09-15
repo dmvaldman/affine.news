@@ -170,7 +170,7 @@ function formatData(data){
         return {};
     }
 
-    const lengths = articlesByCountry.map(articles => articles.length);
+    const lengths = articlesByCountry.map(countryData => countryData.articles.length);
     const lengthMin = Math.min(...lengths);
     const lengthMax = Math.max(...lengths);
 
@@ -182,7 +182,7 @@ function formatData(data){
 
     for (let iso in data){
         formattedData[iso] = {
-            fillColor: paletteScale(data[iso].length)
+            fillColor: paletteScale(data[iso].articles.length)
         };
     }
 
@@ -254,14 +254,18 @@ async function search(){
         return;
     }
 
-    for (let country in data){
+    for (let iso in data){
+        const countryData = data[iso];
+        const countryName = countryData.country_name;
+        const articles = countryData.articles;
+
         let countryEl = document.createElement('ul')
         let anchorEl = document.createElement('a')
         let toggleEl = document.createElement('div')
 
-        anchorEl.textContent = country + ' (' + data[country].length + ' Results)'
-        anchorEl.href = '#' + country
-        anchorEl.id = country
+        anchorEl.textContent = countryName + ' (' + articles.length + ' Results)'
+        anchorEl.href = '#' + iso
+        anchorEl.id = iso
         anchorEl.classList.add('iso')
 
         toggleEl.textContent = '[–]';
@@ -288,7 +292,7 @@ async function search(){
         countryEl.appendChild(anchorEl)
         countryEl.appendChild(toggleEl)
 
-        for (let result of data[country]){
+        for (let result of articles){
             let date = new Date(result.publish_at).toDateString()
             let url = result.article_url
 

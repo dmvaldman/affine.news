@@ -47,9 +47,9 @@ class handler(BaseHTTPRequestHandler):
             with psycopg2.connect(db_url) as conn:
                 register_vector(conn)
                 with conn.cursor(cursor_factory=DictCursor) as cur:
-                    # Get all paper data once for efficient lookup
-                    cur.execute("SELECT uuid, iso, lang FROM paper")
-                    papers_data = {row['uuid']: {'iso': row['iso'], 'lang': row['lang']} for row in cur.fetchall()}
+                    # Fetch ISO, language, AND country name from the paper table
+                    cur.execute("SELECT uuid, iso, lang, country FROM paper")
+                    papers_data = {row['uuid']: {'iso': row['iso'], 'lang': row['lang'], 'country': row['country']} for row in cur.fetchall()}
 
                     # Use a CTE to calculate similarity once and then filter
                     cur.execute(
@@ -97,9 +97,12 @@ class handler(BaseHTTPRequestHandler):
                     continue
 
                 if iso not in by_iso:
-                    by_iso[iso] = []
+                    by_iso[iso] = {
+                        "country_name": paper_info.get('country'),
+                        "articles": []
+                    }
 
-                by_iso[iso].append({
+                by_iso[iso]["articles"].append({
                     "article_url": row['url'],
                     "title": row['title_translated'],
                     "publish_at": row['publish_at'].isoformat(),
