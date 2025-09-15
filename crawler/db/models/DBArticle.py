@@ -21,7 +21,7 @@ class DBArticle:
                         title_embedding,
                         paper_uuid,
                         crawl_uuid
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (url) DO UPDATE SET
                         url=EXCLUDED.url,
                         img_url=EXCLUDED.img_url,
@@ -29,7 +29,7 @@ class DBArticle:
                         title_translated=EXCLUDED.title_translated,
                         lang=EXCLUDED.lang,
                         publish_at=EXCLUDED.publish_at,
-                        title_embedding=EXCLUDED.title_embedding
+                        title_embedding=EXCLUDED.title_embedding,
                         paper_uuid=EXCLUDED.paper_uuid,
                         crawl_uuid=EXCLUDED.crawl_uuid
                     """, (
