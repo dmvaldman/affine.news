@@ -1,13 +1,8 @@
+from asyncio import start_server
 import uuid
-from enum import Enum
 from datetime import date
 import newspaper
 from crawler.models.Article import Article
-
-
-class CrawlStatus(Enum):
-    STARTED = 1
-    COMPLETED = 2
 
 
 class Crawler:
@@ -23,20 +18,6 @@ class Crawler:
             print('Building', paper)
 
         todays_date = date.today()
-
-        crawl = Crawl(
-            created_at=todays_date,
-            max_articles=self.max_articles,
-            status=CrawlStatus.STARTED,
-            paper_uuid=paper.uuid)
-
-        if ignore_cache and crawl.cache_hit():
-            crawl.update_status(CrawlStatus.COMPLETED)
-            if verbose:
-                print('Cache hit', crawl)
-            return crawl
-
-        crawl.save()
 
         try:
             paper_build = newspaper.build(
@@ -78,8 +59,7 @@ class Crawler:
                 img_url=img_url,
                 publish_at=paper_article.publish_date or todays_date,
                 lang=paper.lang,
-                paper_uuid=paper.uuid,
-                crawl_uuid=crawl.uuid
+                paper_uuid=paper.uuid
             )
 
             if ignore_cache and article.cache_hit():
@@ -89,8 +69,6 @@ class Crawler:
 
             article.save()
 
-        crawl.update_status(CrawlStatus.COMPLETED)
-
         if len(paper_build.articles) > 0:
             if verbose:
                 success_rate = 100 * count_success / (count_failure + count_success)
@@ -99,10 +77,11 @@ class Crawler:
             if verbose:
                 print('Crawl failure for ', paper)
 
-        crawl.stats['downloaded'] = count_success
-        crawl.stats['failed'] = count_failure
+        stats = {}
+        stats['downloaded'] = count_success
+        stats['failed'] = count_failure
 
-        return crawl
+        return stats
 
     def crawl_article(self, article, verbose=True):
         if verbose:

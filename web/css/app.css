@@ -249,8 +249,8 @@ input[type=text] {
 
 #helpIcon {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 40px;
+  right: 40px;
   background-color: black;
   color: white;
   width: 40px;

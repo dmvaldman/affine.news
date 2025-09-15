@@ -26,24 +26,6 @@ class DBCrawl:
         return True
 
     @staticmethod
-    def cache_hit(crawl):
-        from crawler.models.Crawler import CrawlStatus
-        with conn.cursor(cursor_factory=DictCursor) as c:
-            c.execute('''
-                SELECT * FROM crawl
-                WHERE paper_uuid=%s
-                AND status=%s
-                AND created_at>=%s
-                AND max_articles=%s
-            ''', (
-                str(crawl.paper_uuid),
-                CrawlStatus.COMPLETED.value,
-                crawl.created_at.isoformat(),
-                crawl.max_articles
-            ))
-            return c.fetchone()
-
-    @staticmethod
     def update_status(crawl, status):
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute('''

@@ -9,7 +9,6 @@ from yarl import URL
 from datetime import date
 
 from crawler.models.Article import Article
-from crawler.models.Crawler import Crawl, CrawlStatus
 from crawler.models.Paper import Papers
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
@@ -142,21 +141,6 @@ class HeuristicCrawler:
 
         todays_date = date.today()
 
-        crawl = Crawl(
-            created_at=todays_date,
-            max_articles=self.max_articles,
-            status=CrawlStatus.STARTED,
-            paper_uuid=paper.uuid
-        )
-
-        if not ignore_cache and crawl.cache_hit():
-            crawl.update_status(CrawlStatus.COMPLETED)
-            if verbose:
-                print('Cache hit', crawl)
-            return crawl
-
-        crawl.save()
-
         # Stats
         count_success = 0
         count_rejected = 0
@@ -214,8 +198,7 @@ class HeuristicCrawler:
                         img_url='',
                         publish_at=todays_date,
                         lang=getattr(paper, 'lang', ''),
-                        paper_uuid=paper.uuid,
-                        crawl_uuid=crawl.uuid
+                        paper_uuid=paper.uuid
                     )
 
                     if not ignore_cache and article.cache_hit():
@@ -231,10 +214,10 @@ class HeuristicCrawler:
                 if self.max_articles is not None and count_success >= self.max_articles:
                     break
 
-        crawl.update_status(CrawlStatus.COMPLETED)
-        crawl.stats['downloaded'] = count_success
-        crawl.stats['failed'] = count_rejected
-        return crawl
+        stats = {}
+        stats['downloaded'] = count_success
+        stats['failed'] = count_rejected
+        return stats
 
 
 def main():
@@ -256,8 +239,8 @@ def main():
         try:
             crawl_result = crawler.crawl_paper(paper, ignore_cache=args.ignore_cache)
             if crawl_result:
-                downloaded = crawl_result.stats.get('downloaded', 0)
-                rejected = crawl_result.stats.get('failed', 0) # 'failed' is 'rejected' in this context
+                downloaded = crawl_result.get('downloaded', 0)
+                rejected = crawl_result.get('failed', 0) # 'failed' is 'rejected' in this context
                 print(f"  -> Finished: {downloaded} articles accepted, {rejected} links rejected.")
             else:
                 print("  -> Crawl returned no result.")

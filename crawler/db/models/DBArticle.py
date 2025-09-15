@@ -41,7 +41,7 @@ class DBArticle:
                         article.publish_at.isoformat(),
                         article.title_embedding,
                         str(article.paper_uuid),
-                        str(article.crawl_uuid),
+                        article.crawl_uuid,
                     )
                 )
             except Exception as e:
@@ -50,8 +50,8 @@ class DBArticle:
 
     @staticmethod
     def cache_hit(article):
-        query = '''SELECT * FROM article WHERE url=%s OR title=%s'''
-        data = (article.url, article.title)
+        query = '''SELECT * FROM article WHERE url=%s and title is not null'''
+        data = (article.url, )
         with conn.cursor(cursor_factory=DictCursor) as c:
             c.execute(query, data)
             return c.fetchone()
