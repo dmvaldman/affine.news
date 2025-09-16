@@ -18,9 +18,9 @@ body {
 }
 
 .landing .container{
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; */
   min-height: 100vh;
 }
 
@@ -31,25 +31,39 @@ body {
   display: none;
 }
 
-.landing #searchContainer,
-.landing #topicsContainer
-{
+.landing #searchContainer {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.landing #topicsContainer {
+    position: fixed;
+    top: calc(50% + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 800px; /* To align with search bar */
     justify-content: center;
 }
 
 .landing #tagline {
   display: block;
-  padding-bottom: 100px;
+  /* padding-bottom: 60px; */ /* No longer needed with fixed positioning */
 }
 
 #tagline {
   display: none;
-  position: relative;
+  position: fixed;
+  top: calc(50% - 100px);
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
   font-size: 22px;
-  padding-bottom: 0px;
+  width: 100%; /* Ensure it centers across the page */
 }
 
 #mapContainer {
@@ -76,21 +90,14 @@ body {
   position: relative;
   margin: 0 auto;
   width: 100%;
-  display: flex;
-  align-items: center;
 }
 
 #queryContainer {
   height: 100%;
-  display: flex; /* Make this a flex container */
-  width: 100%;
-  max-width: 800px; /* Set the total max-width */
 }
 
 #queryContainer .searchQuery {
   height: 100%;
-  flex: 1; /* Allow the input to grow and fill available space */
-  min-width: 0; /* Prevents input from overflowing its container */
   font-size: 16px;
   padding: 10px;
   border: 3px solid black;
@@ -98,7 +105,8 @@ body {
   border-radius: 5px 0 0 5px;
   outline: none;
   color: #3b3b3b;
-  /* Remove float and width which are no longer needed */
+  width: calc(100% - 100px);
+  float: left;
 }
 
 #topicsContainer {
@@ -135,9 +143,7 @@ body {
 
 #queryContainer .searchButton {
   height: 100%;
-  width: 25%;
-  min-width: 70px;
-  max-width: 150px;
+  width: 100px;
   border: 3px solid black;
   background: black;
   text-align: center;
@@ -145,7 +151,7 @@ body {
   border-radius: 0 5px 5px 0;
   cursor: pointer;
   font-size: 18px;
-  float:left;
+  float:right;
 }
 
 #queryContainer .searchButton:hover {
@@ -175,6 +181,32 @@ body {
   transition: background-color .5s ease-out; /* Smooth transition for background color */
 }
 
+#searchResults li {
+  font-weight: normal;
+  padding-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 5px;
+  border-left: 2px solid #cacde4;
+  overflow-x: hidden;
+}
+
+#searchResults li:last-child {
+  padding-bottom: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  #searchResults ul {
+    overflow-x: scroll;
+    padding-bottom: 10px;
+  }
+  #searchResults li {
+    text-overflow: inherit;
+    overflow-x: visible;
+  }
+}
+
 #searchResults .iso {
   font-size: 16px;
   display: inline-block;
@@ -196,20 +228,6 @@ body {
 #searchResults .domain {
   /* margin-left: 6px; */
   font-size: 0.9em;
-}
-
-#searchResults li {
-  font-weight: normal;
-  padding-bottom: 5px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  padding-left: 5px;
-  border-left: 2px solid #cacde4;
-}
-
-#searchResults li:last-child {
-  padding-bottom: 0;
 }
 
 #searchResults .collapse {
@@ -249,8 +267,8 @@ input[type=text] {
 
 #helpIcon {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  bottom: 20px;
+  right: 20px;
   background-color: black;
   color: white;
   width: 40px;
@@ -278,13 +296,12 @@ input[type=text] {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   display: none; /* Hidden by default */
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
   z-index: 2000;
 }
 
 #modalOverlay.visible {
-  display: flex; /* Show the modal */
+  display: block; /* Show the modal */
 }
 
 #modalContent {
@@ -292,9 +309,12 @@ input[type=text] {
   padding: 40px;
   border-radius: 5px;
   max-width: 800px;
-  width: 90%;
+  margin: 0 auto;
   position: relative;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 #modalClose {

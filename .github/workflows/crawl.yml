@@ -8,7 +8,7 @@ on:
       max_articles:
         description: 'Max articles per paper'
         required: false
-        default: '30'
+        default: ''
 
 jobs:
   crawl:
