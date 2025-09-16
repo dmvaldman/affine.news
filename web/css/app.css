@@ -129,6 +129,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap; /* Prevent text inside from wrapping */
 }
 
 .topic-button:hover {
@@ -200,10 +201,28 @@ body {
   #searchResults ul {
     overflow-x: scroll;
     padding-bottom: 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
   #searchResults li {
     text-overflow: inherit;
     overflow-x: visible;
+  }
+
+  #searchResults ul::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+
+  /* Make topics scrollable on one line on mobile after search */
+  body:not(.landing) #topicsContainer {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  body:not(.landing) #topicsContainer::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
   }
 }
 
