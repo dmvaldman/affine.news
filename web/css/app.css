@@ -32,16 +32,16 @@ body {
 }
 
 .landing #searchContainer {
-    position: fixed;
+    position: absolute; /* Changed from fixed */
     top: 50%;
-    left: 0;
-    transform: translate(0, -50%);
-    padding-left: 20px;
-    padding-right: 20px;
+    left: 20px; /* Match container padding */
+    right: 20px; /* Match container padding */
+    transform: translateY(-50%); /* Only vertical transform needed */
+    /* The padding-left/right hacks are no longer needed */
 }
 
 .landing #topicsContainer {
-    position: fixed;
+    position: absolute; /* Changed from fixed */
     top: calc(50% + 20px);
     left: 50%;
     transform: translateX(-50%);
@@ -57,7 +57,7 @@ body {
 
 #tagline {
   display: none;
-  position: fixed;
+  position: absolute; /* Changed from fixed */
   top: calc(50% - 100px);
   left: 50%;
   transform: translate(-50%, -50%);
@@ -89,14 +89,9 @@ body {
   height: 50px;
   position: relative;
   margin: 0 auto;
-  width: 100%;
 }
 
-#queryContainer {
-  height: 100%;
-}
-
-#queryContainer .searchQuery {
+#searchContainer .searchQuery {
   height: 100%;
   font-size: 16px;
   padding: 10px;
@@ -138,11 +133,11 @@ body {
   border-color: #02386F;
 }
 
-#queryContainer .searchQuery:focus{
+#searchContainer .searchQuery:focus{
   color: black;
 }
 
-#queryContainer .searchButton {
+#searchContainer .searchButton {
   height: 100%;
   width: 100px;
   border: 3px solid black;
@@ -155,7 +150,7 @@ body {
   float:right;
 }
 
-#queryContainer .searchButton:hover {
+#searchContainer .searchButton:hover {
   background: black;
 }
 
