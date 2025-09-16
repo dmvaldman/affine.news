@@ -18,9 +18,6 @@ body {
 }
 
 .landing .container{
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
   min-height: 100vh;
 }
 
@@ -37,6 +34,7 @@ body {
     left: 20px; /* Match container padding */
     right: 20px; /* Match container padding */
     transform: translateY(-50%); /* Only vertical transform needed */
+    max-width: 800px;
     /* The padding-left/right hacks are no longer needed */
 }
 
@@ -148,6 +146,7 @@ body {
   cursor: pointer;
   font-size: 18px;
   float:right;
+  position: relative; /* Add this for positioning context */
 }
 
 #searchContainer .searchButton:hover {
@@ -268,7 +267,6 @@ input[type=text] {
   height: 26px;
   animation: spin 1s linear infinite;
   display: inline-block;
-  margin-left: 8px;
   vertical-align: middle;
 }
 
