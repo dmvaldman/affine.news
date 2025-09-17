@@ -2,6 +2,7 @@ const searchButtonEl = document.getElementById("submitQuery");
 const searchBarEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 const topicsContainerEl = document.getElementById("topicsContainer");
+const summaryEl = document.getElementById("summary");
 
 const url_base = "/api/";
 
@@ -246,7 +247,21 @@ async function search(){
     }
 
     const response = await fetch(articles_url)
-    const data = await response.json()
+    const { summary, articles } = await response.json()
+
+    // Render summary (if any)
+    if (summaryEl) {
+        if (summary && summary.trim().length > 0) {
+            summaryEl.innerHTML = '<h3>Summary</h3>'
+            const p = document.createElement('p')
+            p.textContent = summary
+            summaryEl.appendChild(p)
+        } else {
+            summaryEl.innerHTML = ''
+        }
+    }
+
+    const data = articles || {}
     const formattedSearchData = formatData(data);
     const newMapData = { ...origMapData, ...formattedSearchData };
 
