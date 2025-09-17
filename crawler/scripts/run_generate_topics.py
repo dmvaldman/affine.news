@@ -52,8 +52,8 @@ def main():
         topic_model = BERTopic(language="english", min_topic_size=5)
         topic_model.fit_transform(titles, embeddings=embeddings)
 
-        # Get the top 5 topics, excluding the outlier topic (-1)
-        top_topics = topic_model.get_topic_info()[1:8] # Slicing skips topic -1
+        # Get the top 10 topics, excluding the outlier topic (-1)
+        top_topics = topic_model.get_topic_info()[1:10] # Slicing skips topic -1
 
         if top_topics.empty:
             print("BERTopic did not identify any significant topics.")
