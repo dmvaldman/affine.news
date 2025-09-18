@@ -144,6 +144,7 @@ class HeuristicCrawler:
         # Stats
         count_success = 0
         count_rejected = 0
+        count_cache_hits = 0
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
@@ -201,9 +202,12 @@ class HeuristicCrawler:
                     )
 
                     if not ignore_cache and article.cache_hit():
+                        count_cache_hits += 1
                         if verbose:
                             print('Article cache hit', article)
                         continue
+
+                    print('Scraped', article)
 
                     article.save()
                     count_success += 1
@@ -216,6 +220,7 @@ class HeuristicCrawler:
         stats = {}
         stats['downloaded'] = count_success
         stats['failed'] = count_rejected
+        stats['cache_hits'] = count_cache_hits
         return stats
 
 
@@ -240,7 +245,8 @@ def main():
             if crawl_result:
                 downloaded = crawl_result.get('downloaded', 0)
                 rejected = crawl_result.get('failed', 0) # 'failed' is 'rejected' in this context
-                print(f"  -> Finished: {downloaded} articles accepted, {rejected} links rejected.")
+                cache_hits = crawl_result.get('cache_hits', 0)
+                print(f"  -> Finished: {downloaded} articles accepted, {rejected} links rejected, {cache_hits} cache hits.")
             else:
                 print("  -> Crawl returned no result.")
         except Exception as e:
