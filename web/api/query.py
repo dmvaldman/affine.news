@@ -37,8 +37,8 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
         Your are to extract critical bias across countries if present.
         Respond with groups of countries (use their ISO code) and a 2-8 word concise label indicating the bias.
         e.g. ["USA", "GBR", "CAN"], "Downplay incident". ["CHI", "RUS"], "Highlight Israel aggression".
-        We're only looking for obvious biases, not subtle differences. If subtle, ignore.
-        It's not enough for one article to simply mention a different aspect of a story. It must show a clear bias. E.g. pushing one narraitive vs its opposite.
+        We're only looking for obvious biases, not subtle differences. If subtle or unbiased, ignore.
+        It's not enough for one article to simply mention a different aspect of a story. It must show a clear bias. E.g. pushing one narrative vs its opposite.
         Not all countries need be included, in fact, many won't be.
         2-5 groups of countries/label total.
         If little divergence overall respond [], ''.

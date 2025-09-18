@@ -9,6 +9,7 @@ const url_base = "/api/";
 
 let map; // Will be initialized after fetching paper data
 let origMapData = {}; // Holds the base state of the map for the current date range
+let scrapedISOs = new Set(); // Accumulates all countries we know we scrape
 let hasSearchedOnce = false;
 
 async function loadDailyTopics() {
@@ -49,6 +50,9 @@ async function updateMapForDateRange(date_start, date_end) {
         const response = await fetch(url);
         const papersByCountry = await response.json();
 
+        // Add newly found countries to our master set of scraped countries
+        Object.keys(papersByCountry).forEach(iso => scrapedISOs.add(iso));
+
         const mapElement = document.getElementById('map');
         mapElement.innerHTML = ''; // Clear the map container
 
@@ -63,33 +67,31 @@ async function updateMapForDateRange(date_start, date_end) {
 function initializeMap(papersByCountry) {
     const allCountries = Datamap.prototype.worldTopo.objects.world.geometries
         .map(g => g.id)
-        .filter(id => id !== '-99'); // Exclude the invalid country code
-
-    const noDataColor = 'rgba(222, 222, 222, 0.6)';
-    const defaultFillColor = 'rgba(182, 184, 196, 0.6)';
+        .filter(id => id !== '-99');
 
     allCountries.forEach(countryIso => {
-        if (!papersByCountry[countryIso]) {
-            origMapData[countryIso] = { fillColor: noDataColor };
+        if (papersByCountry[countryIso] && papersByCountry[countryIso].length > 0) {
+            // Initially, countries with articles are white ("scraped, no articles for a query")
+            origMapData[countryIso] = { fillKey: 'NO_ARTICLES' };
         } else {
-            origMapData[countryIso] = { fillColor: defaultFillColor };
+            // All others get the default transparent fill ("not scraped")
+            origMapData[countryIso] = { fillKey: 'defaultFill' };
         }
     });
-
-    // Copy because the map updates in place
-    const currentMapData = { ...origMapData };
 
     map = new Datamap({
         element: document.getElementById('map'),
         projection: 'mercator',
         fills: {
-            defaultFill: defaultFillColor,
+            defaultFill: 'rgba(0,0,0,0)', // Not Scraped (Transparent)
             yellow: '#F5D442',
             blue: '#6EA7F2',
             red: '#E86E6E',
-            green: '#68C67C'
+            green: '#68C67C',
+            NO_BIAS: '#A9A9A9',      // Has articles, no bias group
+            NO_ARTICLES: '#FFFFFF',    // Scraped, but 0 articles for query
         },
-        data: currentMapData,
+        data: { ...origMapData },
         responsive: true,
         height: null,
         width: null,
@@ -170,27 +172,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function articlesToFills(data){
     const formattedData = {};
-    const articlesByCountry = Object.values(data);
-    if (articlesByCountry.length === 0) {
-        return {};
-    }
-
-    const lengths = articlesByCountry.map(countryData => countryData.articles.length);
-    const lengthMin = Math.min(...lengths);
-    const lengthMax = Math.max(...lengths);
-
-    // Create a color scale. Handle the edge case of only one value.
-    const domain = (lengthMin === lengthMax) ? [0, lengthMax] : [lengthMin, lengthMax];
-    const paletteScale = d3.scale.linear()
-            .domain(domain)
-            .range(["#a0a0f6", "#02386F"]); // Light to dark
-
     for (let iso in data){
-        formattedData[iso] = {
-            fillColor: paletteScale(data[iso].articles.length)
-        };
+        if (data[iso] && data[iso].articles && data[iso].articles.length > 0) {
+            formattedData[iso] = {
+                fillKey: 'NO_BIAS'
+            };
+        }
     }
-
     return formattedData;
 }
 
@@ -242,45 +230,53 @@ async function search(){
     Object.keys(stat_params).forEach(key => stats_url.searchParams.append(key, stat_params[key]))
 
     // On first search: initialize map under the bar
-    if (!hasSearchedOnce) {
+    if (scrapedISOs.size === 0) { // Only initialize if no countries are known to be scraped
         // Show map container before initializing so dimensions are available
         document.body.classList.remove('landing');
         const end = moment().format('YYYY-MM-DD');
         const start = moment().subtract(2, 'days').format('YYYY-MM-DD');
         await updateMapForDateRange(start, end);
-        hasSearchedOnce = true;
     }
 
     const response = await fetch(articles_url)
-    const { summary, articles: articlesData } = await response.json()
+    const { summary, articles } = await response.json()
 
-    const searchData = articlesToFills(articlesData);
-    const newMapData = { ...origMapData, ...searchData };
+    // Add any newly found countries from this search to our master list
+    Object.keys(articles).forEach(iso => scrapedISOs.add(iso));
 
-    map.updateChoropleth(newMapData);
+    // Reset map colors based on search results for all known scraped countries
+    const searchMapData = {};
+    for (const iso of scrapedISOs) {
+        if (articles[iso] && articles[iso].articles.length > 0) {
+            searchMapData[iso] = { fillKey: 'NO_BIAS' }; // Has articles, default to no bias
+        } else {
+            searchMapData[iso] = { fillKey: 'NO_ARTICLES' }; // Scraped, but no articles for this query
+        }
+    }
+    map.updateChoropleth(searchMapData);
 
-    // Apply structured summary groups to map fills and render custom legend
-    applySummaryToMap(summary)
+    // Apply summary overrides and render the comprehensive legend
+    applySummaryToMap(summary);
 
     searchResultsEl.innerHTML = ''
 
-    if (Object.keys(articlesData).length === 0) {
+    if (Object.keys(articles).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
         searchButtonEl.disabled = false;
         searchButtonEl.innerHTML = 'Search';
         return;
     }
 
-    for (let iso in articlesData){
-        const countryData = articlesData[iso];
+    for (let iso in articles){
+        const countryData = articles[iso];
         const countryName = countryData.country_name;
-        const articles = countryData.articles;
+        const countryArticles = countryData.articles;
 
         let countryEl = document.createElement('ul')
         let anchorEl = document.createElement('a')
         let toggleEl = document.createElement('div')
 
-        anchorEl.textContent = countryName + ' (' + articles.length + ' Results)'
+        anchorEl.textContent = countryName + ' (' + countryArticles.length + ' Results)'
         anchorEl.href = '#' + iso
         anchorEl.id = iso
         anchorEl.classList.add('iso')
@@ -309,7 +305,7 @@ async function search(){
         countryEl.appendChild(anchorEl)
         countryEl.appendChild(toggleEl)
 
-        for (let result of articles){
+        for (let result of countryArticles){
             let dateStr = formatDate(result.publish_at)
             let url = result.article_url
 
@@ -350,24 +346,24 @@ async function search(){
 }
 
 function applySummaryToMap(summary){
-    if (!map || !Array.isArray(summary)) {
-        if (legendEl) legendEl.innerHTML = ''; // Clear legend if no summary data
-        return;
-    }
+    if (!map) return;
 
-    // Define fill names and colors in order
+    const groups = Array.isArray(summary) ? summary : [];
+
     const fillNames = ['yellow','blue','red','green'];
     const fillHex = {
         yellow: '#F5D442',
         blue: '#6EA7F2',
         red: '#E86E6E',
-        green: '#68C67C'
+        green: '#68C67C',
+        NO_BIAS: '#A9A9A9',
+        NO_ARTICLES: '#FFFFFF',
     };
 
-    // Update map colors based on summary groups
+    // Override NO_BIAS countries with their group color
     const dataUpdates = {};
-    for (let i = 0; i < summary.length && i < fillNames.length; i++){
-        const group = summary[i] || {};
+    for (let i = 0; i < groups.length && i < fillNames.length; i++){
+        const group = groups[i] || {};
         const color = fillNames[i];
         const countries = Array.isArray(group.countries) ? group.countries : [];
         for (const iso of countries){
@@ -376,25 +372,36 @@ function applySummaryToMap(summary){
     }
     map.updateChoropleth(dataUpdates);
 
-    // Render the custom legend
+    // Render the comprehensive legend
     if (legendEl) {
         legendEl.innerHTML = ''; // Clear previous legend
-        for (let i = 0; i < summary.length && i < fillNames.length; i++){
-            const group = summary[i] || {};
-            const colorName = fillNames[i];
 
-            if (!group.label) continue;
+        const legendItems = [];
+        for (let i = 0; i < groups.length && i < fillNames.length; i++){
+            const group = groups[i] || {};
+            if (group.label) {
+                legendItems.push({ label: group.label, color: fillHex[fillNames[i]] });
+            }
+        }
 
+        legendItems.push({ label: 'No Relative Bias', color: fillHex.NO_BIAS });
+        legendItems.push({ label: 'No Articles Found', color: fillHex.NO_ARTICLES });
+        legendItems.push({ label: 'Not Scraped', color: 'rgba(0,0,0,0)' });
+
+        for (const itemData of legendItems) {
             const item = document.createElement('div');
             item.className = 'legend-item';
 
             const swatch = document.createElement('div');
             swatch.className = 'legend-swatch';
-            swatch.style.backgroundColor = fillHex[colorName];
+            swatch.style.backgroundColor = itemData.color;
+            if (itemData.label === 'Not Scraped') {
+                swatch.classList.add('transparent');
+            }
 
             const label = document.createElement('span');
             label.className = 'legend-label';
-            label.textContent = group.label;
+            label.textContent = itemData.label;
 
             item.appendChild(swatch);
             item.appendChild(label);

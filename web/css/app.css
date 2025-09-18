@@ -96,6 +96,10 @@ body {
     flex-shrink: 0;
 }
 
+#legend .legend-swatch.transparent {
+    border-style: dashed;
+}
+
 #legend .legend-label {
     font-size: 14px;
 }
