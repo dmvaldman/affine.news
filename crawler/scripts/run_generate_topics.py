@@ -96,7 +96,12 @@ def main():
         blob = vercel_put(
             'daily_topics.json',
             json_data.encode('utf-8'), # Encode the string to bytes
-            {'access': 'public', 'add_random_suffix': 'false', 'token': os.getenv('BLOB_READ_WRITE_TOKEN')}
+            {
+                'access': 'public',
+                'add_random_suffix': 'false',
+                'allowOverwrite': 'true',
+                'token': os.getenv('BLOB_READ_WRITE_TOKEN'),
+            }
         )
 
         print(f"Successfully saved {len(final_topics)} topics to the database.")
