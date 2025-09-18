@@ -1213,5 +1213,216 @@
         "whitelist": [
             "https://www.nrc.nl/nieuws/"
         ]
+    },
+    {
+        "country": "Portugal",
+        "ISO": "PRT",
+        "lang": "pt",
+        "url": "https://www.publico.pt/",
+        "category_urls": [
+            "https://www.publico.pt/mundo"
+        ],
+        "whitelist": [
+            "^https://www.publico.pt/\\d{4}/\\d{2}/\\d{2}/mundo/.*",
+        ]
+    },
+    {
+        "country": "Portugal",
+        "ISO": "PRT",
+        "lang": "pt",
+        "url": "https://expresso.pt/",
+        "category_urls": [
+            "https://expresso.pt/internacional/"
+        ]
+    },
+    {
+        "country": "Ireland",
+        "ISO": "IRL",
+        "lang": "en",
+        "url": "https://www.irishtimes.com/",
+        "category_urls": [
+            "https://www.irishtimes.com/world/"
+        ]
+    },
+    {
+        "country": "Ireland",
+        "ISO": "IRL",
+        "lang": "en",
+        "url": "https://www.independent.ie/",
+        "category_urls": [
+            "https://www.independent.ie/world-news/"
+        ]
+    },
+    {
+        "country": "Mongolia",
+        "ISO": "MNG",
+        "lang": "mn",
+        "url": "https://www.montsame.mn/",
+        "category_urls": [
+            "https://www.montsame.mn/mn/more/17"
+        ],
+        "whitelist": [
+            "https://www.montsame.mn/mn/read/"
+        ]
+    },
+    {
+        "country": "Mongolia",
+        "ISO": "MNG",
+        "lang": "mn",
+        "url": "https://eguur.mn/",
+        "category_urls": [
+            "https://eguur.mn/news/world/https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
+        ],
+        "whitelist": [
+            "^https://eguur.mn/\\d+/"
+        ]
+    },
+    {
+        "country": "Colombia",
+        "ISO": "COL",
+        "lang": "es",
+        "url": "https://www.elespectador.com/",
+        "category_urls": [
+            "https://www.elespectador.com/mundo/"
+        ]
+    },
+    {
+        "country": "Australia",
+        "ISO": "AUS",
+        "lang": "en",
+        "url": "https://www.theage.com.au/",
+        "category_urls": [
+            "https://www.theage.com.au/world/"
+        ]
+    },
+    {
+        "country": "Indonesia",
+        "ISO": "IDN",
+        "lang": "id",
+        "url": "https://www.kompas.com/",
+        "category_urls": [
+            "https://www.kompas.com/global/"
+        ]
+    },
+    {
+        "country": "Vietnam",
+        "ISO": "VNM",
+        "lang": "vi",
+        "url": "https://thanhnien.vn/",
+        "category_urls": [
+            "https://thanhnien.vn/the-gioi/"
+        ],
+        "whitelist": [
+            "^https://thanhnien.vn/[^/]+-\\d+\\.htm$"
+        ]
+    },
+    {
+        "country": "Thailand",
+        "ISO": "THA",
+        "lang": "en",
+        "url": "https://www.bangkokpost.com/",
+        "category_urls": [
+            "https://www.bangkokpost.com/world/"
+        ]
+    },
+    {
+        "country": "Pakistan",
+        "ISO": "PAK",
+        "lang": "ur",
+        "url": "https://www.jang.com.pk/",
+        "category_urls": [
+            "https://www.jang.com.pk/category/latest-news/world"
+        ],
+        "whitelist": [
+            "https://www.jang.com.pk/news/"
+        ]
+    },
+    {
+        "country": "Yemen",
+        "ISO": "YEM",
+        "lang": "ar",
+        "url": "https://www.sabanew.net/",
+        "category_urls": [
+            "https://www.sabanew.net/category/ar/1/"
+        ],
+        "whitelist": [
+            "https://www.sabanew.net/story/ar/"
+        ]
+    },
+    {
+        "country": "Yemen",
+        "ISO": "YEM",
+        "lang": "ar",
+        "url": "http://www.26sep.net/",
+        "category_urls": [
+            "https://26sep.net/index.php/global"
+        ]
+    },
+    {
+        "country": "Oman",
+        "ISO": "OMN",
+        "lang": "ar",
+        "url": "https://www.omandaily.om/",
+        "category_urls": [
+            "https://www.omandaily.om/%D8%A7%D9%84%D8%B9%D8%B1%D8%A8-%D9%88%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85"
+        ]
+    },
+    {
+        "country": "Oman",
+        "ISO": "OMN",
+        "lang": "ar",
+        "url": "https://alwatan.com/",
+        "category_urls": [
+            "https://alwatan.om/politics"
+        ],
+        "whitelist": [
+            "https://alwatan.om/article/"
+        ]
+    },
+    {
+        "country": "Greece",
+        "ISO": "GRC",
+        "lang": "el",
+        "url": "https://www.ekathimerini.com/",
+        "category_urls": [
+            "https://www.ekathimerini.com/politics/foreign-policy/"
+        ]
+    },
+    {
+        "country": "Poland",
+        "ISO": "POL",
+        "lang": "pl",
+        "url": "https://wyborcza.pl/",
+        "category_urls": [
+            "https://wyborcza.pl/0,75399.html"
+        ],
+        "whitelist": [
+            "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
+        ]
+    },
+    {
+        "country": "Finland",
+        "ISO": "FIN",
+        "lang": "fi",
+        "url": "https://www.iltalehti.fi/",
+        "category_urls": [
+            "https://www.iltalehti.fi/ulkomaat"
+        ]
+    },
+    {
+        "country": "Kazakhstan",
+        "ISO": "KAZ",
+        "lang": "ru",
+        "url": "https://www.inform.kz/",
+        "category_urls": [
+            "https://www.inform.kz/category/ca_c111",
+            "https://www.inform.kz/category/evraziya_c112",
+            "https://www.inform.kz/category/blizhnyy-vostok_c113",
+            "https://www.inform.kz/category/amerika_c114",
+            "https://www.inform.kz/category/afrika_s22956"
+        ],
+        "whitelist": [
+            "https://www.inform.kz/ru/"
+        ]
     }
 ]
