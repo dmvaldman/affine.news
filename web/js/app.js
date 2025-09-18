@@ -82,7 +82,11 @@ function initializeMap(papersByCountry) {
         element: document.getElementById('map'),
         projection: 'mercator',
         fills: {
-            defaultFill: defaultFillColor
+            defaultFill: defaultFillColor,
+            yellow: '#F5D442',
+            blue: '#6EA7F2',
+            red: '#E86E6E',
+            green: '#68C67C'
         },
         data: currentMapData,
         responsive: true,
@@ -163,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function formatData(data){
+function articlesToFills(data){
     const formattedData = {};
     const articlesByCountry = Object.values(data);
     if (articlesByCountry.length === 0) {
@@ -249,25 +253,13 @@ async function search(){
     const response = await fetch(articles_url)
     const { summary, articles } = await response.json()
 
-    debugger;
-
-    // Render summary (if any)
-    if (summaryEl) {
-        if (summary && summary.trim().length > 0) {
-            summaryEl.innerHTML = '<h3>Summary</h3>'
-            const p = document.createElement('p')
-            p.textContent = summary
-            summaryEl.appendChild(p)
-        } else {
-            summaryEl.innerHTML = ''
-        }
-    }
-
-    const data = articles || {}
-    const formattedSearchData = formatData(data);
-    const newMapData = { ...origMapData, ...formattedSearchData };
+    const searchData = articlesToFills(articles);
+    const newMapData = { ...origMapData, ...searchData };
 
     map.updateChoropleth(newMapData);
+
+    // Apply structured summary groups to map fills and legend (Datamaps built-in)
+    applySummaryToMap(summary)
 
     searchResultsEl.innerHTML = ''
 
@@ -356,4 +348,25 @@ async function search(){
     searchButtonEl.innerHTML = 'Search';
 }
 
+function applySummaryToMap(summary){
+    // Define fill names and colors in order; extend as needed
+    const fillNames = ['yellow','blue','red','green'];
+
+    // Extend fills with our group colors
+    const labels = {};
+    const dataUpdates = {};
+
+    for (let i = 0; i < summary.length && i < fillNames.length; i++){
+        const group = summary[i] || {};
+        const color = fillNames[i];
+        for (const iso of group.countries){
+            dataUpdates[iso] = { fillKey: color };
+        }
+        labels[color] = group.label;
+    }
+
+    map.updateChoropleth(dataUpdates);
+
+    map.legend({ labels });
+}
 

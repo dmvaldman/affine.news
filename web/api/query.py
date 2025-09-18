@@ -6,9 +6,10 @@ import psycopg2
 from psycopg2.extras import DictCursor
 from pgvector.psycopg2 import register_vector
 import google.generativeai as genai
+from pydantic import BaseModel
 import numpy as np
 
-SIMILARITY_THRESHOLD = 0.6  # Minimum similarity score to be included in results
+SIMILARITY_THRESHOLD = 0.63  # Minimum similarity score to be included in results
 
 def generate_summary(client: genai.GenerativeModel, search_query: str, results_by_iso: dict) -> str:
     """
@@ -25,16 +26,23 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
     if not results_by_iso:
         return ""
 
+    class Slant(BaseModel):
+        countries: list[str]
+        label: str
+
     prompt_parts = [
         f"""
-        You are an unbiased news analyst favoring no nation over another. Below are headlines from various countries for the same event, write a short paragraph summarizing the different angles and points of emphasis in the coverage. Highlight any divergence between countries. Be concise.
-        If there is no divergence or it's subtle, don't mention anything. We only want to call out clear biases. Use this format:
-        - [COUNTRY, COUNTRY, ..., COUNTRY] focuses on [feature1], [feature2]
-        - [COUNTRY, COUNTRY, ..., COUNTRY] focuses on [feature1], [feature2]
-        ...
-        2-3 lines. If there is no divergence (0-1 lines), just say "No divergence in coverage."
+        You're an unbiased global news analyst.
+        Below are news headlines from various countries for the same event.
+        Your are to extract critical bias across countries if present.
+        Respond with groups of countries (use their ISO code) and a 2-8 word concise label indicating the bias.
+        e.g. ["USA", "GBR", "CAN"], "Downplay incident". ["CHI", "RUS"], "Highlight Israel aggression".
+        We're only looking for obvious biases, not subtle differences. If subtle, ignore.
+        It's not enough for one article to simply mention a different aspect of a story. It must show a clear bias. E.g. pushing one narraitive vs its opposite.
+        Not all countries need be included, in fact, many won't be.
+        2-5 groups of countries/label total.
+        If little divergence overall respond [], ''.
         """,
-        f"\nUSER QUERY: \"{search_query}\"\n",
         "--- HEADLINES ---"
     ]
 
@@ -49,8 +57,14 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
 
     try:
         model = client.GenerativeModel('gemini-2.5-flash-lite')
-        response = model.generate_content(prompt)
-        return response.text
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=list[Slant]
+            )
+        )
+        return json.loads(response.text)
     except Exception as e:
         print(f"Error generating summary: {e}")
         return ""
