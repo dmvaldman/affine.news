@@ -186,7 +186,7 @@ class HeuristicCrawler:
                     continue
 
                 # Normalize the URL for cache checking by removing query params and fragments
-                url_normalized = str(full_url_obj.with_query(None).with_fragment(None)))
+                url_normalized = str(full_url_obj.with_query(None).with_fragment(None))
                 if url_normalized in seen_urls:
                     continue
                 seen_urls.add(url_normalized)

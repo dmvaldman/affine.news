@@ -80,7 +80,6 @@ class Crawler:
         stats = {}
         stats['downloaded'] = count_success
         stats['failed'] = count_failure
-        stats['cache_hits'] = count_cache_hits
 
         return stats
 
