@@ -204,6 +204,12 @@ async function search(){
     searchButtonEl.disabled = true;
     searchButtonEl.innerHTML = '<div class="loader"></div>';
 
+    const separator = document.querySelector('.section-separator');
+    if (separator) {
+        separator.textContent = "Loading...";
+        separator.classList.add('visible');
+    }
+
     const articles_url = new URL(url_base + "query", window.location.origin)
     const stats_url = new URL(url_base + "stats", window.location.origin)
 
@@ -259,7 +265,7 @@ async function search(){
     applySummaryToMap(summary);
 
     searchResultsEl.innerHTML = ''
-    document.querySelector('.section-separator').classList.remove('visible'); // Hide on new search
+    if (separator) separator.classList.remove('visible'); // Hide on new search, will be shown if results exist
 
     if (Object.keys(articles).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
@@ -268,7 +274,10 @@ async function search(){
         return;
     }
 
-    document.querySelector('.section-separator').classList.add('visible'); // Show when articles are ready to render
+    if (separator) {
+        separator.textContent = "Articles";
+        separator.classList.add('visible');
+    }
 
     for (let iso in articles){
         const countryData = articles[iso];
@@ -387,7 +396,7 @@ function applySummaryToMap(summary){
             }
         }
 
-        legendItems.push({ label: 'No Relative Bias', color: fillHex.NO_BIAS });
+        legendItems.push({ label: 'No Bias Found', color: fillHex.NO_BIAS });
         legendItems.push({ label: 'No Articles Found', color: fillHex.NO_ARTICLES });
         legendItems.push({ label: 'Not Scraped', color: 'rgba(0,0,0,0)' });
 
