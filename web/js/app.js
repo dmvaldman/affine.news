@@ -249,6 +249,8 @@ async function search(){
     const response = await fetch(articles_url)
     const { summary, articles } = await response.json()
 
+    debugger;
+
     // Render summary (if any)
     if (summaryEl) {
         if (summary && summary.trim().length > 0) {
