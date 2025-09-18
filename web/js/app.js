@@ -3,6 +3,7 @@ const searchBarEl = document.getElementById("search");
 const searchResultsEl = document.getElementById("searchResults");
 const topicsContainerEl = document.getElementById("topicsContainer");
 const summaryEl = document.getElementById("summary");
+const legendEl = document.getElementById("legend");
 
 const url_base = "/api/";
 
@@ -251,27 +252,27 @@ async function search(){
     }
 
     const response = await fetch(articles_url)
-    const { summary, articles } = await response.json()
+    const { summary, articles: articlesData } = await response.json()
 
-    const searchData = articlesToFills(articles);
+    const searchData = articlesToFills(articlesData);
     const newMapData = { ...origMapData, ...searchData };
 
     map.updateChoropleth(newMapData);
 
-    // Apply structured summary groups to map fills and legend (Datamaps built-in)
+    // Apply structured summary groups to map fills and render custom legend
     applySummaryToMap(summary)
 
     searchResultsEl.innerHTML = ''
 
-    if (Object.keys(data).length === 0) {
+    if (Object.keys(articlesData).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
         searchButtonEl.disabled = false;
         searchButtonEl.innerHTML = 'Search';
         return;
     }
 
-    for (let iso in data){
-        const countryData = data[iso];
+    for (let iso in articlesData){
+        const countryData = articlesData[iso];
         const countryName = countryData.country_name;
         const articles = countryData.articles;
 
@@ -349,24 +350,56 @@ async function search(){
 }
 
 function applySummaryToMap(summary){
-    // Define fill names and colors in order; extend as needed
+    if (!map || !Array.isArray(summary)) {
+        if (legendEl) legendEl.innerHTML = ''; // Clear legend if no summary data
+        return;
+    }
+
+    // Define fill names and colors in order
     const fillNames = ['yellow','blue','red','green'];
+    const fillHex = {
+        yellow: '#F5D442',
+        blue: '#6EA7F2',
+        red: '#E86E6E',
+        green: '#68C67C'
+    };
 
-    // Extend fills with our group colors
-    const labels = {};
+    // Update map colors based on summary groups
     const dataUpdates = {};
-
     for (let i = 0; i < summary.length && i < fillNames.length; i++){
         const group = summary[i] || {};
         const color = fillNames[i];
-        for (const iso of group.countries){
+        const countries = Array.isArray(group.countries) ? group.countries : [];
+        for (const iso of countries){
             dataUpdates[iso] = { fillKey: color };
         }
-        labels[color] = group.label;
     }
-
     map.updateChoropleth(dataUpdates);
 
-    map.legend({ labels });
+    // Render the custom legend
+    if (legendEl) {
+        legendEl.innerHTML = ''; // Clear previous legend
+        for (let i = 0; i < summary.length && i < fillNames.length; i++){
+            const group = summary[i] || {};
+            const colorName = fillNames[i];
+
+            if (!group.label) continue;
+
+            const item = document.createElement('div');
+            item.className = 'legend-item';
+
+            const swatch = document.createElement('div');
+            swatch.className = 'legend-swatch';
+            swatch.style.backgroundColor = fillHex[colorName];
+
+            const label = document.createElement('span');
+            label.className = 'legend-label';
+            label.textContent = group.label;
+
+            item.appendChild(swatch);
+            item.appendChild(label);
+            legendEl.appendChild(item);
+        }
+    }
 }
 

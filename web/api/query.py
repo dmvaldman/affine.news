@@ -49,6 +49,11 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
     # Format headlines for the prompt
     for iso, data in results_by_iso.items():
         country_name = data.get('country_name', iso)
+
+        # Only try to form summary opinion if there are enough articles
+        if len(data['articles']) < 3:
+            continue
+
         prompt_parts.append(f"\n{country_name}:")
         for article in data['articles']:
             prompt_parts.append(f"- {article['title']}")

@@ -78,6 +78,28 @@ body {
   padding-bottom: 0px !important;
 }
 
+#custom-legend {
+    padding-top: 10px;
+}
+
+#custom-legend .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#custom-legend .legend-swatch {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+#custom-legend .legend-label {
+    font-size: 14px;
+}
+
 #searchResults {
   position: relative;
   /* padding-top: 20px; */
