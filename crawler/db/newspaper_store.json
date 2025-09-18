@@ -1042,5 +1042,176 @@
         "category_urls": [
             "https://www.philstar.com/world"
         ]
+    },
+    {
+        "country": "Malaysia",
+        "ISO": "MYS",
+        "lang": "en",
+        "url": "https://www.thestar.com.my/",
+        "category_urls": [
+            "https://www.thestar.com.my/news/world/"
+        ]
+    },
+    {
+        "country": "Malaysia",
+        "ISO": "MYS",
+        "lang": "ms",
+        "url": "https://www.bharian.com.my/",
+        "category_urls": [
+            "https://www.bharian.com.my/dunia"
+        ]
+    },
+    {
+        "country": "Myanmar",
+        "ISO": "MMR",
+        "lang": "my",
+        "url": "https://myanmar-now.org/mm/",
+        "category_urls": [
+            "https://myanmar-now.org/mm/news/category/news/international-news/"
+        ],
+        "whitelist": [
+            "https://myanmar-now.org/mm/news/"
+        ]
+    },
+    {
+        "country": "Myanmar",
+        "ISO": "MMR",
+        "lang": "en",
+        "url": "https://www.irrawaddy.com/",
+        "category_urls": [
+            "https://www.irrawaddy.com/category/news/world"
+        ]
+    },
+    {
+        "country": "India",
+        "ISO": "IND",
+        "lang": "hi",
+        "url": "https://www.bhaskar.com/",
+        "category_urls": [
+            "https://www.bhaskar.com/international/"
+        ]
+    },
+    {
+        "country": "Qatar",
+        "ISO": "QAT",
+        "lang": "ar",
+        "url": "https://www.al-sharq.com/",
+        "category_urls": [
+            "https://al-sharq.com/category/%D8%B9%D8%B1%D8%A8%D9%8A-%D9%88%D8%AF%D9%88%D9%84%D9%8A"
+        ],
+        "whitelist": [
+            "https://al-sharq.com/article/"
+        ]
+    },
+    {
+        "country": "Switzerland",
+        "ISO": "CHE",
+        "lang": "de",
+        "url": "https://www.tagesanzeiger.ch/",
+        "category_urls": [
+            "https://www.tagesanzeiger.ch/ausland"
+        ],
+        "whitelist": [
+            "https://www.tagesanzeiger.ch/"
+        ]
+    },
+    {
+        "country": "Switzerland",
+        "ISO": "CHE",
+        "lang": "fr",
+        "url": "https://www.letemps.ch/",
+        "category_urls": [
+            "https://www.letemps.ch/monde"
+        ]
+    },
+    {
+        "country": "Austria",
+        "ISO": "AUT",
+        "lang": "de",
+        "url": "https://www.krone.at/",
+        "category_urls": [
+            "https://www.krone.at/welt"
+        ],
+        "whitelist": [
+            "https://www.krone.at/"
+        ]
+    },
+    {
+        "country": "Austria",
+        "ISO": "AUT",
+        "lang": "de",
+        "url": "https://www.derstandard.at/",
+        "category_urls": [
+            "https://www.derstandard.at/international"
+        ],
+        "whitelist": [
+            "https://www.derstandard.at/story/"
+        ]
+    },
+    {
+        "country": "Croatia",
+        "ISO": "HRV",
+        "lang": "hr",
+        "url": "https://www.vecernji.hr/",
+        "category_urls": [
+            "https://www.vecernji.hr/svijet"
+        ],
+        "whitelist": [
+            "https://www.vecernji.hr/vijesti/"
+        ]
+    },
+    {
+        "country": "Serbia",
+        "ISO": "SRB",
+        "lang": "sr",
+        "url": "https://www.politika.rs/",
+        "category_urls": [
+            "https://www.politika.rs/scc/svet"
+        ],
+        "whitelist": [
+            "https://www.politika.rs/scc/"
+        ]
+    },
+    {
+        "country": "Albania",
+        "ISO": "ALB",
+        "lang": "sq",
+        "url": "https://www.gazetatema.net/",
+        "category_urls": [
+            "https://www.gazetatema.net/category/bota/"
+        ],
+        "whitelist": [
+            "https://www.politika.rs/bota/"
+        ]
+    },
+    {
+        "country": "Albania",
+        "ISO": "ALB",
+        "lang": "sq",
+        "url": "https://www.balkanweb.com/",
+        "category_urls": [
+            "https://www.balkanweb.com/bota/"
+        ]
+    },
+    {
+        "country": "Netherlands",
+        "ISO": "NLD",
+        "lang": "nl",
+        "url": "https://www.telegraaf.nl/",
+        "category_urls": [
+            "https://www.telegraaf.nl/buitenland/"
+        ]
+    },
+    {
+        "country": "Netherlands",
+        "ISO": "NLD",
+        "lang": "nl",
+        "url": "https://www.nrc.nl/",
+        "category_urls": [
+            "https://www.nrc.nl/buitenland/"
+        ],
+        "whitelist": [
+            "https://www.nrc.nl/nieuws/"
+        ]
     }
 ]
