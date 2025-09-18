@@ -78,17 +78,17 @@ body {
   padding-bottom: 0px !important;
 }
 
-#custom-legend {
+#legend {
     padding-top: 10px;
 }
 
-#custom-legend .legend-item {
+#legend .legend-item {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
 }
 
-#custom-legend .legend-swatch {
+#legend .legend-swatch {
     width: 20px;
     height: 20px;
     margin-right: 10px;
@@ -96,7 +96,7 @@ body {
     flex-shrink: 0;
 }
 
-#custom-legend .legend-label {
+#legend .legend-label {
     font-size: 14px;
 }
 
