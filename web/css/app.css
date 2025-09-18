@@ -33,24 +33,31 @@ body {
     top: 50%;
     left: 20px; /* Match container padding */
     right: 20px; /* Match container padding */
-    transform: translateY(-50%); /* Only vertical transform needed */
+    transform: translateY(-100%); /* Only vertical transform needed */
     max-width: 800px;
     /* The padding-left/right hacks are no longer needed */
 }
 
 .landing #topicsContainer {
-    position: absolute; /* Changed from fixed */
-    top: calc(50% + 20px);
+    position: absolute;
+    top: 50vh; /* Start at the horizontal midpoint */
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     max-width: 800px; /* To align with search bar */
     justify-content: center;
+    padding-top: 20px; /* Add some space from the search bar */
 }
 
 .landing #tagline {
   display: block;
-  /* padding-bottom: 60px; */ /* No longer needed with fixed positioning */
+  position: absolute;
+  top: 25vh; /* Center vertically in the top half */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 24px;
+  width: 100%; /* Ensure it centers across the page */
 }
 
 #tagline {
@@ -117,7 +124,7 @@ body {
     margin: 30px 0;
     visibility: hidden; /* Hide by default */
     font-size: 22px;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .section-separator.visible {
@@ -257,6 +264,10 @@ body {
     padding-left: 0px;
     padding-right: 0px;
     height: 55vw;
+  }
+
+  #legend {
+    grid-template-columns: 1fr;
   }
 
   #searchResults ul {
