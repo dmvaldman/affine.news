@@ -155,7 +155,7 @@ class HeuristicCrawler:
             'DNT': '1',
         }
 
-        processed_urls = set()
+        seen_urls = set()
         detector = RandomStringDetector(allow_numbers=True)
 
         for category_url in getattr(paper, 'category_urls', []) or []:
@@ -184,16 +184,15 @@ class HeuristicCrawler:
                 except ValueError:
                     continue
 
-                clean_url = str(full_url_obj.with_query(None).with_fragment(None))
-                if clean_url in processed_urls:
+                # Normalize the URL for cache checking by removing query params and fragments
+                url_normalized = str(full_url_obj.with_query(None).with_fragment(None)))
+                if url_normalized in seen_urls:
                     continue
-                processed_urls.add(clean_url)
+                seen_urls.add(url_normalized)
 
-                decoded_url = unquote(str(full_url_obj))
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
-                    # Build Article with today's date and no img
                     article = Article(
-                        url=decoded_url,
+                        url=url_normalized,
                         title=title,
                         img_url='',
                         publish_at=todays_date,
