@@ -259,6 +259,7 @@ async function search(){
     applySummaryToMap(summary);
 
     searchResultsEl.innerHTML = ''
+    document.querySelector('.section-separator').classList.remove('visible'); // Hide on new search
 
     if (Object.keys(articles).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
@@ -266,6 +267,8 @@ async function search(){
         searchButtonEl.innerHTML = 'Search';
         return;
     }
+
+    document.querySelector('.section-separator').classList.add('visible'); // Show when articles are ready to render
 
     for (let iso in articles){
         const countryData = articles[iso];
@@ -327,12 +330,12 @@ async function search(){
                 urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
 
             // Add minimal domain (no http/https or www)
-            let domainEl = document.createElement('span')
-            domainEl.className = 'domain'
-            domainEl.textContent = new URL(url).hostname.replace(/^www\./, '') + ' (' + parseInt(result.similarity * 100) + ') '
+            // let domainEl = document.createElement('span')
+            // domainEl.className = 'domain'
+            // domainEl.textContent = new URL(url).hostname.replace(/^www\./, '') + ' (' + parseInt(result.similarity * 100) + ') '
 
             resultEl.appendChild(dateEl)
-            resultEl.appendChild(domainEl)
+            // resultEl.appendChild(domainEl)
             resultEl.appendChild(urlEl)
 
             countryEl.appendChild(resultEl)

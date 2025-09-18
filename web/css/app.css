@@ -68,7 +68,7 @@ body {
   padding-top: 20px;
   overflow: hidden;
   height: 52vw;
-  max-height: 520px;
+  max-height: 680px;
 }
 
 #map {
@@ -79,20 +79,23 @@ body {
 }
 
 #legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     padding-top: 10px;
 }
 
 #legend .legend-item {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-right: 6px;
 }
 
 #legend .legend-swatch {
-    width: 20px;
+    width: 28px;
     height: 20px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
+    margin-right: 8px;
+    border: 1px solid #393939;
     flex-shrink: 0;
 }
 
@@ -102,6 +105,33 @@ body {
 
 #legend .legend-label {
     font-size: 14px;
+}
+
+.section-separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 40px 0;
+    visibility: hidden; /* Hide by default */
+}
+
+.section-separator.visible {
+    visibility: visible;
+}
+
+.section-separator::before,
+.section-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px dashed black;
+}
+
+.section-separator:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.section-separator:not(:empty)::after {
+    margin-left: .5em;
 }
 
 #searchResults {
