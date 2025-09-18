@@ -8,6 +8,7 @@ from pgvector.psycopg2 import register_vector
 import google.generativeai as genai
 from pydantic import BaseModel
 import numpy as np
+import hashlib
 
 SIMILARITY_THRESHOLD = 0.63  # Minimum similarity score to be included in results
 
@@ -37,10 +38,11 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
         Your are to extract critical bias across countries if present.
         Respond with groups of countries (use their ISO code) and a 2-8 word concise label indicating the bias.
         e.g. ["USA", "GBR", "CAN"], "Downplay incident". ["CHI", "RUS"], "Highlight Israel aggression".
-        We're only looking for obvious biases, not subtle differences. If subtle or unbiased, ignore.
+        We're only looking for obvious biases, not subtle differences. If subtle ignore.
+        If a country's reporting is mostly neutral, ignore.
         It's not enough for one article to simply mention a different aspect of a story. It must show a clear bias. E.g. pushing one narrative vs its opposite.
         Not all countries need be included, in fact, many won't be.
-        2-5 groups of countries/label total.
+        0-4 groups of countries/label total. 4 should be reserved for cases of extreme controversy and bias.
         If little divergence overall respond [], ''.
         """,
         "--- HEADLINES ---"
@@ -186,11 +188,22 @@ class handler(BaseHTTPRequestHandler):
                 "articles": by_iso
             }
 
-            # 3. Send the response
+            # 4. Send the response with caching headers
+            body = json.dumps(final_response, sort_keys=True).encode('utf-8')
+            etag = '"' + hashlib.sha1(body).hexdigest() + '"'
+
+            if self.headers.get('if-none-match') == etag:
+                self.send_response(304)
+                self.end_headers()
+                return
+
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
+            self.send_header('Cache-Control', 'public, max-age=14400') # 4 hours browser cache
+            self.send_header('CDN-Cache-Control', 'public, s-maxage=14400') # 4 hours edge cache
+            self.send_header('ETag', etag)
             self.end_headers()
-            self.wfile.write(json.dumps(final_response).encode('utf-8'))
+            self.wfile.write(body)
 
         except Exception as e:
             self.send_response(500)
