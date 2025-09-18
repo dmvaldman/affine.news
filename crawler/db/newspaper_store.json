@@ -856,5 +856,191 @@
         "category_urls": [
             "https://www.blic.rs/vesti/svet"
         ]
+    },
+    {
+        "country": "Venezuela",
+        "ISO": "VEN",
+        "lang": "es",
+        "url": "https://www.eluniversal.com/",
+        "category_urls": [
+            "https://www.eluniversal.com/internacional"
+        ]
+    },
+    {
+        "country": "Venezuela",
+        "ISO": "VEN",
+        "lang": "es",
+        "url": "https://ultimasnoticias.com.ve/",
+        "category_urls": [
+            "https://ultimasnoticias.com.ve/mundo/"
+        ]
+    },
+    {
+        "country": "Chile",
+        "ISO": "CHL",
+        "lang": "es",
+        "url": "https://www.emol.com/",
+        "category_urls": [
+            "https://www.emol.com/noticias/Internacional/"
+        ]
+    },
+    {
+        "country": "Chile",
+        "ISO": "CHL",
+        "lang": "es",
+        "url": "https://www.latercera.com/",
+        "category_urls": [
+            "https://www.latercera.com/mundo/"
+        ]
+    },
+    {
+        "country": "Uruguay",
+        "ISO": "URY",
+        "lang": "es",
+        "url": "https://www.elpais.com.uy/",
+        "category_urls": [
+            "https://www.elpais.com.uy/mundo"
+        ]
+    },
+    {
+        "country": "Uruguay",
+        "ISO": "URY",
+        "lang": "es",
+        "url": "https://ladiaria.com.uy/",
+        "category_urls": [
+            "https://ladiaria.com.uy/mundo/"
+        ]
+    },
+    {
+        "country": "Paraguay",
+        "ISO": "PRY",
+        "lang": "es",
+        "url": "https://www.abc.com.py/",
+        "category_urls": [
+            "https://www.abc.com.py/internacionales/"
+        ]
+    },
+    {
+        "country": "Paraguay",
+        "ISO": "PRY",
+        "lang": "es",
+        "url": "https://www.ultimahora.com/",
+        "category_urls": [
+            "https://www.ultimahora.com/mundo"
+        ],
+        "whitelist": [
+            "https://www.ultimahora.com/"
+        ]
+    },
+    {
+        "country": "Bolivia",
+        "ISO": "BOL",
+        "lang": "es",
+        "url": "https://eldeber.com.bo/",
+        "category_urls": [
+            "https://eldeber.com.bo/mundo"
+        ]
+    },
+    {
+        "country": "Bolivia",
+        "ISO": "BOL",
+        "lang": "es",
+        "url": "https://www.la-razon.com/",
+        "category_urls": [
+            "https://www.la-razon.com/mundo/"
+        ]
+    },
+    {
+        "country": "Ecuador",
+        "ISO": "ECU",
+        "lang": "es",
+        "url": "https://www.eluniverso.com/",
+        "category_urls": [
+            "https://www.eluniverso.com/noticias/internacional/"
+        ]
+    },
+    {
+        "country": "Ecuador",
+        "ISO": "ECU",
+        "lang": "es",
+        "url": "https://www.elcomercio.com/",
+        "category_urls": [
+            "https://www.elcomercio.com/mundo/"
+        ],
+        "whitelist": [
+            "https://www.elcomercio.com/actualidad/mundo/"
+        ]
+    },
+    {
+        "country": "Guatemala",
+        "ISO": "GTM",
+        "lang": "es",
+        "url": "https://www.prensalibre.com/",
+        "category_urls": [
+            "https://www.prensalibre.com/internacional/"
+        ]
+    },
+    {
+        "country": "Guatemala",
+        "ISO": "GTM",
+        "lang": "es",
+        "url": "https://lahora.gt/",
+        "category_urls": [
+            "https://lahora.gt/internacionales/"
+        ]
+    },
+    {
+        "country": "Honduras",
+        "ISO": "HND",
+        "lang": "es",
+        "url": "https://www.laprensa.hn/",
+        "category_urls": [
+            "https://www.laprensa.hn/mundo"
+        ]
+    },
+    {
+        "country": "Honduras",
+        "ISO": "HND",
+        "lang": "es",
+        "url": "https://www.elheraldo.hn/",
+        "category_urls": [
+            "https://www.elheraldo.hn/mundo/"
+        ]
+    },
+    {
+        "country": "Nicaragua",
+        "ISO": "NIC",
+        "lang": "es",
+        "url": "https://www.laprensani.com/",
+        "category_urls": [
+            "https://www.laprensani.com/seccion/internacionales/"
+        ]
+    },
+    {
+        "country": "Nicaragua",
+        "ISO": "NIC",
+        "lang": "es",
+        "url": "https://confidencial.digital/",
+        "category_urls": [
+            "https://confidencial.digital/mundo/"
+        ]
+    },
+    {
+        "country": "Philippines",
+        "ISO": "PHL",
+        "lang": "en",
+        "url": "https://www.inquirer.net/",
+        "category_urls": [
+            "https://globalnation.inquirer.net/"
+        ]
+    },
+    {
+        "country": "Philippines",
+        "ISO": "PHL",
+        "lang": "en",
+        "url": "https://www.philstar.com/",
+        "category_urls": [
+            "https://www.philstar.com/world"
+        ]
     }
 ]
