@@ -208,7 +208,7 @@
         ]
     },
     {
-        "country": "USA",
+        "country": "United States",
         "ISO": "USA",
         "lang": "en",
         "url": "https://www.foxnews.com/",
@@ -217,7 +217,7 @@
         ]
     },
     {
-        "country": "USA",
+        "country": "United States",
         "ISO": "USA",
         "lang": "en",
         "url": "https://www.nytimes.com/",
@@ -236,6 +236,18 @@
         "url": "https://www.washingtonpost.com/",
         "category_urls": [
             "https://www.washingtonpost.com/world/"
+        ]
+    },
+    {
+        "country": "United States",
+        "ISO": "USA",
+        "lang": "en",
+        "url": "https://www.cnn.com/",
+        "category_urls": [
+            "https://www.cnn.com/world"
+        ],
+        "whitelist": [
+            "^https://www.cnn.com/\\d{4}/\\d{2}/\\d{2}/[^/]+/[^/]+/.*"
         ]
     },
     {
@@ -272,12 +284,12 @@
         "country": "Belarus",
         "ISO": "BLR",
         "lang": "ru",
-        "url": "https://nn.by/",
+        "url": "https://nashaniva.com/",
         "category_urls": [
-            "https://nn.by/?c=ca&i=584"
+            "https://nashaniva.com/?c=ca&i=584"
         ],
         "whitelist": [
-            "https://nn.by/"
+            "^https://nashaniva.com/\\d+/"
         ]
     },
     {
@@ -690,6 +702,10 @@
         "url": "https://www.antaranews.com/",
         "category_urls": [
             "https://www.antaranews.com/dunia"
+        ],
+        "whitelist": [
+            "^https://www.antaranews.com/video/\\d+/",
+            "^https://www.antaranews.com/berita/\\d+/"
         ]
     },
     {
@@ -810,15 +826,6 @@
         "url": "https://www.postimees.ee/",
         "category_urls": [
             "https://maailm.postimees.ee/"
-        ]
-    },
-    {
-        "country": "Egypt",
-        "ISO": "EGY",
-        "lang": "ar",
-        "url": "https://www.ahram.org.eg/",
-        "category_urls": [
-            "https://gate.ahram.org.eg/Category/4/%D8%B9%D8%B1%D8%A8-%D9%88%D8%B9%D8%A7%D9%84%D9%85.aspx"
         ]
     },
     {
@@ -1223,7 +1230,7 @@
             "https://www.publico.pt/mundo"
         ],
         "whitelist": [
-            "^https://www.publico.pt/\\d{4}/\\d{2}/\\d{2}/mundo/.*",
+            "^https://www.publico.pt/\\d{4}/\\d{2}/\\d{2}/mundo/.*"
         ]
     },
     {
@@ -1365,18 +1372,6 @@
         "url": "https://www.omandaily.om/",
         "category_urls": [
             "https://www.omandaily.om/%D8%A7%D9%84%D8%B9%D8%B1%D8%A8-%D9%88%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85"
-        ]
-    },
-    {
-        "country": "Oman",
-        "ISO": "OMN",
-        "lang": "ar",
-        "url": "https://alwatan.com/",
-        "category_urls": [
-            "https://alwatan.om/politics"
-        ],
-        "whitelist": [
-            "https://alwatan.om/article/"
         ]
     },
     {

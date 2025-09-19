@@ -146,6 +146,9 @@ class HeuristicCrawler:
         count_rejected = 0
         count_cache_hits = 0
 
+        accepted_links_by_category = {}
+        rejected_links_by_category = {}
+
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -160,6 +163,9 @@ class HeuristicCrawler:
         detector = RandomStringDetector(allow_numbers=True)
 
         for category_url in getattr(paper, 'category_urls', []) or []:
+            accepted_links_by_category[category_url] = []
+            rejected_links_by_category[category_url] = []
+
             try:
                 resp = requests.get(category_url, headers=headers, timeout=20)
                 resp.raise_for_status()
@@ -192,6 +198,8 @@ class HeuristicCrawler:
                 seen_urls.add(url_normalized)
 
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
+                    accepted_links_by_category[category_url].append(url_normalized)
+
                     article = Article(
                         url=url_normalized,
                         title=title,
@@ -212,6 +220,7 @@ class HeuristicCrawler:
                     article.save()
                     count_success += 1
                 else:
+                    rejected_links_by_category[category_url].append(url_normalized)
                     count_rejected += 1
 
                 if self.max_articles is not None and count_success >= self.max_articles:
@@ -219,8 +228,11 @@ class HeuristicCrawler:
 
         stats = {}
         stats['downloaded'] = count_success
-        stats['failed'] = count_rejected
+        stats['rejected'] = count_rejected
         stats['cache_hits'] = count_cache_hits
+        stats['accepted'] = count_success + count_cache_hits
+        stats['accepted_links'] = accepted_links_by_category
+        stats['rejected_links'] = rejected_links_by_category
         return stats
 
 
@@ -233,24 +245,71 @@ def main():
                         help='Maximum number of articles to find per paper.')
     parser.add_argument('--ignore-cache', action='store_true', default=False,
                         help='Ignore cache and re-crawl papers.')
+    parser.add_argument('--log-to-file', action='store_true', default=True,
+                        help='Log accepted and rejected links to files.')
     args = parser.parse_args()
 
+    accepted_log_file = None
+    rejected_log_file = None
+    if args.log_to_file:
+        accepted_log_file = open('logs/accepted_links.txt', 'w')
+        rejected_log_file = open('logs/rejected_links.txt', 'w')
+
+    all_crawl_stats = []
     papers = Papers().load()
     crawler = HeuristicCrawler(max_articles=args.max_articles)
 
     for paper in papers:
         print(f"\n--- Starting Heuristic Crawl for: {paper.url} ---")
         try:
-            crawl_result = crawler.crawl_paper(paper, ignore_cache=args.ignore_cache)
+            crawl_result = crawler.crawl_paper(
+                paper,
+                ignore_cache=args.ignore_cache,
+            )
+
+            if args.log_to_file:
+                if accepted_log_file:
+                    accepted_links_by_cat = crawl_result.get('accepted_links', {})
+                    for category_url, links in accepted_links_by_cat.items():
+                        if links:
+                            accepted_log_file.write(f"\n{paper.country}, {paper.url}, {category_url}\n")
+                            accepted_log_file.write("\n".join(links))
+                            accepted_log_file.write(f"\ntotal accepted: {len(links)}\n")
+                if rejected_log_file:
+                    rejected_links_by_cat = crawl_result.get('rejected_links', {})
+                    for category_url, links in rejected_links_by_cat.items():
+                        if links:
+                            rejected_log_file.write(f"\n{paper.country}, {paper.url}, {category_url}\n")
+                            rejected_log_file.write("\n".join(links))
+                            rejected_log_file.write(f"\ntotal rejected: {len(links)}\n")
+
             if crawl_result:
                 downloaded = crawl_result.get('downloaded', 0)
-                rejected = crawl_result.get('failed', 0) # 'failed' is 'rejected' in this context
+                rejected = crawl_result.get('rejected', 0)
                 cache_hits = crawl_result.get('cache_hits', 0)
-                print(f"  -> Finished: {downloaded} articles accepted, {rejected} links rejected, {cache_hits} cache hits.")
+                accepted = crawl_result.get('accepted', 0)
+                print(f"  -> Finished: {accepted} articles accepted ({downloaded} new, {cache_hits} cache hits), {rejected} links rejected.")
+                all_crawl_stats.append({'paper': paper, 'stats': crawl_result})
             else:
                 print("  -> Crawl returned no result.")
         except Exception as e:
             print(f"  -> An unexpected error occurred: {e}")
+
+    if args.log_to_file:
+        if accepted_log_file:
+            accepted_log_file.write("\n\n--- AGGREGATE STATS (ACCEPTED) ---\n")
+            for item in sorted(all_crawl_stats, key=lambda x: x['paper'].country):
+                paper = item['paper']
+                stats = item['stats']
+                accepted_log_file.write(f"{paper.country}, {paper.url}, {stats.get('accepted', 0)}\n")
+            accepted_log_file.close()
+        if rejected_log_file:
+            rejected_log_file.write("\n\n--- AGGREGATE STATS (REJECTED) ---\n")
+            for item in sorted(all_crawl_stats, key=lambda x: x['paper'].country):
+                paper = item['paper']
+                stats = item['stats']
+                rejected_log_file.write(f"{paper.country}, {paper.url}, {stats.get('rejected', 0)}\n")
+            rejected_log_file.close()
 
 if __name__ == '__main__':
     main()
