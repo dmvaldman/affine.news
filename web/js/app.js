@@ -222,7 +222,7 @@ async function search(){
 
     // Last 3 days
     const endDate = moment().format('YYYY-MM-DD');
-    const startDate = moment().subtract(2, 'days').format('YYYY-MM-DD');
+    const startDate = moment().subtract(3, 'days').format('YYYY-MM-DD');
 
     const article_params = { query: query_str, date_start: startDate, date_end: endDate };
     const stat_params = {
@@ -277,7 +277,14 @@ async function search(){
         separator.classList.add('visible');
     }
 
-    for (let iso in articles){
+    // Get the country ISO codes and sort them by the number of articles in descending order
+    const sortedISOs = Object.keys(articles).sort((a, b) => {
+        const aLength = articles[a].articles ? articles[a].articles.length : 0;
+        const bLength = articles[b].articles ? articles[b].articles.length : 0;
+        return bLength - aLength;
+    });
+
+    for (const iso of sortedISOs){
         const countryData = articles[iso];
         const countryName = countryData.country_name;
         const countryArticles = countryData.articles;
