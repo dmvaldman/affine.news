@@ -54,9 +54,22 @@ def main():
                 if args.dry_run:
                     print(f"UPSERT paper {paper_json['url']} -> uuid {paper_uuid}")
                 else:
-                    # Check if the paper already exists
-                    c.execute("SELECT 1 FROM paper WHERE uuid = %s", (paper_uuid,))
-                    exists = c.fetchone() is not None
+                    # Check if the paper exists and if its data has changed
+                    c.execute("SELECT country, ISO, lang, whitelist FROM paper WHERE uuid = %s", (paper_uuid,))
+                    db_paper = c.fetchone()
+
+                    is_new = db_paper is None
+                    is_changed = False
+                    if not is_new:
+                        # Compare DB values with JSON values
+                        db_country, db_iso, db_lang, db_whitelist = db_paper
+                        json_whitelist = paper_json.get('whitelist', [])
+
+                        if (db_country != paper_json['country'] or
+                            db_iso != paper_json['ISO'] or
+                            db_lang != paper_json['lang'] or
+                            db_whitelist != json_whitelist):
+                            is_changed = True
 
                     c.execute(
                         """
@@ -71,8 +84,10 @@ def main():
                         (paper_uuid, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang'], paper_json.get('whitelist', []))
                     )
 
-                    if not exists:
+                    if is_new:
                         print(f"  -> Added new paper: {paper_json['url']}")
+                    elif is_changed:
+                        print(f"  -> Updated paper: {paper_json['url']}")
 
                 if 'category_urls' not in paper_json:
                     continue
