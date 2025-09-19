@@ -9,7 +9,6 @@ from yarl import URL
 from datetime import date
 import json
 import gzip
-import brotli
 import zstandard
 import os
 
@@ -52,7 +51,7 @@ def find_title_for_link(tag):
 
 def decompress_content(resp, verbose=False):
     """
-    Checks for and handles compressed content (zstd, gzip, brotli)
+    Checks for and handles compressed content (zstd, gzip)
     when the Content-Encoding header is missing.
     """
     content = resp.content
@@ -70,10 +69,7 @@ def decompress_content(resp, verbose=False):
                     print("  -> Manually decompressing gzip content...")
                 return gzip.decompress(content)
             else:
-                # Try brotli as a fallback
-                if verbose:
-                    print("  -> Attempting manual brotli decompression...")
-                return brotli.decompress(content)
+                print("  -> Unknown content encoding")
         except Exception as e:
             if verbose:
                 print(f"  ! Manual decompression failed: {e}")
