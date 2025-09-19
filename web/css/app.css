@@ -3,15 +3,15 @@
 body {
   margin: 0;
   background: #f2f2f2;
-  font-family: 'Inconsolata', monospace;
 }
 
 * {
+  font-family: monospace;
   box-sizing: border-box;
 }
 
 .container{
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   position: relative;
   padding: 20px;
@@ -56,7 +56,8 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: 24px;
+  font-size: 25px;
+  font-weight: bold;
   width: 100%; /* Ensure it centers across the page */
 }
 
@@ -166,7 +167,7 @@ body {
   border-radius: 5px 0 0 5px;
   outline: none;
   color: #3b3b3b;
-  width: calc(100% - 100px);
+  width: calc(100% - 80px);
   float: left;
 }
 
@@ -188,7 +189,7 @@ body {
   border-radius: 15px;
   background-color: #fff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: background-color 0.2s, color 0.2s;
   white-space: nowrap; /* Prevent text inside from wrapping */
 }
@@ -201,24 +202,6 @@ body {
 
 #searchContainer .searchQuery:focus{
   color: black;
-}
-
-#searchContainer .searchButton {
-  height: 100%;
-  width: 100px;
-  border: 3px solid black;
-  background: black;
-  text-align: center;
-  color: white;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 18px;
-  float:right;
-  position: relative; /* Add this for positioning context */
-}
-
-#searchContainer .searchButton:hover {
-  background: black;
 }
 
 .hoverinfo {
@@ -423,6 +406,32 @@ input[type=text] {
 
 #modalClose:hover {
   color: black;
+}
+
+.searchButton {
+  height: 100%;
+  width: 80px;
+  padding: 10px 15px;
+  border: 3px solid black;
+  background: black;
+  color: white;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  float: right;
+}
+
+.searchButton svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 3;
+}
+
+.searchQuery {
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 
 
