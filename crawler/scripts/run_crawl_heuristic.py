@@ -652,5 +652,5 @@ def main_single():
     print(crawl_result)
 
 if __name__ == '__main__':
-    # main()
-    main_single()
+    main()
+    # main_single()
