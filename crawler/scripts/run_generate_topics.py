@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from bertopic import BERTopic
 from vercel_blob import put as vercel_put
+from vercel_blob.errors import BlobError, APIError
 
 # Add crawler directory to path to allow imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -93,19 +94,23 @@ def main():
 
         # Upload to Vercel Blob
         json_data = json.dumps({"topics": final_topics}, ensure_ascii=False, indent=2)
-        blob = vercel_put(
-            'daily_topics.json',
-            json_data.encode('utf-8'), # Encode the string to bytes
-            {
-                'access': 'public',
-                'add_random_suffix': 'false',
-                'allowOverwrite': 'true',
-                'token': os.getenv('BLOB_READ_WRITE_TOKEN'),
-            }
-        )
+        try:
+            blob = vercel_put(
+                'daily_topics.json',
+                json_data.encode('utf-8'), # Encode the string to bytes
+                {
+                    'access': 'public',
+                    'add_random_suffix': 'false',
+                    'allowOverwrite': 'true',
+                    'token': os.getenv('BLOB_READ_WRITE_TOKEN'),
+                }
+            )
+            print(f"Uploaded to Vercel Blob: {blob['url']}")
+        except (BlobError, APIError) as e:
+            print(f"Error uploading to Vercel Blob: {e}", file=sys.stderr)
+
 
         print(f"Successfully saved {len(final_topics)} topics to the database.")
-        print(f"Uploaded to Vercel Blob: {blob['url']}")
 
     except psycopg2.Error as e:
         print(f"Database error: {e}", file=sys.stderr)
