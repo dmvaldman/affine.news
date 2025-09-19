@@ -47,12 +47,17 @@ def main():
                         # Thanks to ON DELETE CASCADE, this will also delete associated
                         # categories, crawls, and articles.
                         c.execute("DELETE FROM paper WHERE uuid IN %s", (tuple(uuids_to_delete),))
+                        print(f"PRUNE papers not in JSON: {', '.join(uuids_to_delete)}")
 
             for paper_json in papers_json:
                 paper_uuid = stable_uuid_from_url(paper_json['url'])
                 if args.dry_run:
                     print(f"UPSERT paper {paper_json['url']} -> uuid {paper_uuid}")
                 else:
+                    # Check if the paper already exists
+                    c.execute("SELECT 1 FROM paper WHERE uuid = %s", (paper_uuid,))
+                    exists = c.fetchone() is not None
+
                     c.execute(
                         """
                         INSERT INTO paper (uuid, url, country, ISO, lang, whitelist)
@@ -66,6 +71,9 @@ def main():
                         (paper_uuid, paper_json['url'], paper_json['country'], paper_json['ISO'], paper_json['lang'], paper_json.get('whitelist', []))
                     )
 
+                    if not exists:
+                        print(f"  -> Added new paper: {paper_json['url']}")
+
                 if 'category_urls' not in paper_json:
                     continue
 
@@ -76,11 +84,16 @@ def main():
                         tuple_list = tuple(paper_json['category_urls']) or ('',)
                         c.execute("DELETE FROM category_set WHERE paper_uuid = %s AND url NOT IN %s",
                                   (paper_uuid, tuple_list))
+                        print(f"PRUNE categories not in JSON for paper {paper_uuid}")
 
                 for url in paper_json['category_urls']:
                     if args.dry_run:
                         print(f"UPSERT category {url} for paper {paper_uuid}")
                     else:
+                        # Check if the category already exists for this paper
+                        c.execute("SELECT 1 FROM category_set WHERE paper_uuid = %s AND url = %s", (paper_uuid, url))
+                        exists = c.fetchone() is not None
+
                         c.execute(
                             """
                             INSERT INTO category_set (paper_uuid, url)
@@ -89,6 +102,9 @@ def main():
                             """,
                             (paper_uuid, url)
                         )
+
+                        if not exists:
+                            print(f"  -> Added new category: {url}")
 
         if args.dry_run:
             print('Dry run complete (no changes written)')
