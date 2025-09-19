@@ -32,7 +32,7 @@ def find_title_for_link(tag):
 
     # Prioritize the link's own text if it's a decent length
     best_text = tag.get_text(strip=True, separator=' ')
-    if len(best_text) > 4:
+    if len(best_text) > 12:
         return best_text
 
     if tag.parent:
@@ -43,7 +43,7 @@ def find_title_for_link(tag):
                 best_text = sibling_text
 
         # If, after checking all siblings, we still have a very short title, recurse.
-        if len(best_text) < 5:
+        if len(best_text) < 12:
           return find_title_for_link(tag.parent)
 
     return best_text
@@ -236,7 +236,10 @@ class HeuristicCrawler:
                     continue
                 seen_urls.add(url_normalized)
 
-                print(url_normalized)
+                print(url_normalized, title)
+
+                if (url_normalized.startswith('https://eldeber.com.bo/mundo/')):
+                    print('hi')
 
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
                     accepted_links_by_category[category_url].append(url_normalized)
@@ -396,12 +399,12 @@ def main_single():
     #     "country": "Austria",
     #     "ISO": "AUT",
     #     "lang": "de",
-    #     "url": "https://www.derstandard.at/",
+    #     "url": "https://www.diepresse.com/",
     #     "category_urls": [
-    #         "https://www.derstandard.at/international"
+    #         "https://www.diepresse.com/ausland"
     #     ],
     #     "whitelist": [
-    #         "https://www.derstandard.at/story/"
+    #         "^https://www.diepresse.com/\\d+/"
     #     ]
     # }
 
@@ -414,19 +417,22 @@ def main_single():
     #         "https://nashaniva.com/?c=ca&i=584"
     #     ],
     #     "whitelist": [
-    #         "^https://nashaniva.com/\\d+/"
+    #         "^https://nashaniva.com/\\d+$"
     #     ]
     # }
 
-    # paper_info = {
-    #     "country": "Bolivia",
-    #     "ISO": "BOL",
-    #     "lang": "es",
-    #     "url": "https://eldeber.com.bo/",
-    #     "category_urls": [
-    #         "https://eldeber.com.bo/mundo"
-    #     ]
-    # }
+    paper_info = {
+        "country": "Bolivia",
+        "ISO": "BOL",
+        "lang": "es",
+        "url": "https://eldeber.com.bo/",
+        "category_urls": [
+            "https://eldeber.com.bo/mundo/"
+        ],
+        "whitelist": [
+            "https://eldeber.com.bo/bbc/"
+        ]
+    }
 
     # paper_info = {
     #     "country": "Bolivia",
