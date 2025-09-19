@@ -233,11 +233,6 @@ class HeuristicCrawler:
                     continue
                 seen_urls.add(url_normalized)
 
-                print(url_normalized, title)
-
-                if (url_normalized.startswith('https://larazon.bo/mundo/')):
-                    print('hi')
-
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
                     accepted_links_by_category[category_url].append(url_normalized)
 
