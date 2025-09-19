@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from bertopic import BERTopic
 from vercel_blob import put as vercel_put
-from vercel_blob.errors import BlobError, APIError
 
 # Add crawler directory to path to allow imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -106,7 +105,7 @@ def main():
                 }
             )
             print(f"Uploaded to Vercel Blob: {blob['url']}")
-        except (BlobError, APIError) as e:
+        except Exception as e:
             print(f"Error uploading to Vercel Blob: {e}", file=sys.stderr)
 
 
