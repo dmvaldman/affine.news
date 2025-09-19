@@ -7,9 +7,10 @@ from random_string_detector import RandomStringDetector
 import argparse
 from yarl import URL
 from datetime import date
+import json
 
 from crawler.models.Article import Article
-from crawler.models.Paper import Papers
+from crawler.models.Paper import Papers, Paper
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
@@ -256,7 +257,14 @@ def main():
         rejected_log_file = open('logs/rejected_links.txt', 'w')
 
     all_crawl_stats = []
-    papers = Papers().load()
+
+    # Load papers directly from the JSON file to bypass the database
+    papers = []
+    with open('crawler/db/newspaper_store.json', 'r') as f:
+        papers_data = json.load(f)
+        for paper_data in papers_data:
+            papers.append(Paper(**paper_data))
+
     crawler = HeuristicCrawler(max_articles=args.max_articles)
 
     for paper in papers:
