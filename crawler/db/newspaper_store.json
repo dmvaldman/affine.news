@@ -1188,7 +1188,7 @@
             "https://www.gazetatema.net/category/bota/"
         ],
         "whitelist": [
-            "https://www.politika.rs/bota/"
+            "https://www.gazetatema.net/bota/"
         ]
     },
     {
@@ -1197,7 +1197,10 @@
         "lang": "sq",
         "url": "https://www.balkanweb.com/",
         "category_urls": [
-            "https://www.balkanweb.com/bota/"
+            "https://www.balkanweb.com/kategoria/bota/"
+        ],
+        "whitelist": [
+            "^https://www.balkanweb.com/[^/]+/?$"
         ]
     },
     {

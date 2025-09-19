@@ -43,13 +43,13 @@ class Papers:
 
 
 class Paper(object):
-    def __init__(self, url, country=None, iso=None, lang=None, category_urls=None, whitelist=None, uuid=None):
+    def __init__(self, url, country=None, ISO=None, lang=None, category_urls=None, whitelist=None, uuid=None):
         if (url is None) or ('http' not in url):
             raise Exception('Url is required and must be valid')
 
         self.url = url
         self.country = country
-        self.iso = iso
+        self.iso = ISO
         self.lang = lang
         self.category_urls = category_urls or []
         self.whitelist = whitelist or []

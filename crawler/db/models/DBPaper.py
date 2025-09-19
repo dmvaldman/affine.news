@@ -18,7 +18,7 @@ def get_papers_from_rows(results):
                 url=prev_result['url'],
                 lang=prev_result['lang'],
                 country=prev_result['country'],
-                iso=prev_result['iso'],
+                ISO=prev_result['iso'],
                 uuid=prev_result['uuid'],
                 whitelist=prev_result['whitelist'],
                 category_urls=category_urls)
@@ -34,7 +34,7 @@ def get_papers_from_rows(results):
             url=result['url'],
             lang=result['lang'],
             country=result['country'],
-            iso=result['iso'],
+            ISO=result['iso'],
             uuid=result['uuid'],
             whitelist=result['whitelist'],
             category_urls=category_urls)

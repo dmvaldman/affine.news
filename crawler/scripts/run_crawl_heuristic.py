@@ -8,6 +8,9 @@ import argparse
 from yarl import URL
 from datetime import date
 import json
+import gzip
+import brotli
+import zstandard
 
 from crawler.models.Article import Article
 from crawler.models.Paper import Papers, Paper
@@ -44,6 +47,38 @@ def find_title_for_link(tag):
           return find_title_for_link(tag.parent)
 
     return best_text
+
+
+def decompress_content(resp, verbose=False):
+    """
+    Checks for and handles compressed content (zstd, gzip, brotli)
+    when the Content-Encoding header is missing.
+    """
+    content = resp.content
+    if resp.headers.get('Content-Encoding') is None:
+        try:
+            # Check for zstandard magic number: b'(\\xb5/\\xfd'
+            if content.startswith(b'\x28\xb5\x2f\xfd'):
+                if verbose:
+                    print("  -> Manually decompressing zstandard content...")
+                dctx = zstandard.ZstdDecompressor()
+                return dctx.decompress(content)
+            # Check for gzip magic number
+            elif content.startswith(b'\x1f\x8b'):
+                if verbose:
+                    print("  -> Manually decompressing gzip content...")
+                return gzip.decompress(content)
+            else:
+                # Try brotli as a fallback
+                if verbose:
+                    print("  -> Attempting manual brotli decompression...")
+                return brotli.decompress(content)
+        except Exception as e:
+            if verbose:
+                print(f"  ! Manual decompression failed: {e}")
+            # Fallback to original content on error
+            return content
+    return content
 
 
 def is_likely_article(href, text, base_url, detector, whitelist=None):
@@ -170,12 +205,15 @@ class HeuristicCrawler:
             try:
                 resp = requests.get(category_url, headers=headers, timeout=20)
                 resp.raise_for_status()
+
+                content = decompress_content(resp, verbose=verbose)
+
             except requests.exceptions.RequestException as e:
                 if verbose:
                     print(f"! Error fetching {category_url}: {e}")
                 continue
 
-            soup = BeautifulSoup(resp.content, 'lxml')
+            soup = BeautifulSoup(content, 'lxml')
             links = soup.find_all('a')
 
             for link in links:
@@ -197,6 +235,8 @@ class HeuristicCrawler:
                 if url_normalized in seen_urls:
                     continue
                 seen_urls.add(url_normalized)
+
+                print(url_normalized)
 
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
                     accepted_links_by_category[category_url].append(url_normalized)
@@ -263,6 +303,12 @@ def main():
     with open('crawler/db/newspaper_store.json', 'r') as f:
         papers_data = json.load(f)
         for paper_data in papers_data:
+            # get uuid
+            paperDB = Paper.load_from_url(paper_data['url'])
+            if not paperDB:
+                print(f"Paper not found: {paper_data['url']}")
+                continue
+            paper_data['uuid'] = paperDB.uuid
             papers.append(Paper(**paper_data))
 
     crawler = HeuristicCrawler(max_articles=args.max_articles)
@@ -319,5 +365,287 @@ def main():
                 rejected_log_file.write(f"{paper.country}, {paper.url}, {stats.get('rejected', 0)}\n")
             rejected_log_file.close()
 
+def main_single():
+    # paper_info = {
+    #     "country": "Albania",
+    #     "ISO": "ALB",
+    #     "lang": "sq",
+    #     "url": "https://www.gazetatema.net/",
+    #     "category_urls": [
+    #         "https://www.gazetatema.net/category/bota/"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.gazetatema.net/bota/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Albania",
+    #     "ISO": "ALB",
+    #     "lang": "sq",
+    #     "url": "https://www.balkanweb.com/",
+    #     "category_urls": [
+    #         "https://www.balkanweb.com/kategoria/bota/"
+    #     ],
+    #     "whitelist": [
+    #         "^https://www.balkanweb.com/[^/]+/?$"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Austria",
+    #     "ISO": "AUT",
+    #     "lang": "de",
+    #     "url": "https://www.derstandard.at/",
+    #     "category_urls": [
+    #         "https://www.derstandard.at/international"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.derstandard.at/story/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Belarus",
+    #     "ISO": "BLR",
+    #     "lang": "ru",
+    #     "url": "https://nashaniva.com/",
+    #     "category_urls": [
+    #         "https://nashaniva.com/?c=ca&i=584"
+    #     ],
+    #     "whitelist": [
+    #         "^https://nashaniva.com/\\d+/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Bolivia",
+    #     "ISO": "BOL",
+    #     "lang": "es",
+    #     "url": "https://eldeber.com.bo/",
+    #     "category_urls": [
+    #         "https://eldeber.com.bo/mundo"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Bolivia",
+    #     "ISO": "BOL",
+    #     "lang": "es",
+    #     "url": "https://www.la-razon.com/",
+    #     "category_urls": [
+    #         "https://www.la-razon.com/mundo/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Chile",
+    #     "ISO": "CHL",
+    #     "lang": "es",
+    #     "url": "https://www.latercera.com/",
+    #     "category_urls": [
+    #         "https://www.latercera.com/mundo/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Kenya",
+    #     "ISO": "KEN",
+    #     "lang": "en",
+    #     "url": "https://www.standardmedia.co.ke/",
+    #     "category_urls": [
+    #         "https://www.standardmedia.co.ke/category/5/world"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.standardmedia.co.ke/world/",
+    #         "https://www.standardmedia.co.ke/europe/",
+    #         "https://www.standardmedia.co.ke/asia/",
+    #         "https://www.standardmedia.co.ke/africa/",
+    #         "https://www.standardmedia.co.ke/america/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Malaysia",
+    #     "ISO": "MYS",
+    #     "lang": "en",
+    #     "url": "https://www.thestar.com.my/",
+    #     "category_urls": [
+    #         "https://www.thestar.com.my/news/world/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Malaysia",
+    #     "ISO": "MYS",
+    #     "lang": "ms",
+    #     "url": "https://www.bharian.com.my/",
+    #     "category_urls": [
+    #         "https://www.bharian.com.my/dunia"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Mongolia",
+    #     "ISO": "MNG",
+    #     "lang": "mn",
+    #     "url": "https://eguur.mn/",
+    #     "category_urls": [
+    #         "https://eguur.mn/news/world/https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
+    #     ],
+    #     "whitelist": [
+    #         "^https://eguur.mn/\\d+/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Myanmar",
+    #     "ISO": "MMR",
+    #     "lang": "en",
+    #     "url": "https://www.irrawaddy.com/",
+    #     "category_urls": [
+    #         "https://www.irrawaddy.com/category/news/world"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Pakistan",
+    #     "ISO": "PAK",
+    #     "lang": "ur",
+    #     "url": "https://www.jang.com.pk/",
+    #     "category_urls": [
+    #         "https://www.jang.com.pk/category/latest-news/world"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.jang.com.pk/news/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Panama",
+    #     "ISO": "PAN",
+    #     "lang": "es",
+    #     "url": "https://www.prensa.com/",
+    #     "category_urls": [
+    #         "https://www.prensa.com/mundo/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Poland",
+    #     "ISO": "POL",
+    #     "lang": "pl",
+    #     "url": "https://wyborcza.pl/",
+    #     "category_urls": [
+    #         "https://wyborcza.pl/0,75399.html"
+    #     ],
+    #     "whitelist": [
+    #         "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Ukraine",
+    #     "ISO": "UKR",
+    #     "lang": "uk",
+    #     "url": "https://fakty.ua/",
+    #     "category_urls": [
+    #         "https://fakty.ua/categories/world"
+    #     ],
+    #     "whitelist": [
+    #         "^https://fakty.ua/\\d{6}-.*"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Ukraine",
+    #     "ISO": "UKR",
+    #     "lang": "uk",
+    #     "url": "https://www.kyivpost.com",
+    #     "category_urls": [
+    #     "https://www.kyivpost.com/category/world"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.kyivpost.com/post/",
+    #         "https://www.kyivpost.com/topic/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "United States",
+    #     "ISO": "USA",
+    #     "lang": "en",
+    #     "url": "https://www.washingtonpost.com/",
+    #     "category_urls": [
+    #         "https://www.washingtonpost.com/world/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Venezuela",
+    #     "ISO": "VEN",
+    #     "lang": "es",
+    #     "url": "https://www.elnacional.com/",
+    #     "category_urls": [
+    #         "https://www.elnacional.com/mundo/"
+    #     ],
+    #     "whitelist": [
+    #         "^https://www.elnacional.com/\\d{4}/\\d{2}/.+"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Venezuela",
+    #     "ISO": "VEN",
+    #     "lang": "es",
+    #     "url": "https://www.eluniversal.com/",
+    #     "category_urls": [
+    #         "https://www.eluniversal.com/internacional"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Yemen",
+    #     "ISO": "YEM",
+    #     "lang": "ar",
+    #     "url": "https://www.sabanew.net/",
+    #     "category_urls": [
+    #         "https://www.sabanew.net/category/ar/1/"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.sabanew.net/story/ar/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Serbia",
+    #     "ISO": "SRB",
+    #     "lang": "sr",
+    #     "url": "https://www.politika.rs/",
+    #     "category_urls": [
+    #         "https://www.politika.rs/scc/svet"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.politika.rs/scc/"
+    #     ]
+    # }
+
+    # paper_info = {
+    #     "country": "Nicaragua",
+    #     "ISO": "NIC",
+    #     "lang": "es",
+    #     "url": "https://www.laprensani.com/",
+    #     "category_urls": [
+    #         "https://www.laprensani.com/seccion/internacionales/"
+    #     ]
+    # }
+
+    paper_info['uuid'] = Paper.load_from_url(paper_info['url']).uuid
+    paper = Paper(**paper_info)
+    crawler = HeuristicCrawler(max_articles=20)
+    crawl_result = crawler.crawl_paper(paper)
+    print(crawl_result)
+
 if __name__ == '__main__':
-    main()
+    # main()
+    main_single()
