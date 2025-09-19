@@ -14,7 +14,7 @@ def stable_uuid_from_url(url: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description='Sync newspaper_store.json to DB')
     parser.add_argument('--prune-categories', action='store_true', help='Delete categories not present in JSON for each paper')
-    parser.add_argument('--prune-papers', action='store_true', help='Delete papers not present in JSON')
+    parser.add_argument('--prune-papers', action='store_true', default=True, help='Delete papers not present in JSON')
     parser.add_argument('--dry-run', action='store_true', help='Show actions without writing')
     args = parser.parse_args()
 
@@ -34,20 +34,22 @@ def main():
             json_paper_uuids = {stable_uuid_from_url(p['url']) for p in papers_json}
 
             if args.prune_papers:
-                # First, get all paper UUIDs from the DB
-                c.execute("SELECT uuid FROM paper")
-                db_paper_uuids = {row[0] for row in c.fetchall()}
+                # Get all paper UUIDs and URLs from the DB
+                c.execute("SELECT uuid, url FROM paper")
+                db_papers = {row[0]: row[1] for row in c.fetchall()}
+                db_paper_uuids = set(db_papers.keys())
 
                 uuids_to_delete = db_paper_uuids - json_paper_uuids
 
                 if uuids_to_delete:
+                    urls_to_delete = [db_papers[uuid] for uuid in uuids_to_delete]
                     if args.dry_run:
-                        print(f"PRUNE papers not in JSON: {', '.join(uuids_to_delete)}")
+                        print(f"PRUNE papers not in JSON: {', '.join(urls_to_delete)}")
                     else:
                         # Thanks to ON DELETE CASCADE, this will also delete associated
                         # categories, crawls, and articles.
                         c.execute("DELETE FROM paper WHERE uuid IN %s", (tuple(uuids_to_delete),))
-                        print(f"PRUNE papers not in JSON: {', '.join(uuids_to_delete)}")
+                        print(f"PRUNE papers not in JSON: {', '.join(urls_to_delete)}")
 
             for paper_json in papers_json:
                 paper_uuid = stable_uuid_from_url(paper_json['url'])
