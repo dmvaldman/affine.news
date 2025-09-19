@@ -11,6 +11,7 @@ import json
 import gzip
 import brotli
 import zstandard
+import os
 
 from crawler.models.Article import Article
 from crawler.models.Paper import Papers, Paper
@@ -238,7 +239,7 @@ class HeuristicCrawler:
 
                 print(url_normalized, title)
 
-                if (url_normalized.startswith('https://eldeber.com.bo/mundo/')):
+                if (url_normalized.startswith('https://larazon.bo/mundo/')):
                     print('hi')
 
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
@@ -289,13 +290,15 @@ def main():
                         help='Maximum number of articles to find per paper.')
     parser.add_argument('--ignore-cache', action='store_true', default=False,
                         help='Ignore cache and re-crawl papers.')
-    parser.add_argument('--log-to-file', action='store_true', default=True,
+    parser.add_argument('--log-to-file', action='store_true', default=False,
                         help='Log accepted and rejected links to files.')
     args = parser.parse_args()
 
     accepted_log_file = None
     rejected_log_file = None
     if args.log_to_file:
+        # Ensure the logs directory exists
+        os.makedirs('logs', exist_ok=True)
         accepted_log_file = open('logs/accepted_links.txt', 'w')
         rejected_log_file = open('logs/rejected_links.txt', 'w')
 
@@ -421,38 +424,38 @@ def main_single():
     #     ]
     # }
 
-    paper_info = {
-        "country": "Bolivia",
-        "ISO": "BOL",
-        "lang": "es",
-        "url": "https://eldeber.com.bo/",
-        "category_urls": [
-            "https://eldeber.com.bo/mundo/"
-        ],
-        "whitelist": [
-            "https://eldeber.com.bo/bbc/"
-        ]
-    }
+    # paper_info = {
+    #     "country": "Bolivia",
+    #     "ISO": "BOL",
+    #     "lang": "es",
+    #     "url": "https://eldeber.com.bo/",
+    #     "category_urls": [
+    #         "https://eldeber.com.bo/mundo/"
+    #     ],
+    #     "whitelist": [
+    #         "https://eldeber.com.bo/bbc/"
+    #     ]
+    # }
 
     # paper_info = {
     #     "country": "Bolivia",
     #     "ISO": "BOL",
     #     "lang": "es",
-    #     "url": "https://www.la-razon.com/",
+    #     "url": "https://www.larazon.bo/",
     #     "category_urls": [
-    #         "https://www.la-razon.com/mundo/"
+    #         "https://www.larazon.bo/mundo/"
     #     ]
     # }
 
-    # paper_info = {
-    #     "country": "Chile",
-    #     "ISO": "CHL",
-    #     "lang": "es",
-    #     "url": "https://www.latercera.com/",
-    #     "category_urls": [
-    #         "https://www.latercera.com/mundo/"
-    #     ]
-    # }
+    paper_info = {
+        "country": "Chile",
+        "ISO": "CHL",
+        "lang": "es",
+        "url": "https://www.latercera.com/",
+        "category_urls": [
+            "https://www.latercera.com/mundo/"
+        ]
+    }
 
     # paper_info = {
     #     "country": "Kenya",
