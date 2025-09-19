@@ -211,7 +211,6 @@ async function search(){
     }
 
     const articles_url = new URL(url_base + "query", window.location.origin)
-    const stats_url = new URL(url_base + "stats", window.location.origin)
 
     let query_str = searchBarEl.value
 
@@ -233,7 +232,6 @@ async function search(){
     };
 
     Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))
-    Object.keys(stat_params).forEach(key => stats_url.searchParams.append(key, stat_params[key]))
 
     // On first search: initialize map under the bar
     if (scrapedISOs.size === 0) { // Only initialize if no countries are known to be scraped
