@@ -289,7 +289,7 @@
             "https://nashaniva.com/?c=ca&i=584"
         ],
         "whitelist": [
-            "^https://nashaniva.com/\\d+/"
+            "^https://nashaniva.com/\\d+$"
         ]
     },
     {
@@ -945,7 +945,10 @@
         "lang": "es",
         "url": "https://eldeber.com.bo/",
         "category_urls": [
-            "https://eldeber.com.bo/mundo"
+            "https://eldeber.com.bo/mundo/"
+        ],
+        "whitelist": [
+            "https://eldeber.com.bo/bbc/"
         ]
     },
     {
@@ -1147,12 +1150,12 @@
         "country": "Austria",
         "ISO": "AUT",
         "lang": "de",
-        "url": "https://www.derstandard.at/",
+        "url": "https://www.diepresse.com/",
         "category_urls": [
-            "https://www.derstandard.at/international"
+            "https://www.diepresse.com/ausland"
         ],
         "whitelist": [
-            "https://www.derstandard.at/story/"
+            "^https://www.diepresse.com/\\d+/"
         ]
     },
     {
