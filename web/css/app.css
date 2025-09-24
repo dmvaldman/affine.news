@@ -200,9 +200,9 @@ body {
 }
 
 .topic-button:hover {
-  background-color: #02386F;
+  background-color: #3f3f3f;
   color: white;
-  border-color: #02386F;
+  border-color: #1f1f1f;
 }
 
 #searchContainer .searchQuery:focus{
