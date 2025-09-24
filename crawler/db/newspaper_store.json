@@ -1319,15 +1319,6 @@
         ]
     },
     {
-        "country": "Australia",
-        "ISO": "AUS",
-        "lang": "en",
-        "url": "https://www.theage.com.au/",
-        "category_urls": [
-            "https://www.theage.com.au/world/"
-        ]
-    },
-    {
         "country": "Indonesia",
         "ISO": "IDN",
         "lang": "id",
@@ -1557,6 +1548,18 @@
         ],
         "whitelist": [
             "^https://jowhar.com/[^/]+-[^/]+/?$"
+        ]
+    },
+    {
+        "country": "Tazania",
+        "ISO": "TZA",
+        "lang": "en",
+        "url": "https://www.dailynews.co.tz/",
+        "category_urls": [
+            "https://dailynews.co.tz/category/world/"
+        ],
+        "whitelist": [
+            "^https://dailynews.co.tz/[^/]+-[^/]+/?$"
         ]
     }
 ]
