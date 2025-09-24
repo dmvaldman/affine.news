@@ -101,6 +101,17 @@ function initializeMap(papersByCountry) {
                 const targetElement = document.getElementById(countryId);
 
                 if (targetElement) {
+                    const singleArticlesContainer = document.getElementById('single-articles-container');
+                    const showMoreContainer = document.getElementById('show-more-container');
+
+                    // If the target is in the hidden "Show more" section, expand it first.
+                    if (singleArticlesContainer && singleArticlesContainer.contains(targetElement) && singleArticlesContainer.style.display === 'none') {
+                        singleArticlesContainer.style.display = 'block';
+                        if (showMoreContainer) {
+                            showMoreContainer.remove();
+                        }
+                    }
+
                     targetElement.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
