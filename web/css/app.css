@@ -237,7 +237,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-left: 5px;
-  border-left: 2px solid #cacde4;
+  border-left: 2px solid #d5d5d5;
   overflow-x: hidden;
 }
 
@@ -298,7 +298,7 @@ body {
 
 #searchResults .date {
   display: inline-block;
-  padding-right: 15px;
+  padding-right: 10px;
 }
 
 #searchResults .toggle {

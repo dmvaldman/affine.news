@@ -219,16 +219,14 @@ async function search(){
         return
     }
 
+    // Clear previous results and show loading state
+    searchResultsEl.innerHTML = '';
+
     // Last 3 days
     const endDate = moment().format('YYYY-MM-DD');
     const startDate = moment().subtract(3, 'days').format('YYYY-MM-DD');
 
     const article_params = { query: query_str, date_start: startDate, date_end: endDate };
-    const stat_params = {
-        query: query_str,
-        date_start: moment(startDate).subtract(10, 'days').format('YYYY-MM-DD'),
-        date_end: moment(endDate).add(10, 'days').format('YYYY-MM-DD')
-    };
 
     Object.keys(article_params).forEach(key => articles_url.searchParams.append(key, article_params[key]))
 
