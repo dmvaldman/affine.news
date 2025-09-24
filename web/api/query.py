@@ -39,7 +39,7 @@ def generate_summary(client: genai.GenerativeModel, search_query: str, results_b
         Respond with groups of countries (use their ISO code) and a 2-8 word concise label indicating the bias.
         e.g. ["USA", "GBR", "CAN"], "Downplay incident". ["CHI", "RUS"], "Highlight Israel aggression".
         We're only looking for obvious biases, not subtle differences. If subtle ignore.
-        If a country's reporting is mostly neutral, ignore.
+        If a country's reporting is mostly neutral, ignore. Don't mention that they have "neutral" reporting or similar as a label (this is done automatically).
         It's not enough for one article to simply mention a different aspect of a story. It must show a clear bias. E.g. pushing one narrative vs its opposite.
         Not all countries need be included, in fact, many won't be.
         0-4 groups of countries/label total. 4 should be reserved for cases of extreme controversy and bias.

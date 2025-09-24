@@ -186,8 +186,7 @@ function formatDate(input){
   const d = new Date(input)
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
-  const yy = String(d.getFullYear() % 100).padStart(2, '0')
-  return `${mm}/${dd}/${yy}`
+  return `${mm}/${dd}`
 }
 
 searchBarEl.addEventListener('keyup', function(e) {
@@ -405,8 +404,8 @@ function applySummaryToMap(summary){
             }
         }
 
-        legendItems.push({ label: 'No Bias Found', color: fillHex.NO_BIAS });
-        legendItems.push({ label: 'No Articles Found', color: fillHex.NO_ARTICLES });
+        legendItems.push({ label: 'No Bias', color: fillHex.NO_BIAS });
+        legendItems.push({ label: 'No Articles', color: fillHex.NO_ARTICLES });
         legendItems.push({ label: 'Not Scraped', color: 'rgba(0,0,0,0)' });
 
         for (const itemData of legendItems) {
