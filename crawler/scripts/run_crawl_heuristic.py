@@ -13,7 +13,7 @@ import zstandard
 import os
 
 from crawler.models.Article import Article
-from crawler.models.Paper import Papers, Paper
+from crawler.models.Paper import Paper
 # Suppress warnings from BeautifulSoup
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
@@ -251,9 +251,6 @@ class HeuristicCrawler:
                     continue
                 seen_urls.add(url_normalized)
 
-                if (url_normalized == "https://jang.com.pk/news/1512488"):
-                    print('hi')
-
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
                     accepted_links_by_category[category_url].append(url_normalized)
 
@@ -384,285 +381,18 @@ def main():
             rejected_log_file.close()
 
 def main_single():
-    # paper_info = {
-    #     "country": "Albania",
-    #     "ISO": "ALB",
-    #     "lang": "sq",
-    #     "url": "https://www.gazetatema.net/",
-    #     "category_urls": [
-    #         "https://www.gazetatema.net/category/bota/"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.gazetatema.net/bota/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Albania",
-    #     "ISO": "ALB",
-    #     "lang": "sq",
-    #     "url": "https://www.balkanweb.com/",
-    #     "category_urls": [
-    #         "https://www.balkanweb.com/kategoria/bota/"
-    #     ],
-    #     "whitelist": [
-    #         "^https://www.balkanweb.com/[^/]+/?$"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Austria",
-    #     "ISO": "AUT",
-    #     "lang": "de",
-    #     "url": "https://www.diepresse.com/",
-    #     "category_urls": [
-    #         "https://www.diepresse.com/ausland"
-    #     ],
-    #     "whitelist": [
-    #         "^https://www.diepresse.com/\\d+/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Belarus",
-    #     "ISO": "BLR",
-    #     "lang": "ru",
-    #     "url": "https://nashaniva.com/",
-    #     "category_urls": [
-    #         "https://nashaniva.com/?c=ca&i=584"
-    #     ],
-    #     "whitelist": [
-    #         "^https://nashaniva.com/\\d+$"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Bolivia",
-    #     "ISO": "BOL",
-    #     "lang": "es",
-    #     "url": "https://eldeber.com.bo/",
-    #     "category_urls": [
-    #         "https://eldeber.com.bo/mundo/"
-    #     ],
-    #     "whitelist": [
-    #         "https://eldeber.com.bo/bbc/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Bolivia",
-    #     "ISO": "BOL",
-    #     "lang": "es",
-    #     "url": "https://www.larazon.bo/",
-    #     "category_urls": [
-    #         "https://www.larazon.bo/mundo/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Chile",
-    #     "ISO": "CHL",
-    #     "lang": "es",
-    #     "url": "https://www.latercera.com/",
-    #     "category_urls": [
-    #         "https://www.latercera.com/canal/mundo/"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.latercera.com/mundo/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Kenya",
-    #     "ISO": "KEN",
-    #     "lang": "en",
-    #     "url": "https://www.standardmedia.co.ke/",
-    #     "category_urls": [
-    #         "https://www.standardmedia.co.ke/category/5/world"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.standardmedia.co.ke/world/",
-    #         "https://www.standardmedia.co.ke/europe/",
-    #         "https://www.standardmedia.co.ke/asia/",
-    #         "https://www.standardmedia.co.ke/africa/",
-    #         "https://www.standardmedia.co.ke/america/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Malaysia",
-    #     "ISO": "MYS",
-    #     "lang": "ms",
-    #     "url": "https://www.cincainews.com",
-    #     "category_urls": [
-    #         "https://www.cincainews.com/news/world"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Malaysia",
-    #     "ISO": "MYS",
-    #     "lang": "en",
-    #     "url": "https://www.malaymail.com/",
-    #     "category_urls": [
-    #         "https://www.malaymail.com/news/world"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Mongolia",
-    #     "ISO": "MNG",
-    #     "lang": "mn",
-    #     "url": "https://eguur.mn/",
-    #     "category_urls": [
-    #         "https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
-    #     ],
-    #     "whitelist": [
-    #         "^https://eguur.mn/\\d+/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Myanmar",
-    #     "ISO": "MMR",
-    #     "lang": "en",
-    #     "url": "https://www.irrawaddy.com/",
-    #     "category_urls": [
-    #         "https://www.irrawaddy.com/category/news/world"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Pakistan",
-    #     "ISO": "PAK",
-    #     "lang": "ur",
-    #     "url": "https://www.jang.com.pk/",
-    #     "category_urls": [
-    #         "https://www.jang.com.pk/category/latest-news/world"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.jang.com.pk/news/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Panama",
-    #     "ISO": "PAN",
-    #     "lang": "es",
-    #     "url": "https://www.critica.com.pa/",
-    #     "category_urls": [
-    #         "https://www.critica.com.pa/mundo"
-    #     ]
-    # }
-
     paper_info = {
-        "country": "Poland",
-        "ISO": "POL",
-        "lang": "pl",
-        "url": "https://wyborcza.pl/",
+        "country": "Albania",
+        "ISO": "ALB",
+        "lang": "sq",
+        "url": "https://www.gazetatema.net/",
         "category_urls": [
-            "https://wyborcza.pl/0,75399.html"
+            "https://www.gazetatema.net/category/bota/"
         ],
         "whitelist": [
-            "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
+            "https://www.gazetatema.net/bota/"
         ]
     }
-
-    # paper_info = {
-    #     "country": "Ukraine",
-    #     "ISO": "UKR",
-    #     "lang": "uk",
-    #     "url": "https://fakty.ua/",
-    #     "category_urls": [
-    #         "https://fakty.ua/categories/world"
-    #     ],
-    #     "whitelist": [
-    #         "^https://fakty.ua/\\d{6}-.*"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Ukraine",
-    #     "ISO": "UKR",
-    #     "lang": "uk",
-    #     "url": "https://www.kyivpost.com",
-    #     "category_urls": [
-    #     "https://www.kyivpost.com/category/world"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.kyivpost.com/post/",
-    #         "https://www.kyivpost.com/topic/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "United States",
-    #     "ISO": "USA",
-    #     "lang": "en",
-    #     "url": "https://www.washingtonpost.com/",
-    #     "category_urls": [
-    #         "https://www.washingtonpost.com/world/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Venezuela",
-    #     "ISO": "VEN",
-    #     "lang": "es",
-    #     "url": "https://www.elnacional.com/",
-    #     "category_urls": [
-    #         "https://www.elnacional.com/mundo/"
-    #     ],
-    #     "whitelist": [
-    #         "^https://www.elnacional.com/\\d{4}/\\d{2}/.+"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Venezuela",
-    #     "ISO": "VEN",
-    #     "lang": "es",
-    #     "url": "https://www.eluniversal.com/",
-    #     "category_urls": [
-    #         "https://www.eluniversal.com/internacional"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Yemen",
-    #     "ISO": "YEM",
-    #     "lang": "ar",
-    #     "url": "https://www.sabanew.net/",
-    #     "category_urls": [
-    #         "https://www.sabanew.net/category/ar/1/"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.sabanew.net/story/ar/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Serbia",
-    #     "ISO": "SRB",
-    #     "lang": "sr",
-    #     "url": "https://www.politika.rs/",
-    #     "category_urls": [
-    #         "https://www.politika.rs/scc/svet"
-    #     ],
-    #     "whitelist": [
-    #         "https://www.politika.rs/scc/"
-    #     ]
-    # }
-
-    # paper_info = {
-    #     "country": "Nicaragua",
-    #     "ISO": "NIC",
-    #     "lang": "es",
-    #     "url": "https://www.laprensani.com/",
-    #     "category_urls": [
-    #         "https://www.laprensani.com/seccion/internacionales/"
-    #     ]
-    # }
 
     paper_info['uuid'] = Paper.load_from_url(paper_info['url']).uuid
     paper = Paper(**paper_info)
@@ -682,5 +412,5 @@ def main_single():
             print(f'{link}')
 
 if __name__ == '__main__':
-    # main()
-    main_single()
+    main()
+    # main_single()
