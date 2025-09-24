@@ -251,11 +251,12 @@ body {
   #mapContainer {
     padding-left: 0px;
     padding-right: 0px;
-    height: 55vw;
+    height: 60vw;
   }
 
   #legend {
     grid-template-columns: 1fr;
+    justify-content: flex-start; /* Align items to the start, not spaced out */
   }
 
   #searchResults ul {
@@ -287,6 +288,14 @@ body {
 
   body:not(.landing) #topicsContainer::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+
+  .legend-item {
+      flex-basis: 100%; /* Each item takes the full width on mobile */
+  }
+
+  .section-separator {
+      font-size: 18px;
   }
 }
 
@@ -378,7 +387,7 @@ input[type=text] {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   display: none; /* Hidden by default */
-  padding: 20px;
+  /* padding: 20px; */
   z-index: 2000;
   font-size: 16px;
 }
@@ -407,7 +416,7 @@ input[type=text] {
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
-  color: #aaa;
+  color: black;
 }
 
 #modalClose:hover {
