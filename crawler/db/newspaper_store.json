@@ -72,18 +72,6 @@
         ]
     },
     {
-        "country": "China",
-        "ISO": "CHN",
-        "lang": "zh",
-        "url": "http://www.chinanews.com/",
-        "category_urls": [
-            "https://www.chinanews.com.cn/world/"
-        ],
-        "whitelist": [
-            "https://www.chinanews.com.cn/gj/"
-        ]
-    },
-    {
         "country": "Iran",
         "ISO": "IRN",
         "lang": "ar",
@@ -185,8 +173,7 @@
            "https://www.kyivpost.com/category/world"
         ],
         "whitelist": [
-            "https://www.kyivpost.com/post/",
-            "https://www.kyivpost.com/topic/"
+            "https://www.kyivpost.com/post/"
         ]
     },
     {
@@ -227,15 +214,6 @@
         "whitelist": [
             "^https://www.nytimes.com/\\d{4}/\\d{2}/\\d{2}/.*",
             "https://www.nytimes.com/video/world/"
-        ]
-    },
-    {
-        "country": "United States",
-        "ISO": "USA",
-        "lang": "en",
-        "url": "https://www.washingtonpost.com/",
-        "category_urls": [
-            "https://www.washingtonpost.com/world/"
         ]
     },
     {
@@ -305,9 +283,24 @@
         "country": "China",
         "ISO": "CHN",
         "lang": "zh",
-        "url": "http://www.news.cn/",
+        "url": "http://www.chinanews.com/",
         "category_urls": [
-            "http://www.news.cn/world/"
+            "https://www.chinanews.com.cn/world/"
+        ],
+        "whitelist": [
+            "https://www.chinanews.com.cn/gj/"
+        ]
+    },
+    {
+        "country": "China",
+        "ISO": "CHN",
+        "lang": "en",
+        "url": "https://www.globaltimes.cn/",
+        "category_urls": [
+            "https://www.globaltimes.cn/world/index.html"
+        ],
+        "whitelist": [
+            "https://www.globaltimes.cn/page/"
         ]
     },
     {
@@ -660,9 +653,9 @@
         "country": "Panama",
         "ISO": "PAN",
         "lang": "es",
-        "url": "https://www.prensa.com/",
+        "url": "https://www.critica.com.pa/",
         "category_urls": [
-            "https://www.prensa.com/mundo/"
+            "https://www.critica.com.pa/mundo"
         ]
     },
     {
@@ -870,7 +863,11 @@
         "lang": "es",
         "url": "https://www.eluniversal.com/",
         "category_urls": [
-            "https://www.eluniversal.com/internacional"
+            "https://www.aporrea.org/internacionales/"
+        ],
+        "whitelist": [
+            "https://www.aporrea.org/actualidad/",
+            "https://www.aporrea.org/internacionales/"
         ]
     },
     {
@@ -897,6 +894,9 @@
         "lang": "es",
         "url": "https://www.latercera.com/",
         "category_urls": [
+            "https://www.latercera.com/canal/mundo/"
+        ],
+        "whitelist": [
             "https://www.latercera.com/mundo/"
         ]
     },
@@ -1021,9 +1021,37 @@
         "country": "Nicaragua",
         "ISO": "NIC",
         "lang": "es",
-        "url": "https://www.laprensani.com/",
+        "url": "https://lapatilla.com/",
         "category_urls": [
-            "https://www.laprensani.com/seccion/internacionales/"
+            "https://lapatilla.com/secciones/internacionales/"
+        ],
+        "whitelist": [
+            "^https://lapatilla.com/\\d{4}/\\d{2}/\\d{2}/[^/]+/"
+        ]
+
+    },
+    {
+        "country": "Saudi Arabia",
+        "ISO": "SAU",
+        "lang": "ar",
+        "url": "https://www.al-madina.com/",
+        "category_urls": [
+            "https://www.al-madina.com/%D8%AF%D9%88%D9%84%D9%8A%D8%A9"
+        ],
+        "whitelist": [
+            "https://www.al-madina.com/article/"
+        ]
+    },
+    {
+        "country": "Saudi Arabia",
+        "ISO": "SAU",
+        "lang": "en",
+        "url": "https://saudigazette.com.sa/",
+        "category_urls": [
+            "https://saudigazette.com.sa/World"
+        ],
+        "whitelist": [
+            "https://saudigazette.com.sa/article/"
         ]
     },
     {
@@ -1056,19 +1084,19 @@
     {
         "country": "Malaysia",
         "ISO": "MYS",
-        "lang": "en",
-        "url": "https://www.thestar.com.my/",
+        "lang": "ms",
+        "url": "https://www.cincainews.com",
         "category_urls": [
-            "https://www.thestar.com.my/news/world/"
+            "https://www.cincainews.com/news/world"
         ]
     },
     {
         "country": "Malaysia",
         "ISO": "MYS",
-        "lang": "ms",
-        "url": "https://www.bharian.com.my/",
+        "lang": "en",
+        "url": "https://www.malaymail.com/",
         "category_urls": [
-            "https://www.bharian.com.my/dunia"
+            "https://www.malaymail.com/news/world"
         ]
     },
     {
@@ -1081,15 +1109,6 @@
         ],
         "whitelist": [
             "https://myanmar-now.org/mm/news/"
-        ]
-    },
-    {
-        "country": "Myanmar",
-        "ISO": "MMR",
-        "lang": "en",
-        "url": "https://www.irrawaddy.com/",
-        "category_urls": [
-            "https://www.irrawaddy.com/category/news/world"
         ]
     },
     {
@@ -1284,7 +1303,7 @@
         "lang": "mn",
         "url": "https://eguur.mn/",
         "category_urls": [
-            "https://eguur.mn/news/world/https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
+            "https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
         ],
         "whitelist": [
             "^https://eguur.mn/\\d+/"
@@ -1393,12 +1412,12 @@
         "country": "Poland",
         "ISO": "POL",
         "lang": "pl",
-        "url": "https://wyborcza.pl/",
+        "url": "https://www.rp.pl/",
         "category_urls": [
-            "https://wyborcza.pl/0,75399.html"
+            "https://www.rp.pl/wydarzenia/swiat"
         ],
         "whitelist": [
-            "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
+            "^https://www.rp.pl/[^/]+/art\\d+-"
         ]
     },
     {
@@ -1424,6 +1443,120 @@
         ],
         "whitelist": [
             "https://www.inform.kz/ru/"
+        ]
+    },
+    {
+        "country": "United Arab Emirates",
+        "ISO": "UAE",
+        "lang": "ar",
+        "url": "https://www.khaleejtimes.com/arabic/",
+        "category_urls": [
+            "https://www.khaleejtimes.com/world"
+        ]
+    },
+    {
+        "country": "United Arab Emirates",
+        "ISO": "UAE",
+        "lang": "en",
+        "url": "https://www.aletihad.ae/",
+        "category_urls": [
+            "https://www.aletihad.ae/category/%D8%B9%D8%B1%D8%A8%D9%8A-%D9%88%D8%AF%D9%88%D9%84%D9%8A"
+        ],
+        "whitelist": [
+            "https://www.aletihad.ae/news/"
+        ]
+    },
+    {
+        "country": "South Africa",
+        "ISO": "ZAF",
+        "lang": "en",
+        "url": "https://www.citizen.co.za/",
+        "category_urls": [
+            "https://www.citizen.co.za/news/news-world/"
+        ],
+        "whitelist": [
+            "https://www.citizen.co.za/news/"
+        ]
+    },
+    {
+        "country": "South Africa",
+        "ISO": "ZAF",
+        "lang": "af",
+        "url": "https://www.netwerk24.com/",
+        "category_urls": [
+            "https://www.netwerk24.com/nuus/internasionaal"
+        ]
+    },
+    {
+        "country": "Kenya",
+        "ISO": "KEN",
+        "lang": "en",
+        "url": "https://nation.africa/kenya/",
+        "category_urls": [
+            "https://nation.africa/kenya/news/"
+        ]
+    },
+    {
+        "country": "Kenya",
+        "ISO": "KEN",
+        "lang": "en",
+        "url": "https://www.theeastafrican.co.ke/",
+        "category_urls": [
+            "https://www.theeastafrican.co.ke/tea/news/world"
+        ]
+    },
+    {
+        "country": "Uganda",
+        "ISO": "UGA",
+        "lang": "en",
+        "url": "https://www.monitor.co.ug/uganda/",
+        "category_urls": [
+            "https://www.monitor.co.ug/uganda/news/world/"
+        ]
+    },
+    {
+        "country": "Morocco",
+        "ISO": "MAR",
+        "lang": "en",
+        "url": "https://lematin.ma/",
+        "category_urls": [
+            "https://lematin.ma/monde/"
+        ]
+    },
+    {
+        "country": "Morocco",
+        "ISO": "MAR",
+        "lang": "ar",
+        "url": "https://www.alalam.ma/",
+        "category_urls": [
+            "https://www.alalam.ma/%D8%AF%D9%88%D9%84%D9%8A_r7.html"
+        ],
+        "whitelist": [
+            "^https://www.alalam.ma/[^/]+/[^/]+/?$"
+        ]
+    },
+    {
+        "country": "Somalia",
+        "ISO": "SOM",
+        "lang": "so",
+        "url": "https://www.caasimada.net/",
+        "category_urls": [
+            "https://www.caasimada.net/category/caalamka/"
+        ],
+        "whitelist": [
+            "^https://www.caasimada.net/[^/]+-[^/]+/?$"
+        ]
+    },
+    {
+        "country": "Somalia",
+        "ISO": "SOM",
+        "lang": "en",
+        "url": "https://jowhar.com/",
+        "category_urls": [
+            "https://jowhar.com/category/world-news/"
+        ],
+        "whitelist": [
+            "^https://jowhar.com/[^/]+-[^/]+/?$"
         ]
     }
 ]
