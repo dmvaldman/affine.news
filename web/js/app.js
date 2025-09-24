@@ -121,6 +121,10 @@ function initializeMap(papersByCountry) {
             highlightBorderColor: 'rgba(0, 0, 0, 0.4)',
             highlightBorderWidth: 1,
             popupTemplate: function(geography, data) {
+                // Don't show popups on mobile devices
+                if (window.innerWidth < 768) {
+                    return null;
+                }
                 let urls = papersByCountry[geography.id];
                 let hoverinfo = `<div class="hoverinfo"><strong>${geography.properties.name}</strong>`;
                 if (urls && urls.length > 0) {
