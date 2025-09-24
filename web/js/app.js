@@ -281,7 +281,10 @@ async function search(){
         return bLength - aLength;
     });
 
-    for (const iso of sortedISOs){
+    const isosWithMultipleArticles = sortedISOs.filter(iso => articles[iso].articles && articles[iso].articles.length > 1);
+    const isosWithSingleArticle = sortedISOs.filter(iso => articles[iso].articles && articles[iso].articles.length === 1);
+
+    const renderCountryArticles = (iso, targetEl) => {
         const countryData = articles[iso];
         const countryName = countryData.country_name;
         const countryArticles = countryData.articles;
@@ -340,19 +343,45 @@ async function search(){
             else
                 urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
 
-            // Add minimal domain (no http/https or www)
-            // let domainEl = document.createElement('span')
-            // domainEl.className = 'domain'
-            // domainEl.textContent = new URL(url).hostname.replace(/^www\./, '') + ' (' + parseInt(result.similarity * 100) + ') '
-
             resultEl.appendChild(dateEl)
-            // resultEl.appendChild(domainEl)
             resultEl.appendChild(urlEl)
 
             countryEl.appendChild(resultEl)
         }
+        targetEl.appendChild(countryEl);
+    };
 
-        searchResultsEl.appendChild(countryEl)
+    // Render countries with multiple articles first
+    isosWithMultipleArticles.forEach(iso => renderCountryArticles(iso, searchResultsEl));
+
+    // Conditionally render single-article countries
+    const shouldHideSingles = isosWithMultipleArticles.length > 0 && isosWithSingleArticle.length > 0;
+
+    if (shouldHideSingles) {
+        const showMoreContainer = document.createElement('div');
+        showMoreContainer.id = 'show-more-container';
+        searchResultsEl.appendChild(showMoreContainer);
+
+        const showMoreButton = document.createElement('button');
+        showMoreButton.id = 'show-more-button';
+        showMoreButton.className = 'show-more-button';
+        showMoreButton.textContent = 'Show more';
+        showMoreContainer.appendChild(showMoreButton);
+
+        const singleArticlesContainer = document.createElement('div');
+        singleArticlesContainer.id = 'single-articles-container';
+        singleArticlesContainer.style.display = 'none'; // Initially hidden
+        searchResultsEl.appendChild(singleArticlesContainer);
+
+        isosWithSingleArticle.forEach(iso => renderCountryArticles(iso, singleArticlesContainer));
+
+        showMoreButton.addEventListener('click', () => {
+            singleArticlesContainer.style.display = 'block';
+            showMoreContainer.remove(); // Remove the button and its container
+        });
+    } else {
+        // Render single-article countries directly if the condition isn't met
+        isosWithSingleArticle.forEach(iso => renderCountryArticles(iso, searchResultsEl));
     }
 
     searchButtonEl.disabled = false;
