@@ -49,6 +49,12 @@ def find_title_for_link(tag):
     return best_text
 
 
+def is_regex(pattern):
+    """Check if the pattern contains common regex metacharacters."""
+    regex_chars = ['^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')']
+    return any(char in pattern for char in regex_chars)
+
+
 def decompress_content(resp, verbose=False):
     """
     Checks for and handles compressed content (zstd, gzip)
@@ -116,14 +122,26 @@ def is_likely_article(href, text, base_url, detector, whitelist=None):
     if whitelist:
         full_url_str = str(full_url_obj)
         for pattern in whitelist:
-            try:
-                if re.match(pattern, full_url_str):
-                    return True # Whitelist match = instant pass
-            except re.error:
-                comparable_full_url = get_comparable_url_string(full_url_obj)
-                comparable_pattern = get_comparable_url_string(URL(pattern))
-                if comparable_full_url.startswith(comparable_pattern):
-                    return True # Whitelist match = instant pass
+            # Decide whether to treat the pattern as a regex or a simple prefix
+            if is_regex(pattern):
+                try:
+                    if re.match(pattern, full_url_str):
+                        return True # Regex match = instant pass
+                except re.error:
+                    # This handles cases with invalid regex patterns
+                    print(f"  ! WARNING: Invalid regex in whitelist: '{pattern}'")
+                    continue
+            else:
+                # Treat as a simple prefix after normalizing both URLs
+                try:
+                    comparable_full_url = get_comparable_url_string(full_url_obj)
+                    comparable_pattern = get_comparable_url_string(URL(pattern))
+                    if comparable_full_url.startswith(comparable_pattern):
+                        return True # Prefix match = instant pass
+                except ValueError:
+                    # The pattern might not be a valid URL for the URL() constructor
+                    print(f"  ! WARNING: Invalid URL prefix in whitelist: '{pattern}'")
+                    continue
 
     # If no whitelist match, check if it's a valid extension of the category URL.
     is_valid_extension = get_comparable_url_string(full_url_obj).startswith(get_comparable_url_string(base_url_obj))
@@ -232,6 +250,9 @@ class HeuristicCrawler:
                 if url_normalized in seen_urls:
                     continue
                 seen_urls.add(url_normalized)
+
+                if (url_normalized == "https://jang.com.pk/news/1512488"):
+                    print('hi')
 
                 if is_likely_article(href, title, category_url, detector, whitelist=getattr(paper, 'whitelist', [])):
                     accepted_links_by_category[category_url].append(url_normalized)
@@ -438,15 +459,18 @@ def main_single():
     #     ]
     # }
 
-    paper_info = {
-        "country": "Chile",
-        "ISO": "CHL",
-        "lang": "es",
-        "url": "https://www.latercera.com/",
-        "category_urls": [
-            "https://www.latercera.com/mundo/"
-        ]
-    }
+    # paper_info = {
+    #     "country": "Chile",
+    #     "ISO": "CHL",
+    #     "lang": "es",
+    #     "url": "https://www.latercera.com/",
+    #     "category_urls": [
+    #         "https://www.latercera.com/canal/mundo/"
+    #     ],
+    #     "whitelist": [
+    #         "https://www.latercera.com/mundo/"
+    #     ]
+    # }
 
     # paper_info = {
     #     "country": "Kenya",
@@ -468,20 +492,20 @@ def main_single():
     # paper_info = {
     #     "country": "Malaysia",
     #     "ISO": "MYS",
-    #     "lang": "en",
-    #     "url": "https://www.thestar.com.my/",
+    #     "lang": "ms",
+    #     "url": "https://www.cincainews.com",
     #     "category_urls": [
-    #         "https://www.thestar.com.my/news/world/"
+    #         "https://www.cincainews.com/news/world"
     #     ]
     # }
 
     # paper_info = {
     #     "country": "Malaysia",
     #     "ISO": "MYS",
-    #     "lang": "ms",
-    #     "url": "https://www.bharian.com.my/",
+    #     "lang": "en",
+    #     "url": "https://www.malaymail.com/",
     #     "category_urls": [
-    #         "https://www.bharian.com.my/dunia"
+    #         "https://www.malaymail.com/news/world"
     #     ]
     # }
 
@@ -491,7 +515,7 @@ def main_single():
     #     "lang": "mn",
     #     "url": "https://eguur.mn/",
     #     "category_urls": [
-    #         "https://eguur.mn/news/world/https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
+    #         "https://eguur.mn/category/%d0%b4%d1%8d%d0%bb%d1%85%d0%b8%d0%b9/"
     #     ],
     #     "whitelist": [
     #         "^https://eguur.mn/\\d+/"
@@ -525,24 +549,24 @@ def main_single():
     #     "country": "Panama",
     #     "ISO": "PAN",
     #     "lang": "es",
-    #     "url": "https://www.prensa.com/",
+    #     "url": "https://www.critica.com.pa/",
     #     "category_urls": [
-    #         "https://www.prensa.com/mundo/"
+    #         "https://www.critica.com.pa/mundo"
     #     ]
     # }
 
-    # paper_info = {
-    #     "country": "Poland",
-    #     "ISO": "POL",
-    #     "lang": "pl",
-    #     "url": "https://wyborcza.pl/",
-    #     "category_urls": [
-    #         "https://wyborcza.pl/0,75399.html"
-    #     ],
-    #     "whitelist": [
-    #         "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
-    #     ]
-    # }
+    paper_info = {
+        "country": "Poland",
+        "ISO": "POL",
+        "lang": "pl",
+        "url": "https://wyborcza.pl/",
+        "category_urls": [
+            "https://wyborcza.pl/0,75399.html"
+        ],
+        "whitelist": [
+            "^https://wyborcza.pl/\\d+,\\d+,\\d+,\\d+,\\d+\\.html#s=S.index-K.C-B.1-L.\\d+\\.duzy$"
+        ]
+    }
 
     # paper_info = {
     #     "country": "Ukraine",
@@ -644,8 +668,19 @@ def main_single():
     paper = Paper(**paper_info)
     crawler = HeuristicCrawler(max_articles=20)
     crawl_result = crawler.crawl_paper(paper)
-    print(crawl_result)
+
+    print(f'{paper.url} downloaded {crawl_result["downloaded"]}, {crawl_result["rejected"]} rejected, {crawl_result["cache_hits"]} cache hits, {crawl_result["accepted"]} accepted')
+    # print accepted and rejected links
+    for category_url, links in crawl_result["accepted_links"].items():
+        print('\n\nAccepted links:\n\n')
+        for link in links:
+            print(f'{link}')
+
+    for category_url, links in crawl_result["rejected_links"].items():
+        print('\n\nRejected links:\n\n')
+        for link in links:
+            print(f'{link}')
 
 if __name__ == '__main__':
-    main()
-    # main_single()
+    # main()
+    main_single()
