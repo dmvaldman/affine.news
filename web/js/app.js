@@ -214,6 +214,15 @@ searchButtonEl.onclick = async function(e){
     search();
 }
 
+function resetMap() {
+    if (map) {
+        map.updateChoropleth(origMapData);
+    }
+    if (legendEl) {
+        legendEl.innerHTML = '';
+    }
+}
+
 function resetSearchButton() {
     searchButtonEl.disabled = false;
     searchButtonEl.innerHTML = `
@@ -244,6 +253,7 @@ async function search(){
 
     // Clear previous results and show loading state
     searchResultsEl.innerHTML = '';
+    resetMap();
 
     // Last 3 days
     const endDate = moment().format('YYYY-MM-DD');
