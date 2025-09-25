@@ -214,6 +214,15 @@ searchButtonEl.onclick = async function(e){
     search();
 }
 
+function resetSearchButton() {
+    searchButtonEl.disabled = false;
+    searchButtonEl.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+    `;
+}
+
 async function search(){
     searchButtonEl.disabled = true;
     searchButtonEl.innerHTML = '<div class="loader"></div>';
@@ -229,8 +238,7 @@ async function search(){
     let query_str = searchBarEl.value
 
     if (query_str == '') {
-        searchButtonEl.disabled = false;
-        searchButtonEl.innerHTML = 'Search';
+        resetSearchButton();
         return
     }
 
@@ -257,6 +265,13 @@ async function search(){
     const response = await fetch(articles_url)
     const { summary, articles } = await response.json()
 
+    if (!articles) {
+        console.error("API response did not include 'articles' object:", {summary, articles});
+        searchResultsEl.innerHTML = '<p>An error occurred while fetching results. Please try again.</p>';
+        resetSearchButton();
+        return;
+    }
+
     // Add any newly found countries from this search to our master list
     Object.keys(articles).forEach(iso => scrapedISOs.add(iso));
 
@@ -279,8 +294,9 @@ async function search(){
 
     if (Object.keys(articles).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
-        searchButtonEl.disabled = false;
-        searchButtonEl.innerHTML = 'Search';
+        if (separator) separator.classList.remove('visible');
+
+        resetSearchButton();
         return;
     }
 
@@ -399,12 +415,7 @@ async function search(){
         isosWithSingleArticle.forEach(iso => renderCountryArticles(iso, searchResultsEl));
     }
 
-    searchButtonEl.disabled = false;
-    searchButtonEl.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-        `;
+    resetSearchButton();
 }
 
 function applySummaryToMap(summary){
@@ -471,4 +482,3 @@ function applySummaryToMap(summary){
         }
     }
 }
-
