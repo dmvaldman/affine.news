@@ -94,6 +94,7 @@ class handler(BaseHTTPRequestHandler):
 
         try:
             # 1. Embed the search query
+            print("Step 1: Embedding the search query...")
             api_key = os.environ.get('GEMINI_API_KEY')
             if not api_key:
                 raise ValueError("GEMINI_API_KEY not set")
@@ -106,8 +107,10 @@ class handler(BaseHTTPRequestHandler):
                 task_type="retrieval_query"
             )
             query_embedding = query_embedding_response['embedding']
+            print("Step 1 successful.")
 
             # 2. Query the database
+            print("Step 2: Querying the database...")
             db_url = os.environ.get('DATABASE_URL')
             if not db_url:
                 raise ValueError("DATABASE_URL not set")
@@ -148,6 +151,7 @@ class handler(BaseHTTPRequestHandler):
                         (np.array(query_embedding), date_start, date_end, SIMILARITY_THRESHOLD)
                     )
                     results = cur.fetchall()
+            print(f"Step 2 successful. Found {len(results)} articles.")
 
             final_response = {}
 
@@ -159,6 +163,7 @@ class handler(BaseHTTPRequestHandler):
                 return
 
             # Format results grouped by ISO
+            print("Step 3: Formatting results and generating summary...")
             by_iso = {}
             for row in results:
                 paper_info = papers_data.get(row['paper_uuid'], {})
@@ -182,6 +187,7 @@ class handler(BaseHTTPRequestHandler):
 
             # Generate summary
             summary = generate_summary(genai, search_query, by_iso)
+            print("Step 3 successful.")
 
             final_response = {
                 "summary": summary,
@@ -206,6 +212,7 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(body)
 
         except Exception as e:
+            print(f"An error occurred in the main handler: {e}") # Log the full error
             self.send_response(500)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
