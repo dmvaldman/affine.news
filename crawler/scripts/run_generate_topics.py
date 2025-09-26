@@ -100,9 +100,9 @@ def main():
                 json_data.encode('utf-8'), # Encode the string to bytes
                 {
                     'access': 'public',
-                    'add_random_suffix': 'false',
+                    'addRandomSuffix': 'false',
                     'allowOverwrite': 'true',
-                    'cacheControlMaxAge': '14400', # 4 hours, must be a string
+                    'cacheControlMaxAge': '7200', # 2 hours, must be a string
                     'token': os.getenv('BLOB_READ_WRITE_TOKEN'),
                 }
             )
