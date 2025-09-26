@@ -102,7 +102,7 @@ def main():
                     'access': 'public',
                     'add_random_suffix': 'false',
                     'allowOverwrite': 'true',
-                    'cacheControlMaxAge': 14400, # 4 hours
+                    'cacheControlMaxAge': '14400', # 4 hours, must be a string
                     'token': os.getenv('BLOB_READ_WRITE_TOKEN'),
                 }
             )
