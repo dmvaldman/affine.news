@@ -147,7 +147,7 @@ body {
 #legend .spectrum-marker {
     position: absolute;
     top: 0;
-    width: 2px;
+    width: 3px;
     height: 20px;
     background-color: #000;
     transform: translateX(-1px);
@@ -170,12 +170,27 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding-bottom: 5px;
 }
 
-#searchResults .country-color-box {
-    width: 16px;
+#searchResults .country-mini-spectrum {
+    position: relative;
+    width: 100px;
     height: 16px;
+    border-radius: 3px;
+    border: 1px solid #393939;
     flex-shrink: 0;
+}
+
+#searchResults .country-spectrum-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background-color: #000;
+    transform: translateX(-1px);
+    pointer-events: none;
 }
 
 #searchResults .article-item {
@@ -321,63 +336,9 @@ body {
   padding-bottom: 0;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  #mapContainer {
-    padding-left: 0px;
-    padding-right: 0px;
-    height: 60vw;
-  }
-
-  #legend {
-    grid-template-columns: 1fr;
-    justify-content: flex-start; /* Align items to the start, not spaced out */
-  }
-
-  #searchResults ul {
-    overflow-x: scroll;
-    padding-bottom: 10px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  #searchResults li {
-    text-overflow: inherit;
-    overflow-x: visible;
-  }
-
-  #searchResults ul::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
-  }
-
-  /* Make topics scrollable on one line on mobile after search */
-  body:not(.landing) #topicsContainer {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr); /* Create two equal rows */
-    grid-auto-flow: column; /* Fill columns first, then add new columns */
-    grid-auto-columns: max-content; /* Make columns as wide as their content */
-    column-gap: 8px; /* Space between columns of pills */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  body:not(.landing) #topicsContainer::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
-  }
-
-  .legend-item {
-      flex-basis: 100%; /* Each item takes the full width on mobile */
-  }
-
-  .section-separator {
-      font-size: 18px;
-  }
-}
-
 #searchResults .iso {
   font-size: 16px;
   display: inline-block;
-  padding-bottom: 5px;
   font-weight: bold;
 }
 
@@ -389,7 +350,6 @@ body {
 #searchResults .toggle {
   display: inline-block;
   cursor: pointer;
-  padding-left: 5px;
 }
 
 #searchResults .domain {
@@ -428,8 +388,6 @@ input[type=text] {
 #searchResults .highlight {
   background-color: #abbdcf; /* The color it will flash to */
 }
-
-/* --- Help Icon & Modal --- */
 
 #helpIcon {
   position: fixed;
@@ -543,4 +501,55 @@ input[type=text] {
     background-color: #e0e0e0;
 }
 
+/* Mobile */
+@media (max-width: 768px) {
+  #mapContainer {
+    padding-left: 0px;
+    padding-right: 0px;
+    height: 60vw;
+  }
 
+  #legend {
+    grid-template-columns: 1fr;
+    justify-content: flex-start; /* Align items to the start, not spaced out */
+  }
+
+  #searchResults ul {
+    overflow-x: scroll;
+    padding-bottom: 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  #searchResults li {
+    text-overflow: inherit;
+    overflow-x: visible;
+  }
+
+  #searchResults ul::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+
+  /* Make topics scrollable on one line on mobile after search */
+  body:not(.landing) #topicsContainer {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr); /* Create two equal rows */
+    grid-auto-flow: column; /* Fill columns first, then add new columns */
+    grid-auto-columns: max-content; /* Make columns as wide as their content */
+    column-gap: 8px; /* Space between columns of pills */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  body:not(.landing) #topicsContainer::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+
+  .legend-item {
+      flex-basis: 100%; /* Each item takes the full width on mobile */
+  }
+
+  .section-separator {
+      font-size: 18px;
+  }
+}

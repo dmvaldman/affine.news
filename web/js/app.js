@@ -118,10 +118,14 @@ function initializeMap(papersByCountry) {
                         block: 'start'
                     });
 
-                    targetElement.parentElement.classList.add('highlight');
-                    setTimeout(() => {
-                        targetElement.parentElement.classList.remove('highlight');
-                    }, 1000);
+                    // Find the parent ul element (countryEl) to highlight
+                    const countryEl = targetElement.closest('ul');
+                    if (countryEl) {
+                        countryEl.classList.add('highlight');
+                        setTimeout(() => {
+                            countryEl.classList.remove('highlight');
+                        }, 1000);
+                    }
                 }
             });
         },
@@ -367,17 +371,6 @@ function renderSpectrumAnalysis(data) {
         const headerEl = document.createElement('div');
         headerEl.className = 'country-header';
 
-        // Country color indicator (interpolated average)
-        const colorBox = document.createElement('div');
-        colorBox.className = 'country-color-box';
-        colorBox.style.backgroundColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
-
-        const anchorEl = document.createElement('a');
-        anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
-        anchorEl.href = '#' + iso;
-        anchorEl.id = iso;
-        anchorEl.classList.add('iso');
-
         const toggleEl = document.createElement('div');
         toggleEl.textContent = '[–]';
         toggleEl.classList.add('toggle');
@@ -396,10 +389,19 @@ function renderSpectrumAnalysis(data) {
 
         toggleEl.addEventListener('click', createToggle());
 
-        headerEl.appendChild(colorBox);
+        const anchorEl = document.createElement('a');
+        anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
+        anchorEl.href = '#' + iso;
+        anchorEl.id = iso;
+        anchorEl.classList.add('iso');
+
+        // Create mini spectrum with marker
+        const miniSpectrum = createMiniSpectrum(dist.avgPointId, spectrum_points, pointIdToColor);
+
         headerEl.appendChild(anchorEl);
-        headerEl.appendChild(toggleEl);
+        headerEl.appendChild(miniSpectrum);
         countryEl.appendChild(headerEl);
+        headerEl.appendChild(toggleEl);
 
         // Sort articles by point_id, then by similarity (if exists), then by date (most recent first)
         const sortedArticles = [...countryData.articles].sort((a, b) => {
@@ -461,6 +463,39 @@ function generateSpectrumColors(count) {
         colors.push(`rgb(${r}, ${g}, ${b})`);
     }
     return colors;
+}
+
+function createMiniSpectrum(avgPointId, spectrum_points, pointIdToColor) {
+    const sortedPoints = [...spectrum_points].sort((a, b) => a.point_id - b.point_id);
+    const minPointId = sortedPoints[0].point_id;
+    const maxPointId = sortedPoints[sortedPoints.length - 1].point_id;
+
+    // Extend the spectrum range by 0.5 on each side
+    const spectrumMin = minPointId - 0.5;
+    const spectrumMax = maxPointId + 0.5;
+    const spectrumRange = spectrumMax - spectrumMin;
+
+    // Build gradient
+    const gradientStops = sortedPoints.map(point => {
+        const position = ((point.point_id - spectrumMin) / spectrumRange) * 100;
+        return `${pointIdToColor[point.point_id]} ${position}%`;
+    }).join(', ');
+
+    // Create mini spectrum container
+    const miniSpectrum = document.createElement('div');
+    miniSpectrum.className = 'country-mini-spectrum';
+    miniSpectrum.style.background = `linear-gradient(to right, ${gradientStops})`;
+
+    // Add marker at the country's position
+    if (avgPointId !== null && avgPointId !== undefined) {
+        const markerPosition = ((avgPointId - spectrumMin) / spectrumRange) * 100;
+        const marker = document.createElement('div');
+        marker.className = 'country-spectrum-marker';
+        marker.style.left = `${markerPosition}%`;
+        miniSpectrum.appendChild(marker);
+    }
+
+    return miniSpectrum;
 }
 
 function interpolateSpectrumColor(avgPointId, spectrum_points, pointIdToColor) {
