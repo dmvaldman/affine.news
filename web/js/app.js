@@ -426,25 +426,35 @@ function renderSpectrumAnalysis(data) {
         // Render articles
         sortedArticles.forEach(article => {
             const resultEl = document.createElement('li');
-            resultEl.className = 'article-item';
 
             // Article color indicator
-            const articleColorBox = document.createElement('div');
-            articleColorBox.className = 'article-color-box';
-            articleColorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
+            const colorBox = document.createElement('div');
+            colorBox.className = 'article-color-box';
+            colorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
 
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'article-content';
+            // Date
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date';
+            if (article.publish_at) {
+                dateEl.textContent = formatDate(article.publish_at);
+            }
 
+            // Article link
             const urlEl = document.createElement('a');
             urlEl.textContent = article.title;
             urlEl.title = article.title;
-            urlEl.href = article.url;
             urlEl.target = '_blank';
 
-            contentWrapper.appendChild(urlEl);
-            resultEl.appendChild(articleColorBox);
-            resultEl.appendChild(contentWrapper);
+            // Use Google Translate link for non-English articles
+            if (article.lang === 'en') {
+                urlEl.href = article.url;
+            } else {
+                urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + article.url;
+            }
+
+            resultEl.appendChild(colorBox);
+            resultEl.appendChild(dateEl);
+            resultEl.appendChild(urlEl);
             countryEl.appendChild(resultEl);
         });
 
