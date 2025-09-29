@@ -4,6 +4,7 @@ const searchResultsEl = document.getElementById("searchResults");
 const topicsContainerEl = document.getElementById("topicsContainer");
 const summaryEl = document.getElementById("summary");
 const legendEl = document.getElementById("legend");
+const separator = document.querySelector('.section-separator');
 
 const url_base = "/api/";
 
@@ -236,7 +237,6 @@ async function search(){
     searchButtonEl.disabled = true;
     searchButtonEl.innerHTML = '<div class="loader"></div>';
 
-    const separator = document.querySelector('.section-separator');
     if (separator) {
         separator.textContent = "Loading";
         separator.classList.add('visible');
@@ -273,12 +273,22 @@ async function search(){
     }
 
     const response = await fetch(articles_url)
-    const { summary, articles } = await response.json()
+    const data = await response.json()
+
+    renderSearchResults(data);
+    resetSearchButton();
+}
+
+/**
+ * Renders search results from API response data.
+ * Expects data format: { summary: [...], articles: { ISO: { country_name, articles: [...] } } }
+ */
+function renderSearchResults(data) {
+    const { summary, articles } = data;
 
     if (!articles) {
-        console.error("API response did not include 'articles' object:", {summary, articles});
+        console.error("API response did not include 'articles' object:", data);
         searchResultsEl.innerHTML = '<p>An error occurred while fetching results. Please try again.</p>';
-        resetSearchButton();
         return;
     }
 
@@ -305,8 +315,6 @@ async function search(){
     if (Object.keys(articles).length === 0) {
         searchResultsEl.innerHTML = '<p>No results found for this query.</p>';
         if (separator) separator.classList.remove('visible');
-
-        resetSearchButton();
         return;
     }
 
@@ -424,8 +432,6 @@ async function search(){
         // Render single-article countries directly if the condition isn't met
         isosWithSingleArticle.forEach(iso => renderCountryArticles(iso, searchResultsEl));
     }
-
-    resetSearchButton();
 }
 
 function applySummaryToMap(summary){
