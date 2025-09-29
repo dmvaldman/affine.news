@@ -592,6 +592,15 @@
     {
         "country": "Israel",
         "ISO": "ISR",
+        "lang": "en",
+        "url": "https://www.jpost.com/",
+        "category_urls": [
+            "https://www.jpost.com/international"
+        ]
+    },
+    {
+        "country": "Israel",
+        "ISO": "ISR",
         "lang": "he",
         "url": "https://www.ynet.co.il",
         "category_urls": [
