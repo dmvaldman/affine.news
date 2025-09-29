@@ -37,6 +37,75 @@ SIMILARITY_THRESHOLD = 0.65
 DATE_START = (datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d')
 DATE_END = datetime.now().strftime('%Y-%m-%d')
 
+def renderSankey(combined_data: dict, search_query: str = ""):
+    """
+    Renders a Sankey diagram from combined_data structure.
+
+    Args:
+        combined_data: Dictionary with keys:
+            - spectrum_name: str
+            - spectrum_description: str
+            - spectrum_points: list of {point_id, label}
+            - articles: list of {title, url, iso, country, point_id}
+        search_query: Optional query string for the chart title
+    """
+    print("\n--- Preparing data for Sankey chart ---")
+
+    # Build country list from articles
+    all_countries = sorted(list(set(
+        a['country']
+        for a in combined_data['articles']
+    )))
+
+    spectrum_labels = [p['label'] for p in sorted(combined_data['spectrum_points'], key=lambda x: x['point_id'])]
+    all_labels = all_countries + spectrum_labels
+
+    # Create point_id to label mapping
+    spectrum_map = {p['point_id']: p['label'] for p in combined_data['spectrum_points']}
+
+    # Count links from country to spectrum point
+    link_counts = {}
+    for article in combined_data['articles']:
+        country = article['country']
+        point_id = article['point_id']
+
+        if point_id is not None and point_id in spectrum_map:
+            country_index = all_countries.index(country)
+            point_label = spectrum_map[point_id]
+            point_index = spectrum_labels.index(point_label) + len(all_countries)
+            link_key = (country_index, point_index)
+            link_counts[link_key] = link_counts.get(link_key, 0) + 1
+
+    # Create links from counts
+    source_indices, target_indices, values = [], [], []
+    for (source, target), value in link_counts.items():
+        source_indices.append(source)
+        target_indices.append(target)
+        values.append(value)
+
+    # Create and display the Sankey chart
+    fig = go.Figure(data=[go.Sankey(
+        node=dict(
+            pad=15,
+            thickness=20,
+            line=dict(color="black", width=0.5),
+            label=all_labels,
+        ),
+        link=dict(
+            source=source_indices,
+            target=target_indices,
+            value=values
+        ))])
+
+    title_text = f"'{search_query}':<br>Dimension: {combined_data['spectrum_name']}" if search_query else combined_data['spectrum_name']
+    fig.update_layout(
+        title_text=title_text,
+        font_size=12
+    )
+    print(f"Displaying Sankey chart for '{combined_data['spectrum_name']}'...")
+    fig.show()
+
+
 def generate_sankey_data_with_llm(client: genai.GenerativeModel, articles_data: list) -> LlmSankeyResult | None:
     """
     Asks an LLM to define a single political spectrum and map articles to it.
@@ -188,56 +257,44 @@ def main():
         for point_id, point in spectrum_map.items():
             print(f"    - Point {point_id}: {point.label}")
 
-        # 4. Prepare and display the Sankey chart
-        print("\n--- Preparing data for Sankey chart ---")
-
-        all_countries = sorted(list(set(a['country'] for a in articles_data)))
-        spectrum_labels = [p.label for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)]
-        all_labels = all_countries + spectrum_labels
-
-        # Create a dictionary to count links
-        link_counts = {}
+        # 3b. Combine data and write to JSON file
+        print("\n--- Writing combined data to JSON file ---")
         mapping_dict = {m.article_id: m.point_id for m in analysis_result.mappings}
 
+        # Prepare articles data with point_id, removing embedding
+        articles_output = []
         for i, article in enumerate(articles_data):
             article_id_llm = i + 1
-            country = article['country']
-
             point_id = mapping_dict.get(article_id_llm)
-            if point_id is not None and point_id in spectrum_map:
-                country_index = all_countries.index(country)
-                point_label = spectrum_map[point_id].label
-                point_index = spectrum_labels.index(point_label) + len(all_countries)
-                link_key = (country_index, point_index)
-                link_counts[link_key] = link_counts.get(link_key, 0) + 1
 
-        # Create links from counts
-        source_indices, target_indices, values = [], [], []
-        for (source, target), value in link_counts.items():
-            source_indices.append(source)
-            target_indices.append(target)
-            values.append(value)
+            articles_output.append({
+                "title": article['title'],
+                "url": article['url'],
+                "iso": article['iso'],
+                "country": article['country'],
+                "point_id": point_id
+            })
 
-        # Create and display the Sankey chart
-        fig = go.Figure(data=[go.Sankey(
-            node=dict(
-                pad=15,
-                thickness=20,
-                line=dict(color="black", width=0.5),
-                label=all_labels,
-            ),
-            link=dict(
-                source=source_indices,
-                target=target_indices,
-                value=values
-            ))])
+        # Create final output structure
+        combined_data = {
+            "spectrum_name": analysis_result.spectrum_name,
+            "spectrum_description": analysis_result.spectrum_description,
+            "spectrum_points": [
+                {"point_id": p.point_id, "label": p.label}
+                for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
+            ],
+            "articles": articles_output
+        }
 
-        fig.update_layout(
-            title_text=f"'{SEARCH_QUERY}':<br>Dimension: {analysis_result.spectrum_name}",
-            font_size=12
-        )
-        print(f"Displaying Sankey chart for '{analysis_result.spectrum_name}'...")
-        fig.show()
+        # Write to file
+        output_filename = f"spectrum_analysis_{SEARCH_QUERY.replace(' ', '_')}.json"
+        with open(output_filename, 'w', encoding='utf-8') as f:
+            json.dump(combined_data, f, indent=2, ensure_ascii=False)
+
+        print(f"Successfully wrote data to {output_filename}")
+
+        # 4. Render the Sankey chart
+        renderSankey(combined_data, SEARCH_QUERY)
 
 
     except Exception as e:
