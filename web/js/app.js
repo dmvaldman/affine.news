@@ -330,16 +330,18 @@ function renderSpectrumAnalysis(data) {
             }
         });
 
-        const avgPointId = count > 0 ? Math.round(totalPointId / count) : null;
+        const avgPointId = count > 0 ? totalPointId / count : null; // Keep as float for interpolation
+        const roundedAvgPointId = avgPointId !== null ? Math.round(avgPointId) : null;
         countryDistributions[iso] = {
             distribution,
-            avgPointId,
+            avgPointId, // Float value for color interpolation
+            roundedAvgPointId, // Integer for discrete color selection if needed
             total: count
         };
     });
 
-    // Update map with striped patterns
-    updateMapWithStripes(articlesByCountry, countryDistributions, pointIdToColor);
+    // Update map with interpolated colors
+    updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_points, pointIdToColor);
 
     // Render spectrum legend
     renderSpectrumLegend(spectrum_points, pointIdToColor);
@@ -347,7 +349,7 @@ function renderSpectrumAnalysis(data) {
     // Clear and render results
     searchResultsEl.innerHTML = '';
     if (separator) {
-        separator.textContent = spectrum_name;
+        separator.textContent = 'Articles';
         separator.classList.add('visible');
     }
 
@@ -363,16 +365,12 @@ function renderSpectrumAnalysis(data) {
 
         const countryEl = document.createElement('ul');
         const headerEl = document.createElement('div');
-        headerEl.style.display = 'flex';
-        headerEl.style.alignItems = 'center';
-        headerEl.style.gap = '8px';
+        headerEl.className = 'country-header';
 
-        // Country color indicator (rounded average)
+        // Country color indicator (interpolated average)
         const colorBox = document.createElement('div');
-        colorBox.style.width = '16px';
-        colorBox.style.height = '16px';
-        colorBox.style.backgroundColor = dist.avgPointId !== null ? pointIdToColor[dist.avgPointId] : '#ccc';
-        colorBox.style.flexShrink = '0';
+        colorBox.className = 'country-color-box';
+        colorBox.style.backgroundColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
 
         const anchorEl = document.createElement('a');
         anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
@@ -403,23 +401,38 @@ function renderSpectrumAnalysis(data) {
         headerEl.appendChild(toggleEl);
         countryEl.appendChild(headerEl);
 
+        // Sort articles by point_id, then by similarity (if exists), then by date (most recent first)
+        const sortedArticles = [...countryData.articles].sort((a, b) => {
+            // Primary sort: by point_id (ascending)
+            if (a.point_id !== b.point_id) {
+                return (a.point_id || 0) - (b.point_id || 0);
+            }
+
+            // Secondary sort: by similarity (descending) if it exists
+            if (a.similarity !== undefined && b.similarity !== undefined) {
+                return b.similarity - a.similarity;
+            }
+
+            // Tertiary sort: by publish_at date (most recent first) if it exists
+            if (a.publish_at && b.publish_at) {
+                return new Date(b.publish_at) - new Date(a.publish_at);
+            }
+
+            return 0;
+        });
+
         // Render articles
-        countryData.articles.forEach(article => {
+        sortedArticles.forEach(article => {
             const resultEl = document.createElement('li');
-            resultEl.style.display = 'flex';
-            resultEl.style.alignItems = 'flex-start';
-            resultEl.style.gap = '8px';
+            resultEl.className = 'article-item';
 
             // Article color indicator
             const articleColorBox = document.createElement('div');
-            articleColorBox.style.width = '12px';
-            articleColorBox.style.height = '12px';
-            articleColorBox.style.marginTop = '4px';
+            articleColorBox.className = 'article-color-box';
             articleColorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
-            articleColorBox.style.flexShrink = '0';
 
             const contentWrapper = document.createElement('div');
-            contentWrapper.style.flex = '1';
+            contentWrapper.className = 'article-content';
 
             const urlEl = document.createElement('a');
             urlEl.textContent = article.title;
@@ -450,115 +463,79 @@ function generateSpectrumColors(count) {
     return colors;
 }
 
-function updateMapWithStripes(articlesByCountry, countryDistributions, pointIdToColor) {
-    if (!map) return;
+function interpolateSpectrumColor(avgPointId, spectrum_points, pointIdToColor) {
+    // Interpolate color based on float avgPointId value
+    if (avgPointId === null || avgPointId === undefined) return '#ccc';
 
-    const mapData = {};
+    const sortedPoints = [...spectrum_points].sort((a, b) => a.point_id - b.point_id);
+    const minPointId = sortedPoints[0].point_id;
+    const maxPointId = sortedPoints[sortedPoints.length - 1].point_id;
 
-    Object.keys(articlesByCountry).forEach(iso => {
-        const dist = countryDistributions[iso];
-        const distribution = dist.distribution;
-        const total = dist.total;
+    // Clamp to range
+    const clampedAvg = Math.max(minPointId, Math.min(maxPointId, avgPointId));
 
-        if (total === 0) {
-            mapData[iso] = { fillKey: 'NO_ARTICLES' };
-            return;
+    // Find the two points to interpolate between
+    let lowerPoint = sortedPoints[0];
+    let upperPoint = sortedPoints[sortedPoints.length - 1];
+
+    for (let i = 0; i < sortedPoints.length - 1; i++) {
+        if (clampedAvg >= sortedPoints[i].point_id && clampedAvg <= sortedPoints[i + 1].point_id) {
+            lowerPoint = sortedPoints[i];
+            upperPoint = sortedPoints[i + 1];
+            break;
         }
+    }
 
-        // Calculate percentages for each point_id
-        const stripes = [];
-        Object.keys(distribution).sort((a, b) => a - b).forEach(pointId => {
-            const count = distribution[pointId];
-            const percentage = (count / total) * 100;
-            const color = pointIdToColor[pointId];
-            stripes.push({ color, percentage });
-        });
+    // If exactly on a point, return that color
+    if (clampedAvg === lowerPoint.point_id) {
+        return pointIdToColor[lowerPoint.point_id];
+    }
+    if (clampedAvg === upperPoint.point_id) {
+        return pointIdToColor[upperPoint.point_id];
+    }
 
-        // Create SVG pattern for diagonal stripes
-        const patternId = `stripes-${iso}`;
-        mapData[iso] = {
-            fillKey: 'CUSTOM',
-            fillPattern: createDiagonalStripePattern(patternId, stripes)
-        };
-    });
+    // Interpolate between the two colors
+    const ratio = (clampedAvg - lowerPoint.point_id) / (upperPoint.point_id - lowerPoint.point_id);
+    const lowerColor = pointIdToColor[lowerPoint.point_id];
+    const upperColor = pointIdToColor[upperPoint.point_id];
 
-    // Update Datamap with custom patterns
-    map.updateChoropleth(mapData, { reset: false });
+    // Extract RGB values
+    const lowerRGB = lowerColor.match(/\d+/g).map(Number);
+    const upperRGB = upperColor.match(/\d+/g).map(Number);
 
-    // Inject SVG patterns into the map
-    injectMapPatterns(articlesByCountry, countryDistributions, pointIdToColor);
+    // Interpolate each channel
+    const r = Math.round(lowerRGB[0] + (upperRGB[0] - lowerRGB[0]) * ratio);
+    const g = Math.round(lowerRGB[1] + (upperRGB[1] - lowerRGB[1]) * ratio);
+    const b = Math.round(lowerRGB[2] + (upperRGB[2] - lowerRGB[2]) * ratio);
+
+    return `rgb(${r}, ${g}, ${b})`;
 }
 
-function createDiagonalStripePattern(patternId, stripes) {
-    return patternId;
-}
-
-function injectMapPatterns(articlesByCountry, countryDistributions, pointIdToColor) {
+function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_points, pointIdToColor) {
     if (!map) return;
 
-    // Use setTimeout to ensure map DOM is fully rendered
+    // Use setTimeout to ensure map DOM is ready
     setTimeout(() => {
         const svg = document.querySelector('#mapContainer svg');
-        if (!svg) {
-            console.error('Map SVG not found');
-            return;
-        }
-
-        let defs = svg.querySelector('defs');
-        if (!defs) {
-            defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            svg.insertBefore(defs, svg.firstChild);
-        }
-
-        // Clear existing patterns
-        defs.innerHTML = '';
+        if (!svg) return;
 
         Object.keys(articlesByCountry).forEach(iso => {
             const dist = countryDistributions[iso];
-            const distribution = dist.distribution;
-            const total = dist.total;
 
-            if (total === 0) return;
+            if (dist.total === 0) return;
 
-            const stripes = [];
-            Object.keys(distribution).sort((a, b) => a - b).forEach(pointId => {
-                const count = distribution[pointId];
-                const percentage = (count / total) * 100;
-                const color = pointIdToColor[pointId];
-                stripes.push({ color, percentage });
-            });
-
-            const patternId = `stripes-${iso}`;
-            const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-            pattern.setAttribute('id', patternId);
-            pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-            pattern.setAttribute('width', '100');
-            pattern.setAttribute('height', '100');
-            pattern.setAttribute('patternTransform', 'rotate(45)');
-
-            let currentX = 0;
-            stripes.forEach(stripe => {
-                const width = stripe.percentage;
-                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', currentX.toString());
-                rect.setAttribute('y', '0');
-                rect.setAttribute('width', width.toString());
-                rect.setAttribute('height', '100');
-                rect.setAttribute('fill', stripe.color);
-                pattern.appendChild(rect);
-                currentX += width;
-            });
-
-            defs.appendChild(pattern);
-
-            // Apply pattern to country path
+            // Get the country path
             const countryPath = svg.querySelector(`.datamaps-subunit.${iso}`);
-            if (countryPath) {
-                countryPath.style.fill = `url(#${patternId})`;
-                console.log(`Applied pattern ${patternId} to ${iso}`, stripes);
-            } else {
+            if (!countryPath) {
                 console.warn(`Country path not found for ISO: ${iso}`);
+                return;
             }
+
+            // Use interpolated color based on float average
+            const avgColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
+            countryPath.style.fill = avgColor;
+
+            console.log(`Applied interpolated color to ${iso}:`, avgColor, `(avg point_id: ${dist.avgPointId.toFixed(2)})`);
         });
     }, 100);
 }
@@ -566,29 +543,56 @@ function injectMapPatterns(articlesByCountry, countryDistributions, pointIdToCol
 function renderSpectrumLegend(spectrum_points, pointIdToColor) {
     if (!legendEl) return;
 
-    legendEl.innerHTML = '<div style="font-weight: bold; margin-bottom: 8px;">Spectrum</div>';
+    legendEl.classList.add('spectrum-legend');
+    legendEl.innerHTML = '';
 
-    spectrum_points.forEach(point => {
-        const item = document.createElement('div');
-        item.style.display = 'flex';
-        item.style.alignItems = 'center';
-        item.style.gap = '8px';
-        item.style.marginBottom = '4px';
+    const title = document.createElement('div');
+    title.className = 'spectrum-title';
+    title.textContent = 'Spectrum';
+    legendEl.appendChild(title);
 
-        const colorBox = document.createElement('div');
-        colorBox.style.width = '16px';
-        colorBox.style.height = '16px';
-        colorBox.style.backgroundColor = pointIdToColor[point.point_id];
-        colorBox.style.flexShrink = '0';
+    const sortedPoints = [...spectrum_points].sort((a, b) => a.point_id - b.point_id);
+    const minPointId = sortedPoints[0].point_id;
+    const maxPointId = sortedPoints[sortedPoints.length - 1].point_id;
 
-        const label = document.createElement('span');
+    // Extend the spectrum range by 0.5 on each side
+    const spectrumMin = minPointId - 0.5;
+    const spectrumMax = maxPointId + 0.5;
+    const spectrumRange = spectrumMax - spectrumMin;
+
+    // Create container for the gradient bar
+    const gradientContainer = document.createElement('div');
+    gradientContainer.className = 'spectrum-gradient-container';
+
+    // Create the gradient bar with extended range
+    const gradientBar = document.createElement('div');
+    gradientBar.className = 'spectrum-gradient-bar';
+    const gradientStops = sortedPoints.map(point => {
+        const position = ((point.point_id - spectrumMin) / spectrumRange) * 100;
+        return `${pointIdToColor[point.point_id]} ${position}%`;
+    }).join(', ');
+    gradientBar.style.background = `linear-gradient(to right, ${gradientStops})`;
+    gradientContainer.appendChild(gradientBar);
+
+    // Add markers and labels for each point
+    sortedPoints.forEach(point => {
+        const position = ((point.point_id - spectrumMin) / spectrumRange) * 100;
+
+        // Vertical marker line
+        const marker = document.createElement('div');
+        marker.className = 'spectrum-marker';
+        marker.style.left = `${position}%`;
+        gradientContainer.appendChild(marker);
+
+        // Label below the marker
+        const label = document.createElement('div');
+        label.className = 'spectrum-label';
+        label.style.left = `${position}%`;
         label.textContent = point.label;
-        label.style.fontSize = '12px';
-
-        item.appendChild(colorBox);
-        item.appendChild(label);
-        legendEl.appendChild(item);
+        gradientContainer.appendChild(label);
     });
+
+    legendEl.appendChild(gradientContainer);
 }
 
 /**
