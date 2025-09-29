@@ -272,11 +272,323 @@ async function search(){
         await updateMapForDateRange(start, end);
     }
 
-    const response = await fetch(articles_url)
+    // TEMPORARY: Use mock spectrum analysis data
+    const response = await fetch('/static/spectrum_analysis_Moldova_election_interference.json')
     const data = await response.json()
 
-    renderSearchResults(data);
+    renderSpectrumAnalysis(data);
+    // renderSearchResults(data); // Original API rendering - commented out for spectrum experiment
     resetSearchButton();
+}
+
+/**
+ * Renders spectrum analysis data with colored spectrum points and striped country patterns.
+ * Expects data format: { spectrum_name, spectrum_description, spectrum_points: [{point_id, label}], articles: [{title, url, iso, country, point_id}] }
+ */
+function renderSpectrumAnalysis(data) {
+    const { spectrum_name, spectrum_description, spectrum_points, articles } = data;
+
+    if (!articles || !spectrum_points) {
+        console.error("Invalid spectrum analysis data:", data);
+        searchResultsEl.innerHTML = '<p>An error occurred while loading spectrum analysis.</p>';
+        return;
+    }
+
+    // Create color gradient for spectrum points (red to blue)
+    const spectrumColors = generateSpectrumColors(spectrum_points.length);
+    const pointIdToColor = {};
+    spectrum_points.forEach((point, index) => {
+        pointIdToColor[point.point_id] = spectrumColors[index];
+    });
+
+    // Group articles by country
+    const articlesByCountry = {};
+    articles.forEach(article => {
+        if (!articlesByCountry[article.iso]) {
+            articlesByCountry[article.iso] = {
+                country: article.country,
+                iso: article.iso,
+                articles: []
+            };
+        }
+        articlesByCountry[article.iso].articles.push(article);
+    });
+
+    // Calculate point_id distribution for each country
+    const countryDistributions = {};
+    Object.keys(articlesByCountry).forEach(iso => {
+        const countryArticles = articlesByCountry[iso].articles;
+        const distribution = {};
+        let totalPointId = 0;
+        let count = 0;
+
+        countryArticles.forEach(article => {
+            if (article.point_id !== null && article.point_id !== undefined) {
+                distribution[article.point_id] = (distribution[article.point_id] || 0) + 1;
+                totalPointId += article.point_id;
+                count++;
+            }
+        });
+
+        const avgPointId = count > 0 ? Math.round(totalPointId / count) : null;
+        countryDistributions[iso] = {
+            distribution,
+            avgPointId,
+            total: count
+        };
+    });
+
+    // Update map with striped patterns
+    updateMapWithStripes(articlesByCountry, countryDistributions, pointIdToColor);
+
+    // Render spectrum legend
+    renderSpectrumLegend(spectrum_points, pointIdToColor);
+
+    // Clear and render results
+    searchResultsEl.innerHTML = '';
+    if (separator) {
+        separator.textContent = spectrum_name;
+        separator.classList.add('visible');
+    }
+
+    // Sort countries by number of articles
+    const sortedCountries = Object.keys(articlesByCountry).sort((a, b) => {
+        return articlesByCountry[b].articles.length - articlesByCountry[a].articles.length;
+    });
+
+    // Render each country's articles
+    sortedCountries.forEach(iso => {
+        const countryData = articlesByCountry[iso];
+        const dist = countryDistributions[iso];
+
+        const countryEl = document.createElement('ul');
+        const headerEl = document.createElement('div');
+        headerEl.style.display = 'flex';
+        headerEl.style.alignItems = 'center';
+        headerEl.style.gap = '8px';
+
+        // Country color indicator (rounded average)
+        const colorBox = document.createElement('div');
+        colorBox.style.width = '16px';
+        colorBox.style.height = '16px';
+        colorBox.style.backgroundColor = dist.avgPointId !== null ? pointIdToColor[dist.avgPointId] : '#ccc';
+        colorBox.style.flexShrink = '0';
+
+        const anchorEl = document.createElement('a');
+        anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
+        anchorEl.href = '#' + iso;
+        anchorEl.id = iso;
+        anchorEl.classList.add('iso');
+
+        const toggleEl = document.createElement('div');
+        toggleEl.textContent = '[–]';
+        toggleEl.classList.add('toggle');
+
+        function createToggle() {
+            let toggleState = true;
+            return function() {
+                toggleEl.textContent = toggleState ? '[+]' : '[–]';
+                toggleState = !toggleState;
+                const items = countryEl.getElementsByTagName('li');
+                for (let item of items) {
+                    item.classList.toggle('collapse');
+                }
+            };
+        }
+
+        toggleEl.addEventListener('click', createToggle());
+
+        headerEl.appendChild(colorBox);
+        headerEl.appendChild(anchorEl);
+        headerEl.appendChild(toggleEl);
+        countryEl.appendChild(headerEl);
+
+        // Render articles
+        countryData.articles.forEach(article => {
+            const resultEl = document.createElement('li');
+            resultEl.style.display = 'flex';
+            resultEl.style.alignItems = 'flex-start';
+            resultEl.style.gap = '8px';
+
+            // Article color indicator
+            const articleColorBox = document.createElement('div');
+            articleColorBox.style.width = '12px';
+            articleColorBox.style.height = '12px';
+            articleColorBox.style.marginTop = '4px';
+            articleColorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
+            articleColorBox.style.flexShrink = '0';
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.style.flex = '1';
+
+            const urlEl = document.createElement('a');
+            urlEl.textContent = article.title;
+            urlEl.title = article.title;
+            urlEl.href = article.url;
+            urlEl.target = '_blank';
+
+            contentWrapper.appendChild(urlEl);
+            resultEl.appendChild(articleColorBox);
+            resultEl.appendChild(contentWrapper);
+            countryEl.appendChild(resultEl);
+        });
+
+        searchResultsEl.appendChild(countryEl);
+    });
+}
+
+function generateSpectrumColors(count) {
+    // Generate colors from red to blue
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        const ratio = i / (count - 1 || 1);
+        const r = Math.round(220 - ratio * 120); // 220 to 100
+        const g = Math.round(50 + ratio * 100);  // 50 to 150
+        const b = Math.round(50 + ratio * 200);  // 50 to 250
+        colors.push(`rgb(${r}, ${g}, ${b})`);
+    }
+    return colors;
+}
+
+function updateMapWithStripes(articlesByCountry, countryDistributions, pointIdToColor) {
+    if (!map) return;
+
+    const mapData = {};
+
+    Object.keys(articlesByCountry).forEach(iso => {
+        const dist = countryDistributions[iso];
+        const distribution = dist.distribution;
+        const total = dist.total;
+
+        if (total === 0) {
+            mapData[iso] = { fillKey: 'NO_ARTICLES' };
+            return;
+        }
+
+        // Calculate percentages for each point_id
+        const stripes = [];
+        Object.keys(distribution).sort((a, b) => a - b).forEach(pointId => {
+            const count = distribution[pointId];
+            const percentage = (count / total) * 100;
+            const color = pointIdToColor[pointId];
+            stripes.push({ color, percentage });
+        });
+
+        // Create SVG pattern for diagonal stripes
+        const patternId = `stripes-${iso}`;
+        mapData[iso] = {
+            fillKey: 'CUSTOM',
+            fillPattern: createDiagonalStripePattern(patternId, stripes)
+        };
+    });
+
+    // Update Datamap with custom patterns
+    map.updateChoropleth(mapData, { reset: false });
+
+    // Inject SVG patterns into the map
+    injectMapPatterns(articlesByCountry, countryDistributions, pointIdToColor);
+}
+
+function createDiagonalStripePattern(patternId, stripes) {
+    return patternId;
+}
+
+function injectMapPatterns(articlesByCountry, countryDistributions, pointIdToColor) {
+    if (!map) return;
+
+    // Use setTimeout to ensure map DOM is fully rendered
+    setTimeout(() => {
+        const svg = document.querySelector('#mapContainer svg');
+        if (!svg) {
+            console.error('Map SVG not found');
+            return;
+        }
+
+        let defs = svg.querySelector('defs');
+        if (!defs) {
+            defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            svg.insertBefore(defs, svg.firstChild);
+        }
+
+        // Clear existing patterns
+        defs.innerHTML = '';
+
+        Object.keys(articlesByCountry).forEach(iso => {
+            const dist = countryDistributions[iso];
+            const distribution = dist.distribution;
+            const total = dist.total;
+
+            if (total === 0) return;
+
+            const stripes = [];
+            Object.keys(distribution).sort((a, b) => a - b).forEach(pointId => {
+                const count = distribution[pointId];
+                const percentage = (count / total) * 100;
+                const color = pointIdToColor[pointId];
+                stripes.push({ color, percentage });
+            });
+
+            const patternId = `stripes-${iso}`;
+            const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+            pattern.setAttribute('id', patternId);
+            pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+            pattern.setAttribute('width', '100');
+            pattern.setAttribute('height', '100');
+            pattern.setAttribute('patternTransform', 'rotate(45)');
+
+            let currentX = 0;
+            stripes.forEach(stripe => {
+                const width = stripe.percentage;
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', currentX.toString());
+                rect.setAttribute('y', '0');
+                rect.setAttribute('width', width.toString());
+                rect.setAttribute('height', '100');
+                rect.setAttribute('fill', stripe.color);
+                pattern.appendChild(rect);
+                currentX += width;
+            });
+
+            defs.appendChild(pattern);
+
+            // Apply pattern to country path
+            const countryPath = svg.querySelector(`.datamaps-subunit.${iso}`);
+            if (countryPath) {
+                countryPath.style.fill = `url(#${patternId})`;
+                console.log(`Applied pattern ${patternId} to ${iso}`, stripes);
+            } else {
+                console.warn(`Country path not found for ISO: ${iso}`);
+            }
+        });
+    }, 100);
+}
+
+function renderSpectrumLegend(spectrum_points, pointIdToColor) {
+    if (!legendEl) return;
+
+    legendEl.innerHTML = '<div style="font-weight: bold; margin-bottom: 8px;">Spectrum</div>';
+
+    spectrum_points.forEach(point => {
+        const item = document.createElement('div');
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '8px';
+        item.style.marginBottom = '4px';
+
+        const colorBox = document.createElement('div');
+        colorBox.style.width = '16px';
+        colorBox.style.height = '16px';
+        colorBox.style.backgroundColor = pointIdToColor[point.point_id];
+        colorBox.style.flexShrink = '0';
+
+        const label = document.createElement('span');
+        label.textContent = point.label;
+        label.style.fontSize = '12px';
+
+        item.appendChild(colorBox);
+        item.appendChild(label);
+        legendEl.appendChild(item);
+    });
 }
 
 /**
