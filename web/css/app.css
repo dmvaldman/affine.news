@@ -141,13 +141,13 @@ body {
     height: 20px;
     width: 100%;
     border-radius: 4px;
-    border: 1px solid #393939;
+    border: 2px solid black;
 }
 
 #legend .spectrum-marker {
     position: absolute;
     top: 0;
-    width: 3px;
+    width: 2px;
     height: 20px;
     background-color: #000;
     transform: translateX(-1px);
@@ -169,12 +169,24 @@ body {
     position: relative;
 }
 
+/* Utility class for hidden scrollbars */
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+}
+
 /* Country article list styles */
 #searchResults .country-header {
     display: flex;
     align-items: center;
     gap: 8px;
     padding-bottom: 5px;
+    white-space: nowrap;
+    overflow: scroll;
 }
 
 #searchResults .country-mini-spectrum {
@@ -188,22 +200,13 @@ body {
 
 #searchResults .country-spectrum-marker {
     position: absolute;
-    top: 0;
+    top: 2px;
     left: 0;
-    width: 3px;
-    height: 100%;
+    width: 2px;
+    height: calc(100% - 4px);
     background-color: #000;
-    transform: translateX(-1px);
     pointer-events: none;
-}
-
-#searchResults li .article-color-box {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 6px;
-    vertical-align: middle;
-    flex-shrink: 0;
+    border-radius: 2px;
 }
 
 #searchResults ul {
@@ -221,8 +224,17 @@ body {
   border-left: 2px solid #d5d5d5;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
+  overflow-x: hidden;
   list-style: none;
+}
+
+#searchResults li .article-color-box {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 #searchResults li:last-child {
@@ -512,13 +524,14 @@ input[type=text] {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
-  #searchResults li {
-    text-overflow: inherit;
-    overflow-x: visible;
-  }
 
   #searchResults ul::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+  }
+
+  #searchResults li {
+    text-overflow: inherit;
+    overflow-x: visible;
   }
 
   /* Make topics scrollable on one line on mobile after search */
@@ -529,12 +542,6 @@ input[type=text] {
     grid-auto-columns: max-content; /* Make columns as wide as their content */
     column-gap: 8px; /* Space between columns of pills */
     overflow-x: auto; /* Enable horizontal scrolling */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  body:not(.landing) #topicsContainer::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, Opera */
   }
 
   .legend-item {

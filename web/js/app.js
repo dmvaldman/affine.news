@@ -81,9 +81,9 @@ function initializeMap(papersByCountry) {
     });
 
     map = new Datamap({
-        element: document.getElementById('map'),
-        projection: 'mercator',
-        fills: {
+    element: document.getElementById('map'),
+    projection: 'mercator',
+    fills: {
             defaultFill: 'rgba(0,0,0,0)', // Not Scraped (Transparent)
             yellow: '#F5D442',
             blue: '#6EA7F2',
@@ -93,11 +93,11 @@ function initializeMap(papersByCountry) {
             NO_ARTICLES: '#FFFFFF',    // Scraped, but 0 articles for query
         },
         data: { ...origMapData },
-        responsive: true,
+    responsive: true,
         height: null,
         width: null,
-        done: function(datamap) {
-            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+    done: function(datamap) {
+        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                 const countryId = geography.id;
                 const targetElement = document.getElementById(countryId);
 
@@ -159,7 +159,7 @@ function initializeMap(papersByCountry) {
 
 window.addEventListener('resize', function(){
     if (map) {
-        map.resize()
+    map.resize()
     }
 })
 
@@ -287,7 +287,7 @@ async function search(){
 
 /**
  * Renders spectrum analysis data with colored spectrum points and striped country patterns.
- * Expects data format: { spectrum_name, spectrum_description, spectrum_points: [{point_id, label}], articles: [{title, url, iso, country, point_id}] }
+ * Expects data format: { spectrum_name, spectrum_description, spectrum_points: [{point_id, label}], articles: {ISO: {country, articles: [...]}} }
  */
 function renderSpectrumAnalysis(data) {
     const { spectrum_name, spectrum_description, spectrum_points, articles } = data;
@@ -305,23 +305,10 @@ function renderSpectrumAnalysis(data) {
         pointIdToColor[point.point_id] = spectrumColors[index];
     });
 
-    // Group articles by country
-    const articlesByCountry = {};
-    articles.forEach(article => {
-        if (!articlesByCountry[article.iso]) {
-            articlesByCountry[article.iso] = {
-                country: article.country,
-                iso: article.iso,
-                articles: []
-            };
-        }
-        articlesByCountry[article.iso].articles.push(article);
-    });
-
     // Calculate point_id distribution for each country
     const countryDistributions = {};
-    Object.keys(articlesByCountry).forEach(iso => {
-        const countryArticles = articlesByCountry[iso].articles;
+    Object.keys(articles).forEach(iso => {
+        const countryArticles = articles[iso].articles;
         const distribution = {};
         let totalPointId = 0;
         let count = 0;
@@ -336,16 +323,30 @@ function renderSpectrumAnalysis(data) {
 
         const avgPointId = count > 0 ? totalPointId / count : null; // Keep as float for interpolation
         const roundedAvgPointId = avgPointId !== null ? Math.round(avgPointId) : null;
+
+        // Calculate standard deviation
+        let stdDev = null;
+        if (count > 1) {
+            const variance = countryArticles.reduce((sum, article) => {
+                if (article.point_id !== null && article.point_id !== undefined) {
+                    return sum + Math.pow(article.point_id - avgPointId, 2);
+                }
+                return sum;
+            }, 0) / count;
+            stdDev = Math.sqrt(variance);
+        }
+
         countryDistributions[iso] = {
             distribution,
             avgPointId, // Float value for color interpolation
             roundedAvgPointId, // Integer for discrete color selection if needed
+            stdDev, // Standard deviation
             total: count
         };
     });
 
     // Update map with interpolated colors
-    updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_points, pointIdToColor);
+    updateMapWithStripes(articles, countryDistributions, spectrum_points, pointIdToColor);
 
     // Render spectrum legend
     renderSpectrumLegend(spectrum_points, pointIdToColor);
@@ -358,18 +359,19 @@ function renderSpectrumAnalysis(data) {
     }
 
     // Sort countries by number of articles
-    const sortedCountries = Object.keys(articlesByCountry).sort((a, b) => {
-        return articlesByCountry[b].articles.length - articlesByCountry[a].articles.length;
+    const sortedCountries = Object.keys(articles).sort((a, b) => {
+        return articles[b].articles.length - articles[a].articles.length;
     });
 
     // Render each country's articles
     sortedCountries.forEach(iso => {
-        const countryData = articlesByCountry[iso];
+        const countryData = articles[iso];
         const dist = countryDistributions[iso];
 
         const countryEl = document.createElement('ul');
+        countryEl.classList.add('hide-scrollbar');
         const headerEl = document.createElement('div');
-        headerEl.className = 'country-header';
+        headerEl.className = 'country-header hide-scrollbar';
 
         const toggleEl = document.createElement('div');
         toggleEl.textContent = '[–]';
@@ -395,8 +397,8 @@ function renderSpectrumAnalysis(data) {
         anchorEl.id = iso;
         anchorEl.classList.add('iso');
 
-        // Create mini spectrum with marker
-        const miniSpectrum = createMiniSpectrum(dist.avgPointId, spectrum_points, pointIdToColor);
+        // Create mini spectrum with marker and error bars
+        const miniSpectrum = createMiniSpectrum(dist.avgPointId, dist.stdDev, spectrum_points, pointIdToColor);
 
         headerEl.appendChild(anchorEl);
         headerEl.appendChild(miniSpectrum);
@@ -475,7 +477,7 @@ function generateSpectrumColors(count) {
     return colors;
 }
 
-function createMiniSpectrum(avgPointId, spectrum_points, pointIdToColor) {
+function createMiniSpectrum(avgPointId, stdDev, spectrum_points, pointIdToColor) {
     const sortedPoints = [...spectrum_points].sort((a, b) => a.point_id - b.point_id);
     const minPointId = sortedPoints[0].point_id;
     const maxPointId = sortedPoints[sortedPoints.length - 1].point_id;
@@ -496,13 +498,30 @@ function createMiniSpectrum(avgPointId, spectrum_points, pointIdToColor) {
     miniSpectrum.className = 'country-mini-spectrum';
     miniSpectrum.style.background = `linear-gradient(to right, ${gradientStops})`;
 
-    // Add marker at the country's position
+    // Add marker/error bar if avgPointId exists
     if (avgPointId !== null && avgPointId !== undefined) {
         const markerPosition = ((avgPointId - spectrumMin) / spectrumRange) * 100;
-        const marker = document.createElement('div');
-        marker.className = 'country-spectrum-marker';
-        marker.style.left = `${markerPosition}%`;
-        miniSpectrum.appendChild(marker);
+
+        if (stdDev !== null && stdDev !== undefined && stdDev > 0) {
+            // Show rectangle spanning mean ± stdDev
+            const lowerBound = Math.max(spectrumMin, avgPointId - stdDev);
+            const upperBound = Math.min(spectrumMax, avgPointId + stdDev);
+            const lowerPosition = ((lowerBound - spectrumMin) / spectrumRange) * 100;
+            const upperPosition = ((upperBound - spectrumMin) / spectrumRange) * 100;
+
+            const marker = document.createElement('div');
+            marker.className = 'country-spectrum-marker';
+            marker.style.left = `${lowerPosition}%`;
+            marker.style.width = `${upperPosition - lowerPosition}%`;
+            miniSpectrum.appendChild(marker);
+        } else {
+            // Show 3px rectangle at mean if no variance
+            const marker = document.createElement('div');
+            marker.className = 'country-spectrum-marker';
+            marker.style.left = `${markerPosition}%`;
+            marker.style.width = '3px';
+            miniSpectrum.appendChild(marker);
+        }
     }
 
     return miniSpectrum;
@@ -579,8 +598,6 @@ function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_
             // Use interpolated color based on float average
             const avgColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
             countryPath.style.fill = avgColor;
-
-            console.log(`Applied interpolated color to ${iso}:`, avgColor, `(avg point_id: ${dist.avgPointId.toFixed(2)})`);
         });
     }, 100);
 }
@@ -670,7 +687,7 @@ function renderSearchResults(data) {
     // Apply summary overrides and render the comprehensive legend
     applySummaryToMap(summary);
 
-    searchResultsEl.innerHTML = ''
+            searchResultsEl.innerHTML = ''
     if (separator) separator.classList.remove('visible'); // Hide on new search, will be shown if results exist
 
     if (Object.keys(articles).length === 0) {
@@ -699,65 +716,66 @@ function renderSearchResults(data) {
         const countryName = countryData.country_name;
         const countryArticles = countryData.articles;
 
-        let countryEl = document.createElement('ul')
-        let anchorEl = document.createElement('a')
-        let toggleEl = document.createElement('div')
+                let countryEl = document.createElement('ul')
+                countryEl.classList.add('hide-scrollbar')
+                let anchorEl = document.createElement('a')
+                let toggleEl = document.createElement('div')
 
         anchorEl.textContent = countryName + ' (' + countryArticles.length + ' Results)'
         anchorEl.href = '#' + iso
         anchorEl.id = iso
-        anchorEl.classList.add('iso')
+                anchorEl.classList.add('iso')
 
-        toggleEl.textContent = '[–]';
-        toggleEl.classList.add('toggle')
+                toggleEl.textContent = '[–]';
+                toggleEl.classList.add('toggle')
 
-        function toggle(){
-            let toggleState = true;
-            return function(){
-                if (toggleState)
-                    toggleEl.textContent = '[+]'
-                else
-                    toggleEl.textContent = '[–]'
-                toggleState = !toggleState;
+                function toggle(){
+                    let toggleState = true;
+                    return function(){
+                        if (toggleState)
+                            toggleEl.textContent = '[+]'
+                        else
+                            toggleEl.textContent = '[–]'
+                        toggleState = !toggleState;
 
-                let items = countryEl.getElementsByTagName('li')
-                for (let item of items){
-                    item.classList.toggle('collapse')
+                        let items = countryEl.getElementsByTagName('li')
+                        for (let item of items){
+                            item.classList.toggle('collapse')
+                        }
+                    }
                 }
-            }
-        }
 
-        toggleEl.addEventListener('click', toggle())
+                toggleEl.addEventListener('click', toggle())
 
-        countryEl.appendChild(anchorEl)
-        countryEl.appendChild(toggleEl)
+                countryEl.appendChild(anchorEl)
+                countryEl.appendChild(toggleEl)
 
         for (let result of countryArticles){
             let dateStr = formatDate(result.publish_at)
             let url = result.article_url
 
-            let resultEl = document.createElement('li')
+                    let resultEl = document.createElement('li')
 
-            let dateEl = document.createElement('div')
+                    let dateEl = document.createElement('div')
             let dateTextEl = document.createTextNode(dateStr)
-            dateEl.classList.add('date')
-            dateEl.appendChild(dateTextEl)
+                    dateEl.classList.add('date')
+                    dateEl.appendChild(dateTextEl)
 
-            let urlEl = document.createElement('a')
+                    let urlEl = document.createElement('a')
             let textEl = document.createTextNode(result.title)
             urlEl.title = result.title
-            urlEl.appendChild(textEl)
+                    urlEl.appendChild(textEl)
 
             if (result.lang == 'en')
-                urlEl.href = url
-            else
-                urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
+                        urlEl.href = url
+                    else
+                        urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + url
 
-            resultEl.appendChild(dateEl)
-            resultEl.appendChild(urlEl)
+                    resultEl.appendChild(dateEl)
+                    resultEl.appendChild(urlEl)
 
-            countryEl.appendChild(resultEl)
-        }
+                    countryEl.appendChild(resultEl)
+                }
         targetEl.appendChild(countryEl);
     };
 

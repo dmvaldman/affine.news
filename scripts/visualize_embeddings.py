@@ -46,15 +46,15 @@ def renderSankey(combined_data: dict, search_query: str = ""):
             - spectrum_name: str
             - spectrum_description: str
             - spectrum_points: list of {point_id, label}
-            - articles: list of {title, url, iso, country, point_id}
+            - articles: dict of ISO -> {country, articles: [...]}
         search_query: Optional query string for the chart title
     """
     print("\n--- Preparing data for Sankey chart ---")
 
     # Build country list from articles
     all_countries = sorted(list(set(
-        a['country']
-        for a in combined_data['articles']
+        country_data['country']
+        for country_data in combined_data['articles'].values()
     )))
 
     spectrum_labels = [p['label'] for p in sorted(combined_data['spectrum_points'], key=lambda x: x['point_id'])]
@@ -65,16 +65,17 @@ def renderSankey(combined_data: dict, search_query: str = ""):
 
     # Count links from country to spectrum point
     link_counts = {}
-    for article in combined_data['articles']:
-        country = article['country']
-        point_id = article['point_id']
+    for iso, country_data in combined_data['articles'].items():
+        country = country_data['country']
+        for article in country_data['articles']:
+            point_id = article['point_id']
 
-        if point_id is not None and point_id in spectrum_map:
-            country_index = all_countries.index(country)
-            point_label = spectrum_map[point_id]
-            point_index = spectrum_labels.index(point_label) + len(all_countries)
-            link_key = (country_index, point_index)
-            link_counts[link_key] = link_counts.get(link_key, 0) + 1
+            if point_id is not None and point_id in spectrum_map:
+                country_index = all_countries.index(country)
+                point_label = spectrum_map[point_id]
+                point_index = spectrum_labels.index(point_label) + len(all_countries)
+                link_key = (country_index, point_index)
+                link_counts[link_key] = link_counts.get(link_key, 0) + 1
 
     # Create links from counts
     source_indices, target_indices, values = [], [], []
@@ -188,6 +189,8 @@ def main():
                         title_translated,
                         paper_uuid,
                         title_embedding,
+                        publish_at,
+                        lang,
                         1 - (title_embedding <=> %s) AS similarity
                     FROM article
                     WHERE
@@ -209,6 +212,8 @@ def main():
                             "url": row['url'],
                             "iso": paper_info['iso'],
                             "country": paper_info['country'],
+                            "publish_at": row['publish_at'].isoformat() if row['publish_at'] else None,
+                            "lang": row['lang'],
                             "embedding": np.array(row['title_embedding'])
                         })
 
@@ -261,17 +266,24 @@ def main():
         print("\n--- Writing combined data to JSON file ---")
         mapping_dict = {m.article_id: m.point_id for m in analysis_result.mappings}
 
-        # Prepare articles data with point_id, removing embedding
-        articles_output = []
+        # Group articles by ISO
+        articles_by_iso = {}
         for i, article in enumerate(articles_data):
             article_id_llm = i + 1
             point_id = mapping_dict.get(article_id_llm)
+            iso = article['iso']
 
-            articles_output.append({
+            if iso not in articles_by_iso:
+                articles_by_iso[iso] = {
+                    "country": article['country'],
+                    "articles": []
+                }
+
+            articles_by_iso[iso]["articles"].append({
                 "title": article['title'],
                 "url": article['url'],
-                "iso": article['iso'],
-                "country": article['country'],
+                "publish_at": article['publish_at'],
+                "lang": article['lang'],
                 "point_id": point_id
             })
 
@@ -283,7 +295,7 @@ def main():
                 {"point_id": p.point_id, "label": p.label}
                 for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
             ],
-            "articles": articles_output
+            "articles": articles_by_iso
         }
 
         # Write to file
