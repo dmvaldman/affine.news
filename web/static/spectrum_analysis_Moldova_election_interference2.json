@@ -1,0 +1,1445 @@
+{
+  "spectrum_name": "Moldova's Geopolitical Orientation",
+  "spectrum_description": "This spectrum categorizes headlines based on their portrayal of Moldova's political trajectory, specifically concerning its alignment with the European Union versus Russia, and the impact of external influences on this choice.",
+  "spectrum_points": [
+    {
+      "point_id": 1,
+      "label": "Pro-Russian / Anti-EU"
+    },
+    {
+      "point_id": 2,
+      "label": "Neutral / Observing Conflict"
+    },
+    {
+      "point_id": 3,
+      "label": "Pro-European / Anti-Russian Interference"
+    }
+  ],
+  "articles": {
+    "ESP": {
+      "country": "Spain",
+      "articles": [
+        {
+          "title": "Moldova goes to the polls under the shadow of Russian interference",
+          "url": "https://www.abc.es/internacional/moldavia-decide-elecciones-parlamentarias-acercan-ue-consolidan-20250927172828-nt.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "es",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova denounces four forms of Russian interference in this Sunday's parliamentary elections.",
+          "url": "https://elpais.com/internacional/2025-09-24/moldavia-denuncia-cuatro-vias-de-injerencia-de-rusia-en-las-elecciones-parlamentarias-de-este-domingo.html",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "es",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova's legislative elections: \"$3,000 a month for anyone who protests against the government\"",
+          "url": "https://www.elmundo.es/internacional/2025/09/25/68d50f02fc6c83fe278b45a8.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "es",
+          "point_id": 2
+        },
+        {
+          "title": "Relief in Brussels over the Moldovan result: \"They chose democracy over Russian pressure.\"",
+          "url": "https://www.abc.es/internacional/alivio-bruselas-victoria-proeuropea-moldavia-eligieron-democracia-20250929111924-nt.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "es",
+          "point_id": 3
+        },
+        {
+          "title": "52% turnout in Moldova's elections to decide between rapprochement with the EU or Russia",
+          "url": "https://www.abc.es/internacional/cierran-urnas-moldavia-participacion-20250928211401-nt.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "es",
+          "point_id": 2
+        },
+        {
+          "title": "Maia Sandu, after her party reaffirmed its absolute majority in Moldova: \"Russia has failed; it hasn't managed to buy us off.\"",
+          "url": "https://www.elmundo.es/internacional/2025/09/29/68da684bfdddff29618b4579.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "es",
+          "point_id": 3
+        },
+        {
+          "title": "The first results, with more than 80% of the vote counted, point to a pro-European victory in Moldova.",
+          "url": "https://elpais.com/internacional/2025-09-28/los-primeros-resultados-con-un-30-del-voto-escrutado-apuntan-a-una-victoria-europeista-en-moldavia.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "es",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova's Action and Solidarity Party (PAS) has won the legislative elections held...",
+          "url": "https://www.abc.es/internacional/ue-acompanara-moldavia-adhesion-tras-victoria-partido-20250929122107-vi.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "es",
+          "point_id": 3
+        }
+      ]
+    },
+    "CHE": {
+      "country": "Switzerland",
+      "articles": [
+        {
+          "title": "Operation \"Matryoshka\": Five days before a crucial election in Moldova, Russia is accused of massive interference in the campaign",
+          "url": "https://www.letemps.ch/monde/operation-matriochka-a-cinq-jours-d-un-scrutin-crucial-en-moldavie-la-russie-est-accusee-d-interferer-massivement-dans-la-campagne",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "fr",
+          "point_id": 2
+        },
+        {
+          "title": "After the elections, Moldova remains on course for Europe – despite Russian influence 2",
+          "url": "https://www.tagesanzeiger.ch/moldau-wahlen-pas-gewinnt-mehrheit-trotz-russischem-einfluss-174609860658",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "Fateful election in Southeast Europe Russia wants to dissuade Moldova from joining the EU 7",
+          "url": "https://www.tagesanzeiger.ch/moskaus-langer-arm-nach-moldau-949729697469",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "In Moldova, pro-Europeans rejoice: \"Russia attempted an electoral coup but failed\"",
+          "url": "https://www.letemps.ch/monde/europe/en-moldavie-les-pro-europeens-en-joie-la-russie-a-tente-un-coup-d-etat-electoral-mais-elle-a-echoue",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "EU accession candidate: Pro-Europeans win majority in Moldovan elections. In the parliamentary elections in the Republic of Moldova, the population opted for a Russia-critical stance. The elections were overshadowed by numerous disruptions.",
+          "url": "https://www.tagesanzeiger.ch/proeuropaeer-liegen-bei-wahlen-in-moldau-vorn-579294147558",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "Opinion: After parliamentary elections, Moldova's EU accession is in Europe's best interest. The country is struggling with corruption. And then there are all those who sympathize with Moscow. Why Moldova still belongs in the EU. Commentary by Verena Mayer 5",
+          "url": "https://www.tagesanzeiger.ch/moldau-wahlen-warum-der-eu-beitritt-forciert-werden-muss-121136045321",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "In Moldova, legislative elections under the sign of tension",
+          "url": "https://www.letemps.ch/monde/en-moldavie-des-legislatives-sous-le-signe-de-la-tension",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "fr",
+          "point_id": 2
+        },
+        {
+          "title": "Elections in Moldova Bomb threats against polling stations received 1",
+          "url": "https://www.tagesanzeiger.ch/moldau-bombendrohungen-ueberschatten-parlamentswahlen-282187786942",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova affirms its pro-European attachment at the polls",
+          "url": "https://www.letemps.ch/monde/europe/la-moldavie-affirme-dans-les-urnes-son-attachement-pro-europeen",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        }
+      ]
+    },
+    "ITA": {
+      "country": "Italy",
+      "articles": [
+        {
+          "title": "The OSCE: \"Serious foreign interference in Moldova's elections.\" The finger is pointed at Moscow's interference. But the Kremlin believes the violations have affected the diaspora in Russia. September 29, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/29/news/moldova_elezioni_osce_interferenze_straniere-424878273/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "it",
+          "point_id": 2
+        },
+        {
+          "title": "Nicu Popescu: \"The vote in Moldova is crucial. Moscow needs us to hit Kiev.\" An interview with the former Foreign Minister who spearheaded the EU accession negotiations: \"Russia not only promotes its propaganda in our country, but brings in mountains of money every day.\" By our correspondent Rosalba Castelletti, September 28, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/28/news/moldova_adesione_ue_nicu_popescu_intervista-424875533/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "it",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova at the crossroads between the EU and Moscow: \"Russia wants to rig the ballot box.\" Parliamentary elections tomorrow will see pro-Europeans and pro-Russians side by side. The Kremlin's dirty tricks, involving interference and money, are aimed at Chisinau to attack Kiev. And the façade of the Hotel National reflects a country perpetually searching for its identity. By our correspondent Rosalba Castelletti, September 27, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/27/news/moldova_russia_storia_reportage-424873742/",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "it",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova, pro-European success with 44.13% of the vote despite hacker attacks. Pro-Russians incite the streets. Record turnout in parliamentary elections. Bomb scares at polling stations abroad. President Sandu's party nears majority. From our correspondent Rosalba Castelletti, September 29, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/29/news/elezioni_moldavia_sandu_europeisti-424877060/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "it",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova: Russia allegedly recruited and financed Orthodox priests to influence elections",
+          "url": "https://www.corriere.it/esteri/25_settembre_26/moldova-la-russia-avrebbe-reclutato-e-finanziato-dei-preti-ortodossi-per-influenzare-le-elezioni-650584d3-ff3f-420e-9c61-0e486d150xlk.shtml",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "it",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan elections: Pro-European President Maia Sandu: \"Russia has failed.\" September 29, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/29/video/moldova_elezioni_sandu_interferenze_russe_fallito-424878815/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "it",
+          "point_id": 3
+        },
+        {
+          "title": "EU, relief for Moldova's vote: defeating Russian propaganda is possible. Von der Leyen: \"You have chosen Europe, democracy, and freedom. Our door is open.\" From our correspondent Claudio Tito, September 29, 2025",
+          "url": "https://www.repubblica.it/esteri/2025/09/29/news/moldova_risultato_elezioni_von_der_leyen_reazioni_europa-424877763/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "it",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova votes today, threats from Moscow: \"We will not allow a NATO outpost in Chisinau.\" By Marco Imarisio. President Maia Sandu had already taken a huge risk last October in the referendum on EU membership. Europe's poorest country is at a crossroads.",
+          "url": "https://www.corriere.it/esteri/25_settembre_27/moldavia-oggi-al-voto-minacce-da-mosca-non-permetteremo-un-avamposto-nato-a-chisinau-0947a13c-15ad-445a-b8ec-12212db0dxlk.shtml",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "it",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan elections, the results: pro-Europeans largely lead with 44%. Pro-Russians at 28%: \"We'll demonstrate on Monday.\" By Marco Imarisio. Moldovan elections results favor Maia Sandu's pro-European party, but it falls short of an absolute majority.",
+          "url": "https://www.corriere.it/esteri/25_settembre_28/elezioni-moldavia-risultati-52e08762-8d05-481b-acd0-593955665xlk.shtml",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "it",
+          "point_id": 3
+        }
+      ]
+    },
+    "PRT": {
+      "country": "Portugal",
+      "articles": [
+        {
+          "title": "Moldova elections \"without disturbances\" and \"with high turnout\", despite Russian disinformation campaign",
+          "url": "https://expresso.pt/internacional/2025-09-28-eleicoes-na-moldova-sem-disturbios-e-com-muita-afluencia-apesar-de-campanha-de-desinformacao-por-parte-da-russia-efb59a69",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "pt",
+          "point_id": 3
+        },
+        {
+          "title": "Exclusive Europe Moldova has taken a giant step towards its European dream. PAS's victory in the legislative elections, despite Moscow's attempts at interference, guarantees Moldova political stability to advance the EU accession process. João Ruela Ribeiro 7:27 PM Save 1 comment",
+          "url": "https://www.publico.pt/2025/09/29/mundo/noticia/moldova-deu-passo-gigante-sonho-europeu-2148988",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "pt",
+          "point_id": 3
+        },
+        {
+          "title": "Pro-Russian and pro-EU blocs closely aligned in polls for Moldova's elections, the new stage for Moscow's hybrid war",
+          "url": "https://expresso.pt/internacional/2025-09-25-blocos-pro-russo-e-pro-ue-colados-nas-sondagens-para-as-eleicoes-na-moldova-novo-palco-da-guerra-hibrida-de-moscovo-fc514622",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "pt",
+          "point_id": 2
+        },
+        {
+          "title": "Exclusive Moldova The great game between the EU and Russia continues, now in Moldova. It's hard to overestimate the importance of this Sunday's legislative elections in Moldova. A victory for parties close to Moscow could stall the EU accession process indefinitely. João Ruela Ribeiro 8:00 PM Save 1 comment",
+          "url": "https://www.publico.pt/2025/09/27/mundo/noticia/jogo-ue-russia-continua-moldova-2148731",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "pt",
+          "point_id": 2
+        },
+        {
+          "title": "Mutual accusations between pro-Russian and pro-EU parties mark Moldova's legislative elections",
+          "url": "https://expresso.pt/internacional/2025-09-28-acusacoes-mutuas-entre-pro-russos-e-pro-ue-marcam-legislativas-na-moldova-992b78d8",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "pt",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova European leaders celebrate victory of pro-European party in Moldova Ursula von der Leyen, António Costa, Emmanuel Macron and others say Russian interference attempts failed. 10:34 Save 25 comments",
+          "url": "https://www.publico.pt/2025/09/29/mundo/noticia/lideres-europeus-festejam-vitoria-partido-proeuropeu-moldova-2148908",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "pt",
+          "point_id": 3
+        },
+        {
+          "title": "Pro-Europeans win Moldova elections, far ahead of pro-Russian party",
+          "url": "https://expresso.pt/internacional/europa/2025-09-29-pro-europeus-vencem-eleicoes-na-moldova-a-larga-distancia-do-partido-pro-russo-effe1d90",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "pt",
+          "point_id": 3
+        }
+      ]
+    },
+    "NLD": {
+      "country": "Netherlands",
+      "articles": [
+        {
+          "title": "Analysis: Moldova Elections: Putin is left behind: Moldova is preserved for Europe. Moldova remains on the European path after a tense parliamentary election. It took a lot to defy Russian interference.",
+          "url": "https://www.nrc.nl/nieuws/2025/09/29/poetin-heeft-het-nakijken-moldavie-is-behouden-voor-europa-a4907827",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "nl",
+          "point_id": 3
+        },
+        {
+          "title": "Moldovan Elections: Will Moldovans Choose Rapprochement with Brussels or Moscow? Emigrants Could Decide? Sunday's parliamentary elections in Moldova will reveal the country's future. Moldovans will choose between EU membership and a good relationship with Russia.",
+          "url": "https://www.nrc.nl/nieuws/2025/09/25/kiezen-moldaviers-voor-toenadering-tot-brussel-of-moskou-emigranten-kunnen-de-doorslag-geven-a4907477",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "nl",
+          "point_id": 2
+        }
+      ]
+    },
+    "FRA": {
+      "country": "France",
+      "articles": [
+        {
+          "title": "Moldovan elections: Russia denies attempting to interfere in elections, calling accusations \"cynical\"",
+          "url": "https://www.lefigaro.fr/international/legislatives-en-moldavie-la-russie-dement-avoir-tente-de-s-ingerer-dans-les-elections-qualifiant-les-accusations-de-cyniques-20250929",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 1
+        },
+        {
+          "title": "In Moldova, President Maia Sandu's pro-European party wins the legislative elections. The Action and Solidarity Party, in power since 2021, came in first with more than 50% of the vote, compared to 24.26% for the pro-Russian Patriotic Bloc, according to official results. The vote was marked by intimidation attempts and an \"unprecedented disinformation campaign\" led by Russia, according to the European Union.",
+          "url": "https://www.lemonde.fr/international/article/2025/09/29/en-moldavie-le-parti-pro-europeen-de-la-presidente-maia-sandu-en-tete-des-legislatives_6643318_3210.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "Article reserved for our subscribers Russian foreign intelligence claims that NATO troops are preparing to invade Moldova Eager to bring Chisinau back into its orbit, the Kremlin has developed a vast strategy of interference in the elections of the small republic, scheduled for Sunday, September 28.",
+          "url": "https://www.lemonde.fr/international/article/2025/09/27/le-renseignement-exterieur-russe-pretend-que-les-troupes-de-l-otan-se-preparent-a-envahir-la-moldavie_6643158_3210.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "fr",
+          "point_id": 2
+        },
+        {
+          "title": "Romanian far-right interferes in Moldovan elections",
+          "url": "https://www.lemonde.fr/international/article/2025/09/28/l-extreme-droite-roumaine-s-immisce-dans-les-elections-moldaves_6643224_3210.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "fr",
+          "point_id": 2
+        },
+        {
+          "title": "Decryption Article reserved for our subscribers In Moldova, the pro-European party of President Maia Sandu wins an absolute majority in Parliament. The Action and Solidarity Party obtained 50% of the vote, according to the still-partial count, which gives it more than 51 of the 101 seats in the Moldovan Parliament. The opposition coalition, the Patriotic Bloc, called for demonstrations on Monday to contest the results in the event of \"fraud.\"",
+          "url": "https://www.lemonde.fr/international/article/2025/09/29/en-moldavie-le-parti-pro-europeen-de-la-presidente-maia-sandu-remporte-la-majorite-absolue-au-parlement_6643337_3210.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "“We are in a struggle, it’s not easy”: in Moldova, legislative elections under the eye of Moscow",
+          "url": "https://www.lefigaro.fr/international/nous-sommes-en-lutte-ce-n-est-pas-simple-en-moldavie-des-elections-legislatives-sous-l-oeil-de-moscou-20250928",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "fr",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan parliamentary elections: pro-European victory is a \"strong mandate for the accession process\" to the EU, according to the president",
+          "url": "https://www.lefigaro.fr/international/legislatives-en-moldavie-la-victoire-des-proeuropeens-est-un-mandat-fort-pour-le-processus-d-adhesion-a-l-ue-selon-la-presidente-20250929",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "With the victory of PAS, Moldova maintains its European orientation",
+          "url": "https://www.lefigaro.fr/international/avec-la-victoire-du-pas-la-moldavie-maintient-son-orientation-europeenne-20250929",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova's legislative elections: pro-European party in the lead, according to the country's Central Electoral Commission",
+          "url": "https://www.lefigaro.fr/international/legislatives-en-moldavie-le-parti-pro-europeen-serait-en-tete-selon-la-commission-electorale-centrale-du-pays-20250928",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        }
+      ]
+    },
+    "ROU": {
+      "country": "Romania",
+      "articles": [
+        {
+          "title": "Bomb alerts were recorded in several polling stations in Belgium, Italy, Romania, the USA and Spain, and Moldovan authorities emphasize that they had previously warned about them, in the context of the Kremlin's influence on the vote on September 28.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/val-de-alerte-cu-bomba-in-mai-multe-sectii-de-vot-2475238.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Ahead of Sunday's parliamentary elections, the Republic of Moldova is facing a concerted offensive of disinformation and manipulation coming from the East.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/alegeri-sub-asediu-informational-la-chisinau-2474391.html",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Journalist Cristian Tudor Popescu warned about the massive influence that Russia is exerting on Sunday's parliamentary elections in the Republic of Moldova.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/ctp-avertisment-inainte-de-alegerile-din-moldova-2474830.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "As the Republic of Moldova approaches parliamentary elections, the public space is being invaded by an avalanche of disinformation and manipulation orchestrated by the Kremlin. The scale of the operations makes Moldova a testing ground for Russia's latest information warfare tactics.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/republica-moldova-teren-de-testare-pentru-2475090.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Ahead of the parliamentary elections on September 28, 2025, the Republic of Moldova is facing an intensification of political tensions and destabilizing activities, fueled by external influences.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/planul-secret-al-rusiei-pentru-destabilizarea-2474848.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The international press considers the Moldovan elections a \"battle\" for the country's future and writes about the tensions between pro-European and pro-Russian forces, but also about the risks of external influence.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/presa-internationala-considera-alegerile-din-2475183.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The Moldovan diaspora will play a crucial role in Sunday's crucial parliamentary elections, as the country battles an unprecedented vote-buying operation orchestrated by Russia, which is trying to oust the ruling pro-European party, according to a report.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/diaspora-moldoveneasca-cruciala-in-alegerile-2475079.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The elections in the Republic of Moldova were not among the priorities of American officials, said Washington-based security expert Iulia Joja. The most vocal at the UN Assembly was President Zelensky, who warned that after Georgia, Europe cannot afford to lose Moldova.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/alegerile-din-republica-moldova-vazute-din-sua-2474963.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "As the Republic of Moldova approaches Sunday's parliamentary elections, the authorities in Chisinau accuse an unprecedented intensification of the \"hybrid war\" waged by the Russian Federation against the state.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/ofensiva-hibrida-a-rusiei-in-republica-moldova-2474262.html",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan oligarch Ilan Shor, a refugee in Moscow after being sentenced in absentia to 15 years in prison for bank fraud, accused Russian public television that the elections in Chisinau were \"rigged\", announcing the contestation of the results of the September 28 election.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/oligarhul-moldovean-ilan-sor-a-anuntat-la-2475413.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ro",
+          "point_id": 1
+        },
+        {
+          "title": "Russia paid for Moldovan Orthodox priests to travel to Moscow and gave them debit cards loaded with hundreds of dollars upon their return home. In return, the priests created Telegram channels to influence Moldovan elections.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/razboiul-sfant-al-kremlinului-cum-a-instruit-2474874.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The Moldovan police claim to have indications that some people were promised money to participate in the protest scheduled for Monday in Chisinau, against the results of the elections in the Republic of Moldova.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/cetateni-moldoveni-mituiti-sa-participe-la-2475359.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The parliamentary elections in the Republic of Moldova, held on September 28, 2025, and won by the Action and Solidarity Party (PAS), led by Maia Sandu, generated a wave of international reactions.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/nicusor-dan-felicita-moldova-stim-ca-nu-a-fost-2475387.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ro",
+          "point_id": 3
+        },
+        {
+          "title": "The Information Technology and Cyber ​​Security Service (STISC) of the Republic of Moldova informs that it has blocked a wave of cyber attacks on the electoral infrastructure.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/peste-4000-de-site-uri-restrictionate-in-2475220.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "After the categorical victory of PAS, the Kremlin launched harsh criticism against Chisinau regarding the organization of the parliamentary elections and accused the authorities of obstructing the participation in the vote of hundreds of thousands of Moldovans settled in Russia.",
+          "url": "https://adevarul.ro/stiri-externe/rusia/kremlinul-lanseaza-acuzatii-dupa-alegerile-din-2475428.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ro",
+          "point_id": 1
+        },
+        {
+          "title": "62,000 comments from Russian bots flood Moldova's Telegram messaging app ahead of elections; every third channel spreads Kremlin propaganda.",
+          "url": "https://adevarul.ro/stiri-externe/europa/cum-foloseste-rusia-roboti-bazati-pe-inteligenta-2474704.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Election day in the Republic of Moldova was marked by bomb threats and attempts at destabilization, Igor Grosu, president of the Action and Solidarity Party (PAS), said on Sunday evening in his message to citizens after the closing of polling stations.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/igor-grosu-indeamna-la-vigilenta-si-2475299.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "A Washington-based research institute warns that Russia is creating conditions to generate possible violent protests with the aim of removing Moldovan President Maia Sandu from power after the parliamentary elections on September 28.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/isw-avertizeaza-rusia-pregateste-proteste-2475028.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The Russian Foreign Ministry summoned the Ambassador of the Republic of Moldova to the Russian Federation, Lilian Darii, to whom a protest was expressed regarding Chisinau's refusal to accredit Russian observers to the parliamentary elections on September 28.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/moscova-l-a-convocat-pe-ambasadorul-moldovean-dupa-2474368.html",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "ro",
+          "point_id": 1
+        },
+        {
+          "title": "The Moldovan police announced that several Moldovan voters were transported from Russia in an organized manner to exercise their right to vote in Belarus. The authorities emphasize that they are investigating the case to identify and punish the individuals involved in this illegality.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/politia-republicii-moldova-mai-multi-moldoveni-au-2475213.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Over 33% of the electorate has voted so far in the parliamentary elections in the Republic of Moldova, so the election can be considered valid from this point of view.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/pragul-de-prezenta-la-vot-necesar-validarii-2475245.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "AUR withdraws from the electoral race in the Republic of Moldova. Democracy at Home remains alone on the unionist aisle",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/aur-se-retrage-din-cursa-electorala-din-republica-2474835.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "The parliamentary elections in the Republic of Moldova, scheduled for September 28, are being treated in the Russian press as a geopolitical event with major implications.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/cum-prezinta-presa-rusacum-prezinta-presa-rusa-2475233.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "Authorities in Chisinau report an unprecedented mobilization of Moldovan voters abroad, in the parliamentary elections taking place today.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/prezenta-record-la-vot-in-diaspora-moldoveneasca-2475229.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        },
+        {
+          "title": "\"We can talk about a victory for Russian propaganda in the Republic of Moldova to the same extent as we can talk about a victory for it in Romania or any other EU state,\" says analyst Cătălin Done. He is moderately optimistic about the pro-European course of the Republic of Moldova.",
+          "url": "https://adevarul.ro/stiri-externe/republica-moldova/a-castigat-rusia-razboiul-hibrid-in-republica-2475307.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ro",
+          "point_id": 2
+        }
+      ]
+    },
+    "RUS": {
+      "country": "Russia",
+      "articles": [
+        {
+          "title": "The PMR Foreign Ministry accused Moldova of preventing citizens from voting in the elections.",
+          "url": "https://vm.ru/news/1265039-mid-pmr-obvinil-moldaviyu-v-nedopushenii-grazhdan-k-golosovaniyu-na-vyborah",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Moldova's Central Election Commission reported 236 violations during the parliamentary elections.",
+          "url": "https://vm.ru/news/1265165-cik-moldavii-soobshil-o-236-narusheniyah-na-parlamentskih-vyborah",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Human rights activists recorded 40 incidents during the parliamentary elections in Moldova.",
+          "url": "https://vm.ru/news/1264978-pravozashitniki-zafiksirovali-40-incidentov-na-parlamentskih-vyborah-v-moldavii",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Media reports indicate numerous violations in Moldova's parliamentary elections",
+          "url": "https://vm.ru/news/1265007-smi-soobshayut-o-mnogochislennyh-narusheniyah-na-parlamentskih-vyborah-v-moldavii",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Elections without a choice: Moldova deprived the opposition of a chance to win.",
+          "url": "https://www.pravda.ru/news/world/2282745-moldavija-lishila-oppoziciju-shansa-na-pobedu/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Elections on the brink of collapse: Moldova stifles opposition at the last moment",
+          "url": "https://www.pravda.ru/news/world/2282747-moldavija-dushit-oppoziciju-v-poslednii-moment/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "The Central Election Commission of Moldova has processed 90.02 percent of the protocols.",
+          "url": "https://vm.ru/news/1265079-cik-moldavii-obrabotal-9002-procenta-protokolov",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "3,000 searches and not a single vote: authorities are suppressing the opposition in Moldova.",
+          "url": "https://www.pravda.ru/news/world/2282740-vlasti-davjat-oppoziciju-v-moldavii/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Central Election Commission: Moldova's ruling party leads with 41.22 percent of the vote",
+          "url": "https://vm.ru/news/1265071-cik-pravyashaya-partiya-moldavii-nabiraet-4240-procenta-na-vyborah",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "Parliamentary elections in Moldova have ended.",
+          "url": "https://vm.ru/news/1265052-parlamentskie-vybory-v-moldavii-zaversheny",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "Expert Ciurea commented on the results of the parliamentary elections in Moldova.",
+          "url": "https://vm.ru/news/1265154-ekspert-churya-prokommentiroval-rezultaty-parlamentskih-vyborov-v-moldavii",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "Sandu spoke of corruption in the Moldovan elections",
+          "url": "https://vm.ru/news/1265006-sandu-zayavila-o-korrupcii-na-vyborah-v-moldavii",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Shor: Moldova's opposition does not recognize the results of the parliamentary elections",
+          "url": "https://vm.ru/news/1265167-oppoziciya-moldavii-ne-priznaet-rezultaty-parlamentskih-vyborov",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Central Election Commission: Moldova's opposition has 49.54 percent of the vote after the protocols have been processed.",
+          "url": "https://vm.ru/news/1265096-cik-oppoziciya-moldavii-nabiraet-4954-procentov-golosov-posle-obrabotki-protokolov",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Gutsul called on Moldovans to vote against militarization in the elections.",
+          "url": "https://vm.ru/news/1264965-gucul-prizvala-moldavan-golosovat-na-vyborah-protiv-militarizacii",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Dodon: Moldovan authorities are considering canceling the elections",
+          "url": "https://vm.ru/news/1265084-dodon-vlasti-moldavii-rassmatrivayut-otmenu-vyborov",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Moldova's Central Election Commission has disqualified the Heart of Moldova party from the parliamentary elections.",
+          "url": "https://vm.ru/news/1264628-cik-moldavii-otstranil-ot-parlamentskih-vyborov-partiyu-serdce-moldovy",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Voting in parliamentary elections has begun in Moldova.",
+          "url": "https://vm.ru/news/1264954-golosovanie-na-parlamentskih-vyborah-nachalos-v-moldavii",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "Musk responded to Durov's post requesting blocking Telegram channels about Moldova.",
+          "url": "https://vm.ru/news/1265077-mask-otvetil-na-post-durova-o-prosbe-blokirovat-telegram-kanaly-o-moldavii",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        }
+      ]
+    },
+    "GBR": {
+      "country": "United Kingdom",
+      "articles": [
+        {
+          "title": "1 hr ago Moldova holds key election as Russia's shadow looms large The country has accused Moscow of election interference on an unprecedented scale. 1 hr ago",
+          "url": "https://www.bbc.com/news/articles/c179z9d4vl1o",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        },
+        {
+          "title": "The pro-European party won Moldova’s election but obstacles to join the EU remain Russia’s campaign to amplify societal distrust continues as membership talks have stalled 5m ago",
+          "url": "https://www.theguardian.com/world/2025/sep/29/pro-european-party-won-moldovas-election-but-obstacles-to-join-the-eu-remain",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        },
+        {
+          "title": "Pro-EU party in Moldova takes lead in election mired in claims of interference The vote is seen as critical for Moldova's future EU path, and President Maia Sandu has warned of Russian interference. 13 mins ago Europe",
+          "url": "https://www.bbc.com/news/articles/cx2rdlj8ejgo",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        },
+        {
+          "title": "Moldovan diaspora critical in elections as country battles Russian vote-buying, says former minister 5h ago",
+          "url": "https://www.theguardian.com/world/2025/sep/27/moldova-diaspora-critical-in-elections-as-country-battles-russian-vote-buying-says-former-minister",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        }
+      ]
+    },
+    "CAN": {
+      "country": "Canada",
+      "articles": [
+        {
+          "title": "Moldova parliamentary election seen as test of Russian interference",
+          "url": "https://www.theglobeandmail.com/world/article-moldova-parliamentary-election-2025/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        },
+        {
+          "title": "Europe Moldova Elections Pro-European Party Leads (Chisinau) President Mai Sandu's pro-European PAS party led the parliamentary elections in Moldova on Sunday evening, marked by accusations of Russian interference, according to a partial count by the Electoral Commission covering more than 85% of the votes.",
+          "url": "https://www.lapresse.ca/international/europe/2025-09-28/elections-en-moldavie/le-parti-pro-europeen-en-tete.php",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "Europe Moldova Elections Pro-European Party Leads by a Large Margin (Chisinau) President Mai Sandu's pro-European PAS party is leading Moldova's parliamentary elections on Sunday, marked by accusations of Russian interference, according to a near-final count by the Electoral Commission.",
+          "url": "https://www.lapresse.ca/international/europe/2025-09-28/elections-en-moldavie/le-parti-pro-europeen-largement-en-tete.php",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        },
+        {
+          "title": "analysis Victory for Moldova’s pro-EU party averts a dark outcome and angers Moscow",
+          "url": "https://www.theglobeandmail.com/world/article-victory-for-moldovas-pro-eu-party-averts-a-dark-outcome-and-angers/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova’s pro-EU ruling party wins majority in key election, boosting country’s bid to join the EU",
+          "url": "https://www.theglobeandmail.com/world/article-moldova-elections-2025/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        },
+        {
+          "title": "Europe Moldova Elections Pro-European Party Wins Parliamentary Elections (Chisinau) The victory of the pro-European PAS party in Moldova's parliamentary elections on Sunday despite pressure from Russia constitutes \"a strong mandate for the accession process\" of the country to the EU, President Maia Sandu declared on Monday.",
+          "url": "https://www.lapresse.ca/international/europe/2025-09-29/elections-en-moldavie/le-parti-pro-europeen-remporte-les-legislatives.php",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "fr",
+          "point_id": 3
+        }
+      ]
+    },
+    "SOM": {
+      "country": "Somalia",
+      "articles": [
+        {
+          "title": "WORLD NEWS Moldova’s decisive election: democracy under siege from disinformation hanad - September 27, 2025",
+          "url": "https://jowhar.com/moldovas-decisive-election-democracy-under-siege-from-disinformation/",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        },
+        {
+          "title": "WORLD NEWS EU praises Moldova’s pro-European election choice, welcomes democratic mandate",
+          "url": "https://jowhar.com/eu-praises-moldovas-pro-european-election-choice-welcomes-democratic-mandate/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        }
+      ]
+    },
+    "LTU": {
+      "country": "Lithuania",
+      "articles": [
+        {
+          "title": "Moldovan president warns of Russian interference in parliamentary elections",
+          "url": "https://www.delfi.lt/news/daily/world/moldovos-prezidente-ispeja-del-rusijos-kisimosi-i-parlamento-rinkimus-120154095/diskusija",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad From European countries - congratulations to Moldova, but Russia \"could still cause problems\" in the elections - and an unexpected surprise",
+          "url": "https://www.delfi.lt/news/daily/world/is-europos-saliu-sveikinimai-moldovai-bet-rusija-dar-gali-sukelti-problemu-120154606",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad, Moldovan President warns of Russian interference in parliamentary elections (3)",
+          "url": "https://www.delfi.lt/news/daily/world/moldovos-prezidente-ispeja-del-rusijos-kisimosi-i-parlamento-rinkimus-120154095",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad, Moldova suffers massive cyberattacks on election infrastructure during crucial elections (3) 25",
+          "url": "https://www.delfi.lt/news/daily/world/moldovoje-per-svarbius-rinkimus-surengtos-masines-kibernetines-atakos-pries-rinkimu-infrastruktura-120154319",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad, Moldova's pro-European party wins hard-fought victory despite Russia's dirty tactics",
+          "url": "https://www.delfi.lt/news/daily/world/moldovos-proeuropietiska-partija-sunkioje-kovoje-laimejo-pergale-nepaisant-nesvarios-rusijos-taktikos-120154622",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad, Zelensky warns: Moldovan elections pose a threat to all of Europe (1)",
+          "url": "https://www.delfi.lt/news/daily/world/zelenskis-perspeja-moldovos-rinkimai-kelia-gresme-visai-europai-120154175",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova: Threats to polling stations abroad recorded",
+          "url": "https://www.delfi.lt/news/daily/world/moldova-uzfiksuoti-grasinimai-rinkimu-punktams-uzsienyje-120154319/diskusija",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Massive cyberattacks on electoral infrastructure during crucial elections in Moldova",
+          "url": "https://www.delfi.lt/news/daily/world/moldovoje-per-svarbius-rinkimus-surengtos-masines-kibernetines-atakos-pries-rinkimu-infrastruktura-120154319/diskusija",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Zelensky warns: Moldovan elections pose a threat to all of Europe",
+          "url": "https://www.delfi.lt/news/daily/world/zelenskis-perspeja-moldovos-rinkimai-kelia-gresme-visai-europai-120154175/diskusija",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad Moldovan election results announced: pro-European forces in the lead (8)",
+          "url": "https://www.delfi.lt/news/daily/world/skelbiami-rinkimu-moldovoje-rezultatai-pirmauja-proeuropietiskos-jegos-120154364",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad Moldova: Threats to polling stations abroad recorded (5)",
+          "url": "https://www.delfi.lt/news/daily/world/moldova-uzfiksuoti-grasinimai-rinkimu-punktams-uzsienyje-120154319",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan election results announced: pro-European forces in the lead",
+          "url": "https://www.delfi.lt/news/daily/world/skelbiami-rinkimu-moldovoje-rezultatai-pirmauja-proeuropietiskos-jegos-120154364/diskusija",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad, Moldova chooses between EU integration and Russian influence in parliamentary elections 48",
+          "url": "https://www.delfi.lt/news/daily/world/moldova-per-parlamento-rinkimus-renkasi-tarp-integracijos-i-es-ir-rusijos-itakos-120154310",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad, a pro-European party won the elections in Moldova (11)",
+          "url": "https://www.delfi.lt/news/daily/world/moldovoje-rinkimus-laimejo-proeuropietiska-partija-120154401",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad, ISW warns: Russia may orchestrate post-election riots in Moldova",
+          "url": "https://www.delfi.lt/news/daily/world/isw-perspeja-rusija-gali-rengti-riauses-po-rinkimu-moldovoje-120153832",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova expels another pro-Russian party from elections",
+          "url": "https://www.delfi.lt/news/daily/world/moldova-is-rinkimu-pasalino-dar-viena-prorusiska-partija-120154125/diskusija",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad Moldova removes another pro-Russian party from elections (1)",
+          "url": "https://www.delfi.lt/news/daily/world/moldova-is-rinkimu-pasalino-dar-viena-prorusiska-partija-120154125",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "Abroad, EU leaders: Moldova chose a future in Europe despite Russian pressure (1)",
+          "url": "https://www.delfi.lt/news/daily/world/es-vadovai-moldova-pasirinko-ateiti-europoje-nepaisydama-rusijos-spaudimo-120154566",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "lt",
+          "point_id": 3
+        },
+        {
+          "title": "\"Moldova is in danger\": Moldovan President urges citizens to actively vote in elections",
+          "url": "https://www.delfi.lt/news/daily/world/moldovai-gresia-pavojus-moldovos-prezidente-paragino-piliecius-aktyviai-balsuoti-rinkimuose-120154248/diskusija",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Two people suspected of planning unrest in Moldova detained abroad in Serbia",
+          "url": "https://www.delfi.lt/news/daily/world/serbijoje-sulaikyti-du-asmenys-itariami-planave-neramumus-moldovoje-120154142",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        },
+        {
+          "title": "Abroad \"Moldova is in danger\": Moldovan President urges citizens to actively vote in elections (3) Today's elections are extremely important for the country's future",
+          "url": "https://www.delfi.lt/news/daily/world/moldovai-gresia-pavojus-moldovos-prezidente-paragino-piliecius-aktyviai-balsuoti-rinkimuose-120154248",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "lt",
+          "point_id": 2
+        }
+      ]
+    },
+    "BLR": {
+      "country": "Belarus",
+      "articles": [
+        {
+          "title": "09/28/25 23:59 Moldovan opposition protests at the Central Election Commission against election fraud.",
+          "url": "http://belta.by/world/view/moldavskaja-oppozitsija-protestuet-u-tsik-protiv-falsifikatsii-vyborov-739844-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "12:31 Human rights activists have identified violations in the parliamentary elections in Moldova.",
+          "url": "http://belta.by/world/view/pravozaschitniki-vyjavili-narushenija-na-parlamentskih-vyborah-v-moldove-739792-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Former Moldovan President Dodon was not included in the country's voter list.",
+          "url": "http://belta.by/world/view/eks-prezident-moldovy-dodon-ne-nashel-sebja-v-spiske-golosujuschih-v-strane-739729-2025/",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "21:59 Moldova's Central Election Commission has disqualified the opposition party \"Great Moldova\" from participating in the parliamentary elections.",
+          "url": "http://belta.by/world/view/tsik-moldovy-otstranil-ot-parlamentskih-vyborov-oppozitsionnuju-partiju-velikaja-moldova-739653-2025/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "Telegram refused to comply with France's request to censor Moldovan channels ahead of the elections.",
+          "url": "http://belta.by/world/view/telegram-otkazalsja-vypolnit-zapros-frantsii-o-tsenzure-moldavskih-kanalov-pered-vyborami-739810-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "15:47 Moldova has processed 100% of the votes cast in its parliamentary elections.",
+          "url": "http://belta.by/world/view/v-moldove-obrabotali-100-protokolov-na-parlamentskih-vyborah-739980-2025/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "11:52 Dodon: Moldova's election campaign marked by EU interference",
+          "url": "http://belta.by/world/view/dodon-izbiratelnaja-kampanija-v-moldove-otmechena-vmeshatelstvom-so-storony-es-739697-2025/",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "00:43 Parliamentary elections will be held in Moldova.",
+          "url": "http://belta.by/world/view/v-moldove-projdut-parlamentskie-vybory-739773-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "15:24 During the elections in Moldova, some polling stations received bomb threats.",
+          "url": "http://belta.by/world/view/na-vyborah-v-moldove-na-nekotorye-izbiratelnye-uchastki-postupali-ugrozy-o-minirovanii-739803-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 2
+        },
+        {
+          "title": "The opposition will appeal the results of the elections in Moldova, said the leader of the \"Victory\" bloc, Shor.",
+          "url": "http://belta.by/world/view/oppozitsija-obzhaluet-itogi-vyborov-v-moldove-zajavil-lider-bloka-pobeda-shor-739912-2025/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        },
+        {
+          "title": "09.28.25 23:07 Only about 4.2 thousand Moldovan citizens out of more than 300 thousand were able to vote in Russia at two polling stations. In the world",
+          "url": "http://belta.by/world/view/lish-okolo-42-tys-grazhdan-moldovy-iz-bolee-chem-300-tys-smogli-progolosovat-v-rossii-na-dvuh-uchastkah-739841-2025/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ru",
+          "point_id": 1
+        }
+      ]
+    },
+    "DEU": {
+      "country": "Germany",
+      "articles": [
+        {
+          "title": "Ahead of parliamentary elections, Moldova's President Sandu complains of \"enormous pressure from Moscow.\" A close result is expected in Moldova's election on Sunday. Recently, there have been repeated reports of pro-Russian influence. Now President Sandu warns that Moscow is spending hundreds of millions of euros to achieve its goals. September 27, 2025, 10:48 a.m. • 2 min Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-praesidentin-maia-sandu-beklagt-vor-wahl-enormen-druck-aus-russland-a-426c22eb-3878-4f75-8b47-325b095db2f0",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Shortly before the election, a pro-Russian party was excluded from parliamentary elections in Moldova. On Sunday, Moldovans will elect a new parliament. They will also have to choose between a pro-Russian or pro-European course. The Moscow-oriented alliance now faces a setback. September 26, 2025, 7:58 p.m. • 1 min Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-prorussische-partei-herz-moldaus-von-parlamentswahl-ausgeschlossen-a-b81e13e9-5122-43a2-8246-ad40b42904d6",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Election in Moldova: Victory for the EU, Defeat for Putin. The small Republic of Moldova has voted – and confirmed the president's pro-Western stance, despite Russian influence. Three lessons from the election. By Christian Esch, September 29, 2025, 12:19 p.m. • 3 min. Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-sieg-fuer-die-eu-bei-der-parlamentswahl-in-moldau-niederlage-fuer-wladimir-putin-a-5c5ff5cd-ac94-4e5e-9c18-9b1340700ab2",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova Mare Party: Another pro-Russian party excluded from parliamentary elections in Moldova. Elections are held in Moldova on Sunday. The pro-Russian opposition has now suffered another setback. Within a few days, the second party has been excluded from the vote. September 27, 2025, 3:47 p.m. • 1 min Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-weitere-prorussische-partei-von-parlamentswahl-ausgeschlossen-a-51c4fc45-0012-4e36-ada5-1d4a0e867a06",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Groundbreaking election victory: Pro-European ruling party in Moldova retains majority in parliament. In Moldova, pro-European and pro-Russian parties have been vying for decades over the country's direction. Now, President Maia Sandu's pro-EU party has won the election again. September 29, 2025, 7:15 a.m. • 2 min Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-proeuropaeische-regierungspartei-behaelt-mehrheit-im-parlament-a-4b7bbef1-851e-4338-ac4a-5af780d324bc",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "Initial counting results: Pro-European ruling party leads in Moldova's parliamentary elections. Moldova has been a candidate for EU membership since 2022. Now, according to initial counting results, the currently ruling pro-European party is ahead in the parliamentary elections. Diaspora votes are particularly important in the vote. September 28, 2025, 11:00 PM • 2 min Add to watchlist",
+          "url": "https://www.spiegel.de/ausland/moldau-proeuropaeische-regierungspartei-bei-parlamentswahl-vorne-a-327c3116-e15d-4e5d-9dcd-9530f714ad73",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        }
+      ]
+    },
+    "AUT": {
+      "country": "Austria",
+      "articles": [
+        {
+          "title": "Election in Moldova: Pro-European government fights against Russian influence",
+          "url": "https://www.diepresse.com/20135750/wahl-in-moldau-proeuropaeische-regierung-kaempft-gegen-russlands-einfluss",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "“Destiny-making election” in the Republic of Moldova: The climate on the eastern edge of the EU is becoming even harsher",
+          "url": "https://www.diepresse.com/20136828/schicksalswahl-in-der-republik-moldau-am-oestlichen-rand-der-eu-wird-das-klima-noch-rauer",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova's president complains about enormous pressure from Russia ahead of parliamentary elections",
+          "url": "https://www.diepresse.com/20143513/moldaus-praesidentin-beklagt-vor-parlamentswahl-enormen-druck-aus-russland",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "de",
+          "point_id": 2
+        },
+        {
+          "title": "Pro-Western election victory in the Republic of Moldova - call for protests by pro-Russian parties",
+          "url": "https://www.diepresse.com/20148010/pro-westlicher-wahlsieg-in-der-republik-moldau-aufruf-zu-protesten-durch-pro-russische-parteien",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        },
+        {
+          "title": "Election in Moldova: Pro-European party ahead",
+          "url": "https://www.krone.at/3912355",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "de",
+          "point_id": 3
+        }
+      ]
+    },
+    "GRC": {
+      "country": "Greece",
+      "articles": [
+        {
+          "title": "Sunday's parliamentary elections are crucial for Moldova's EU accession process - Fears of Russian interference Recent polls show that the election will be lopsided - The ruling PAS has fallen to second place with 34.7%, with the pro-Russian Patriotic Bloc leading with 36% 28.09.2025, 02:59 2",
+          "url": "https://www.protothema.gr/world/article/1702352/krisimes-gia-tin-poreia-edaxis-tis-moldavias-stin-ee-oi-vouleutikes-ekloges-tis-kuriakis-fovoi-gia-anamixi-tis-rosias/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "el",
+          "point_id": 2
+        },
+        {
+          "title": "Europe and Russia... are being slaughtered on Moldova's doorstep: Who will Chisinau side with after the polls - Pressure, propaganda war and the... Soviet \"ghost\" Moldovans decide today whether their country will continue its path towards European integration or whether it will turn again towards Moscow, with the political and economic landscape remaining fragile 28.09.2025, 13:02 15",
+          "url": "https://www.protothema.gr/world/article/1702376/oi-krisimoteres-ekloges-gia-ti-moldavia-europaiki-ensomatosi-i-epistrofi-sti-rosiki-epirroi/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "el",
+          "point_id": 2
+        },
+        {
+          "title": "Pro-European PAS wins Moldovan elections by a landslide despite reports of Russian interference 29.09.2025, 10:39 21",
+          "url": "https://www.protothema.gr/world/article/1702803/to-filoeuropaiko-pas-kerdise-me-diafora-tis-ekloges-sti-moldavia-para-tis-anafores-gia-rosiki-anamixi/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "el",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova at a critical crossroads: The polls will decide whether it will remain tied to the West's chariot or \"surrender\" to Putin's influence 28.09.2025, 08:28 110",
+          "url": "https://www.protothema.gr/world/article/1702195/i-moldavia-se-krisimo-staurodromi-oi-kalpes-tis-kuriakis-tha-krinoun-ean-tha-parameinei-demeni-sto-arma-tis-dusis/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "el",
+          "point_id": 2
+        }
+      ]
+    },
+    "ALB": {
+      "country": "Albania",
+      "articles": [
+        {
+          "title": "Elections in Moldova targeted by hackers/ 4 thousand online pages fall simultaneously, Prime Minister: Orchestrated attacks",
+          "url": "https://www.balkanweb.com/zgjedhjet-ne-moldavi-shenjester-e-hakerave-bien-njekohesisht-4-mije-faqe-online-kryeministri-sulme-te-orkestruara/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "sq",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan elections considered valid, pro-European party leads with 42%",
+          "url": "https://www.balkanweb.com/zgjedhjet-ne-moldavi-konsiderohen-te-vlefshme-partia-pro-evropiane-kryeson-me-42/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "sq",
+          "point_id": 3
+        },
+        {
+          "title": "Moldovan elections face disinformation fueled by Russian artificial intelligence",
+          "url": "https://www.gazetatema.net/bota/zgjedhjet-ne-moldavi-perballen-me-dezinformim-te-nxitur-nga-inteligjenca-ar-i519312",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "sq",
+          "point_id": 2
+        },
+        {
+          "title": "Towards the EU or Russia? Moldova opens polling stations for legislative elections, key moment for the country",
+          "url": "https://www.balkanweb.com/drejt-be-se-apo-rusise-moldavia-hap-qendrat-e-votimit-per-zgjedhjet-legjislative-moment-kyc-per-vendin/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "sq",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova, a choice between the EU and Russia! DW: Moscow's \"behind the scenes\" to move it away from the European path",
+          "url": "https://www.balkanweb.com/moldavia-nje-zgjedhje-midis-be-se-dhe-rusise-dw-prapaskenat-e-moskes-per-ta-larguar-nga-rruga-evropiane/",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "sq",
+          "point_id": 2
+        },
+        {
+          "title": "Zelensky: Moscow failed to \"destabilize\" Moldova, there will be no new borders with Russia",
+          "url": "https://www.balkanweb.com/zelenski-moska-deshtoi-ne-destabilizimin-e-moldavise-nuk-do-te-kete-kufij-te-rinj-me-rusine/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "sq",
+          "point_id": 3
+        }
+      ]
+    },
+    "POL": {
+      "country": "Poland",
+      "articles": [
+        {
+          "title": "Moldova's parliamentary elections. Police chief warns. \"Unprecedented scale.\" The Moldovan police chief appealed to citizens to report election corruption. \"Illegal advertising, disinformation, party financing, and vote-buying on Moscow's orders have reached an unprecedented scale,\" he said. Kamila Cieślik, September 27, 2025, 2:56 PM",
+          "url": "https://wiadomosci.gazeta.pl/swiat/7,198075,32283041,wybory-parlamentarne-w-moldawii-szef-policji-ostrzega-niespotykana.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "pl",
+          "point_id": 2
+        },
+        {
+          "title": "A crucial day for Moldova. Two parties excluded from the elections. Accusations of ties to Russia. Moldovan citizens will vote in parliamentary elections on Sunday. In the final days of the campaign, a court excluded two parties from the race. Kamila Cieślik, September 27, 2025, 9:28 AM",
+          "url": "https://wiadomosci.gazeta.pl/swiat/7,198075,32282561,kluczowy-dzien-dla-moldawii-dwie-partie-wykluczone-z-udzialu.html",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "pl",
+          "point_id": 2
+        },
+        {
+          "title": "Over 16 million hacker attacks in Moldova as elections continue",
+          "url": "https://wiadomosci.gazeta.pl/swiat/7,198075,32284486,ponad-16-mln-atakow-hakerow-w-moldawii-w-kraju-trwaja-wybory.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "pl",
+          "point_id": 2
+        },
+        {
+          "title": "The most important election in history. Moldova chooses between the European Union and Russia. Starting at 6:00 a.m. Polish time, Moldovans will elect a new parliament. After a difficult election campaign marked by Russian influence, the outcome is uncertain. \"These are the most important elections since the Republic of Moldova gained independence,\" said the country's Prime Minister. Magdalena Bojanowska, September 28, 2025, 10:06 a.m.",
+          "url": "https://wiadomosci.gazeta.pl/swiat/7,198075,32283919,najwazniejsze-wybory-w-historii-moldawia-wybiera-miedzy-unia.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "pl",
+          "point_id": 2
+        },
+        {
+          "title": "A decisive Sunday in Moldova. Russia has developed a comprehensive plan.",
+          "url": "https://wiadomosci.gazeta.pl/swiat/7,198075,32281708,decydujaca-niedziela-w-moldawii-rosja-opracowala-kompleksowy.html",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "pl",
+          "point_id": 2
+        }
+      ]
+    },
+    "EST": {
+      "country": "Estonia",
+      "articles": [
+        {
+          "title": "Cyberattacks and bomb threats to polling stations abroad accompany Moldova's election day in Europe",
+          "url": "https://maailm.postimees.ee/8332459/moldova-valimispaeva-saadavad-kuberrunnakud-ja-pommiahvardused-jaoskondadele-valismaal",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "et",
+          "point_id": 2
+        },
+        {
+          "title": "News OVERVIEW ⟩ Moldova's pro-European ruling party battles widespread Russian influence in elections",
+          "url": "https://maailm.postimees.ee/8331142/ulevaade-moldova-euroopa-meelne-valitsuspartei-voitleb-valimistel-ulatusliku-vene-mojutustegevusega",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "et",
+          "point_id": 3
+        },
+        {
+          "title": "World Moldova's ruling party wins landslide victory, pro-Russian parties completely crushed (4)",
+          "url": "https://maailm.postimees.ee/8332630/moldova-valitsuspartei-sai-ulekaaluka-voidu-vene-meelsed-erakonnad-porusid-taielikult",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "et",
+          "point_id": 3
+        },
+        {
+          "title": "World Moldovan elections: Pro-European party wins, preliminary results show",
+          "url": "https://maailm.postimees.ee/8332630/moldova-valimised-voidab-esialgsetel-tulemustel-euroopameelne-partei",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "et",
+          "point_id": 3
+        }
+      ]
+    },
+    "SRB": {
+      "country": "Serbia",
+      "articles": [
+        {
+          "title": "Moldova's ruling pro-European Party of Action and Solidarity (PAS) won 46 percent of the vote...",
+          "url": "https://www.politika.rs/scc/clanak/700683/moldavija-proevropska-stranka-vodi-sa-46-odsto-nakon-prebrojanih-90-odsto-glasova",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "sr",
+          "point_id": 3
+        },
+        {
+          "title": "Polls in Moldova closed at 9:00 p.m. local time, and the Central Election Commission…",
+          "url": "https://www.politika.rs/scc/clanak/700660/biralista-u-moldaviji-zatvorena",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "sr",
+          "point_id": 2
+        },
+        {
+          "title": "Sandu denies voting rights to tens of thousands of Moldovans in…",
+          "url": "https://www.politika.rs/scc/clanak/700411/sandu-uskratila-pravo-glasa-desetinama-hiljada-moldavaca-u-rusiji",
+          "publish_at": "2025-09-27T00:00:00",
+          "lang": "sr",
+          "point_id": 1
+        },
+        {
+          "title": "Moldova suspends two parties two days before elections",
+          "url": "https://www.politika.rs/scc/clanak/700305/moldavija-suspendovala-dve-stranke-dva-dana-pre-izbora",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "sr",
+          "point_id": 2
+        },
+        {
+          "title": "Brussels blackmailed voters in Moldova",
+          "url": "https://www.politika.rs/scc/clanak/700896/brisel-ucenio-birace-u-moldaviji",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "sr",
+          "point_id": 1
+        },
+        {
+          "title": "Decisive elections in Moldova 1",
+          "url": "https://www.politika.rs/scc/clanak/700521/odlucujuci-izbori-u-moldaviji",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "sr",
+          "point_id": 2
+        },
+        {
+          "title": "Georgia will not congratulate Moldovan authorities on their victory in...",
+          "url": "https://www.politika.rs/scc/clanak/700872/gruzija-nece-cestitati-moldavskim-vlastima-pobedu-na-izborima",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "sr",
+          "point_id": 1
+        }
+      ]
+    },
+    "JPN": {
+      "country": "Japan",
+      "articles": [
+        {
+          "title": "Pros and cons of pro-Western policy in focus... Moldova's parliamentary elections on 28th: Russian interference raises concerns",
+          "url": "https://www.yomiuri.co.jp/world/20250927-OYT1T50011/",
+          "publish_at": "2025-09-26T00:00:00",
+          "lang": "ja",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova remains pro-Western; ruling party wins parliamentary election; pro-Russian opposition claims fraud",
+          "url": "https://www.yomiuri.co.jp/world/20250930-OYT1T50013/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ja",
+          "point_id": 3
+        },
+        {
+          "title": "Voting begins for Moldovan parliamentary elections; one pro-Russian party's candidacy invalidated",
+          "url": "https://www.yomiuri.co.jp/world/20250929-OYT1T50009/",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "ja",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova: First pro-Western party...Uncertainty over securing majority in parliamentary elections",
+          "url": "https://www.yomiuri.co.jp/world/20250929-OYT1T50112/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ja",
+          "point_id": 2
+        },
+        {
+          "title": "Moldovan parliamentary elections focus on pro-Western majority; President criticizes Russian interference 9/29 (Mon) 7:39",
+          "url": "https://www.asahi.com/articles/AST9X75P7T9XUHBI00DM.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ja",
+          "point_id": 3
+        }
+      ]
+    },
+    "UKR": {
+      "country": "Ukraine",
+      "articles": [
+        {
+          "title": "9:06 September 29, 2025 Elections in Moldova: Putin \"flew through\" The CEC counted 99.8 votes",
+          "url": "https://fakty.ua/460648-vybory-v-moldove-putin-proletel",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "uk",
+          "point_id": 3
+        },
+        {
+          "title": "Moldova Detains 74 in Sweeping Raids Over Alleged Russian-Backed Election Plot",
+          "url": "https://www.kyivpost.com/post/60649",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "uk",
+          "point_id": 3
+        },
+        {
+          "title": "12:01 September 28, 2025 Parliamentary elections have started in Moldova: pro-Russian forces hope for revenge 301 polling stations have been opened abroad in 41 countries, 12 stations have been opened for citizens from Transnistria",
+          "url": "https://fakty.ua/460613-v-moldove-startovali-parlamentskie-vybory-prorossijskie-sily-nadeyutsya-na-revansh",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "uk",
+          "point_id": 2
+        }
+      ]
+    },
+    "KEN": {
+      "country": "Kenya",
+      "articles": [
+        {
+          "title": "Russia-linked disinfo campaign targets Moldovan election",
+          "url": "https://www.standardmedia.co.ke/world/article/2001530230/russia-linked-disinfo-campaign-targets-moldovan-election",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova's pro-EU party wins key polls after Russian meddling claims By AFP 7 hrs ago",
+          "url": "https://www.standardmedia.co.ke/world/article/2001530611/moldovas-pro-eu-party-wins-key-polls-after-russian-meddling-claims",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        }
+      ]
+    },
+    "KOR": {
+      "country": "South Korea",
+      "articles": [
+        {
+          "title": "Moldova's general election, a proxy war between the West and Putin, saw pro-European forces win.",
+          "url": "https://www.chosun.com/international/international_general/2025/09/30/RSQATXCJDJEHVJY3EW2CXWVHXI/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ko",
+          "point_id": 3
+        },
+        {
+          "title": "Pro-European ruling party wins Moldovan general election, defeating pro-Russian faction",
+          "url": "https://www.chosun.com/international/international_general/2025/09/29/3M6EV6XWYRCWZI6RL32HL2NB4Q/",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "ko",
+          "point_id": 3
+        }
+      ]
+    },
+    "HRV": {
+      "country": "Croatia",
+      "articles": [
+        {
+          "title": "Premium content 8 GEOPOLITICAL CLASH REACHES PEAK AHEAD OF SUNDAY'S ELECTIONS Moldova arrests Russian agents, and Moscow claims the EU is preparing to – attack the country Moldova claims it has arrested individuals who had a plan to cause unrest in the country, and claims they were trained in – Serbia",
+          "url": "https://www.vecernji.hr/vijesti/moldavija-uhicuje-ruske-agente-a-moskva-tvrdi-da-se-eu-tu-zemlju-sprema-napasti-1893158",
+          "publish_at": "2025-09-24T00:00:00",
+          "lang": "hr",
+          "point_id": 2
+        },
+        {
+          "title": "8 UNCERTAIN OUTCOME Crucial elections in Moldova: Citizens choose whether to move closer to the European Union or Russia",
+          "url": "https://www.vecernji.hr/vijesti/presudni-izbori-u-moldaviji-gradani-biraju-hoce-li-se-pribliziti-europskoj-uniji-ili-rusiji-1894232",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "hr",
+          "point_id": 2
+        }
+      ]
+    },
+    "USA": {
+      "country": "United States",
+      "articles": [
+        {
+          "title": "For Many Moldovans, Their Election Is a Choice Between Russia and the E.U.",
+          "url": "https://www.nytimes.com/2025/09/28/world/europe/moldova-election-russia-eu.html",
+          "publish_at": "2025-09-28T00:00:00",
+          "lang": "en",
+          "point_id": 2
+        },
+        {
+          "title": "Moldova’s Pivotal Election Projected to End in Victory for Pro-Europeans",
+          "url": "https://www.nytimes.com/2025/09/28/world/europe/moldova-election-russia.html",
+          "publish_at": "2025-09-29T00:00:00",
+          "lang": "en",
+          "point_id": 3
+        }
+      ]
+    }
+  }
+}

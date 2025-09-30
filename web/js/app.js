@@ -358,10 +358,14 @@ function renderSpectrumAnalysis(data) {
         separator.classList.add('visible');
     }
 
-    // Sort countries by number of articles
-    const sortedCountries = Object.keys(articles).sort((a, b) => {
-        return articles[b].articles.length - articles[a].articles.length;
-    });
+    // Filter countries with at least 3 articles, then sort by average point_id
+    const sortedCountries = Object.keys(articles)
+        .filter(iso => articles[iso].articles.length >= 3)
+        .sort((a, b) => {
+            const avgA = countryDistributions[a].avgPointId;
+            const avgB = countryDistributions[b].avgPointId;
+            return avgA - avgB;
+        });
 
     // Render each country's articles
     sortedCountries.forEach(iso => {
