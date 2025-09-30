@@ -662,6 +662,9 @@ function renderSpectrumLegend(spectrum_points, pointIdToColor) {
         const label = document.createElement('div');
         label.className = 'spectrum-label';
         label.textContent = point.label;
+        if (point.description) {
+            label.title = point.description;
+        }
         labelsContainer.appendChild(label);
     });
 

@@ -13,11 +13,14 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 
 SIMILARITY_THRESHOLD = 0.63
+NUM_WORKERS = 4  # Number of parallel workers for article classification
+MIN_ARTICLES_PER_COUNTRY = 3  # Minimum articles to include a country
 
 # --- LLM Structured Output Schemas ---
 class SpectrumPoint(BaseModel):
     point_id: int
     label: str
+    description: str  # Brief description of this viewpoint
 
 class ArticleSpectrumMapping(BaseModel):
     article_id: int
@@ -30,42 +33,143 @@ class LlmSankeyResult(BaseModel):
     mappings: list[ArticleSpectrumMapping]
 
 
-def generate_sankey_data_with_llm(client: genai.GenerativeModel, articles_data: list) -> LlmSankeyResult | None:
+def define_spectrum(articles_data: list) -> tuple[str, str, list[SpectrumPoint]] | None:
     """
-    Asks an LLM to define a single political spectrum and map articles to it.
+    Phase 1: Define the spectrum using a sample of articles.
+    Returns (spectrum_name, spectrum_description, spectrum_points) or None.
     """
-    print("\nGenerating single-dimension analysis with LLM...")
+    print("\nPhase 1: Defining spectrum...")
+
+    # Sample diverse articles (max 50 for speed)
+    sample_size = min(50, len(articles_data))
+    sample = random.sample(articles_data, sample_size)
 
     prompt_parts = [
-        "You are a political analyst creating a dataset for a visualization.",
-        "Below is a numbered list of news headlines about the same topic from various international sources.",
-        "Your task has three parts:",
-        "1. Identify the single MOST IMPORTANT political dimension or axis of debate in these headlines. Give this spectrum a clear name and a brief description.",
-        "2. Define an ordered political spectrum of 2 to 4 points for this dimension. The spectrum must span the range of viewpoints from a clear negative/opposing stance to a positive/supportive one.",
-        "3. For EACH headline, map it to the most appropriate point on the spectrum you defined.",
-        "Provide the final output as a single JSON object.",
+        "You are a political analyst analyzing international news coverage.",
+        "Below are headlines from various countries about the same topic.",
+        "Your task:",
+        "1. Identify the single MOST IMPORTANT political dimension or axis of debate in these headlines.",
+        "2. Give this spectrum a clear name and brief description.",
+        "3. Define an ordered political spectrum of 2 to 4 points for this dimension.",
+        "   The spectrum must span from one extreme viewpoint to the opposite.",
+        "4. For each point, provide:",
+        "   - point_id: sequential number (1, 2, 3, etc.)",
+        "   - label: concise 2-8 word label",
+        "   - description: 1-2 sentence explanation of this viewpoint",
         "---",
         "HEADLINES:"
     ]
 
-    for i, article in enumerate(articles_data):
+    for i, article in enumerate(sample):
         prompt_parts.append(f"{i+1}. {article['title']} ({article['country']})")
 
     prompt = "\n".join(prompt_parts)
 
+    class SpectrumDefinition(BaseModel):
+        spectrum_name: str
+        spectrum_description: str
+        spectrum_points: list[SpectrumPoint]
+
     try:
+        client = genai.GenerativeModel('gemini-2.5-flash')
         response = client.generate_content(
             prompt,
             generation_config=genai.types.GenerationConfig(
                 response_mime_type="application/json",
-                response_schema=LlmSankeyResult
+                response_schema=SpectrumDefinition
             )
         )
-        response_data = json.loads(response.text)
-        return LlmSankeyResult(**response_data)
+        result = SpectrumDefinition(**json.loads(response.text))
+        print(f"Spectrum defined: {result.spectrum_name}")
+        return (result.spectrum_name, result.spectrum_description, result.spectrum_points)
     except Exception as e:
-        print(f"Error during LLM single-dimension analysis: {e}")
+        print(f"Error defining spectrum: {e}")
         return None
+
+
+def classify_articles_batch(batch: list, batch_start_id: int, spectrum_points: list[SpectrumPoint]) -> list[ArticleSpectrumMapping]:
+    """
+    Phase 2: Classify a batch of articles to the predefined spectrum.
+    """
+    if not batch:
+        return []
+
+    prompt_parts = [
+        "You are classifying news headlines to a predefined political spectrum.",
+        f"The spectrum has {len(spectrum_points)} points:",
+        ""
+    ]
+
+    for point in sorted(spectrum_points, key=lambda x: x.point_id):
+        prompt_parts.append(f"Point {point.point_id}: {point.label}")
+
+    prompt_parts.extend([
+        "",
+        "Classify each headline below to the most appropriate point on this spectrum.",
+        "---",
+        "HEADLINES:"
+    ])
+
+    for i, article in enumerate(batch):
+        article_num = batch_start_id + i + 1
+        prompt_parts.append(f"{article_num}. {article['title']}")
+
+    prompt = "\n".join(prompt_parts)
+
+    try:
+        client = genai.GenerativeModel('gemini-2.5-flash')
+        response = client.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=list[ArticleSpectrumMapping]
+            )
+        )
+        return [ArticleSpectrumMapping(**m) for m in json.loads(response.text)]
+    except Exception as e:
+        print(f"Error classifying batch: {e}")
+        return []
+
+
+def generate_sankey_data_with_llm_parallel(articles_data: list, num_workers: int = 4) -> LlmSankeyResult | None:
+    """
+    Two-phase approach:
+    1. Define spectrum using sample of articles
+    2. Classify all articles in parallel batches
+    """
+    # Phase 1: Define spectrum
+    spectrum_result = define_spectrum(articles_data)
+    if not spectrum_result:
+        return None
+
+    spectrum_name, spectrum_description, spectrum_points = spectrum_result
+
+    # Phase 2: Classify articles in parallel batches
+    print(f"\nPhase 2: Classifying {len(articles_data)} articles using {num_workers} workers...")
+    batch_size = max(10, len(articles_data) // num_workers)  # At least 10 per batch
+    batches = []
+    for i in range(0, len(articles_data), batch_size):
+        batch = articles_data[i:i+batch_size]
+        batches.append((batch, i))
+
+    all_mappings = []
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(classify_articles_batch, batch, start_id, spectrum_points)
+            for batch, start_id in batches
+        ]
+        for future in futures:
+            mappings = future.result()
+            all_mappings.extend(mappings)
+
+    print(f"Classified {len(all_mappings)} articles")
+
+    return LlmSankeyResult(
+        spectrum_name=spectrum_name,
+        spectrum_description=spectrum_description,
+        spectrum_points=spectrum_points,
+        mappings=all_mappings
+    )
 
 
 class handler(BaseHTTPRequestHandler):
@@ -114,14 +218,13 @@ class handler(BaseHTTPRequestHandler):
                     cur.execute("SELECT uuid, iso, country, lang FROM paper")
                     papers_data = {row['uuid']: {'iso': row['iso'], 'country': row['country'], 'lang': row['lang']} for row in cur.fetchall()}
 
-                    # Query articles with embeddings
+                    # Query articles WITHOUT embeddings (only similarity score)
                     cur.execute(
                         """
                         SELECT
                             url,
                             title_translated,
                             paper_uuid,
-                            title_embedding,
                             publish_at,
                             lang,
                             1 - (title_embedding <=> %s) AS similarity
@@ -147,7 +250,7 @@ class handler(BaseHTTPRequestHandler):
                                 "country": paper_info['country'],
                                 "publish_at": row['publish_at'].isoformat() if row['publish_at'] else None,
                                 "lang": row['lang'] if row['lang'] else paper_info['lang'],
-                                "embedding": np.array(row['title_embedding'])
+                                "similarity": float(row['similarity'])
                             })
 
             if not articles_data:
@@ -164,8 +267,8 @@ class handler(BaseHTTPRequestHandler):
 
             print(f"Step 2 successful. Found {len(articles_data)} articles.")
 
-            # --- Filter out countries with < 2 articles ---
-            print("Filtering out countries with fewer than 2 articles...")
+            # --- Filter out countries with < MIN_ARTICLES_PER_COUNTRY articles ---
+            print(f"Filtering out countries with fewer than {MIN_ARTICLES_PER_COUNTRY} articles...")
             articles_by_iso_temp = {}
             for article in articles_data:
                 iso = article['iso']
@@ -175,12 +278,12 @@ class handler(BaseHTTPRequestHandler):
 
             filtered_articles_data = []
             for iso, articles in articles_by_iso_temp.items():
-                if len(articles) >= 2:
+                if len(articles) >= MIN_ARTICLES_PER_COUNTRY:
                     filtered_articles_data.extend(articles)
 
             num_removed = len(articles_data) - len(filtered_articles_data)
             articles_data = filtered_articles_data
-            print(f"Removed {num_removed} articles from countries with < 2 articles. {len(articles_data)} articles remaining.")
+            print(f"Removed {num_removed} articles from countries with < {MIN_ARTICLES_PER_COUNTRY} articles. {len(articles_data)} articles remaining.")
 
             if not articles_data:
                 self.send_response(200)
@@ -194,10 +297,9 @@ class handler(BaseHTTPRequestHandler):
                 }).encode('utf-8'))
                 return
 
-            # 3. Generate spectrum analysis using LLM
+            # 3. Generate spectrum analysis using LLM (parallel)
             print("Step 3: Generating spectrum analysis...")
-            gemini_client = genai.GenerativeModel('gemini-2.5-flash')
-            analysis_result = generate_sankey_data_with_llm(gemini_client, articles_data)
+            analysis_result = generate_sankey_data_with_llm_parallel(articles_data, NUM_WORKERS)
 
             if not analysis_result:
                 raise ValueError("Could not get analysis from LLM")
@@ -233,7 +335,7 @@ class handler(BaseHTTPRequestHandler):
                 "spectrum_name": analysis_result.spectrum_name,
                 "spectrum_description": analysis_result.spectrum_description,
                 "spectrum_points": [
-                    {"point_id": p.point_id, "label": p.label}
+                    {"point_id": p.point_id, "label": p.label, "description": p.description}
                     for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
                 ],
                 "articles": articles_by_iso
