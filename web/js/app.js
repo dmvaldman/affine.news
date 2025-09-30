@@ -276,12 +276,20 @@ async function search(){
         await updateMapForDateRange(start, end);
     }
 
-    // TEMPORARY: Use mock spectrum analysis data
-    const response = await fetch('/static/spectrum_analysis_Moldova_election_interference.json')
-    const data = await response.json()
+    // Choose API endpoint: 'query2' for spectrum analysis, 'query' for legacy
+    const API_ENDPOINT = 'query2';  // Change to 'query' for legacy summary-based results
 
-    renderSpectrumAnalysis(data);
-    // renderSearchResults(data); // Original API rendering - commented out for spectrum experiment
+    const apiUrl = `/api/${API_ENDPOINT}?query=${encodeURIComponent(query_str)}&date_start=${startDate}&date_end=${endDate}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    // Render based on whether spectrum data is present
+    if (data.spectrum_points && data.spectrum_points.length > 0) {
+        renderSpectrumAnalysis(data);
+    } else {
+        renderSearchResults(data);
+    }
+
     resetSearchButton();
 }
 
@@ -661,11 +669,18 @@ function renderSpectrumLegend(spectrum_points, pointIdToColor) {
 }
 
 /**
- * Renders search results from API response data.
- * Expects data format: { summary: [...], articles: { ISO: { country_name, articles: [...] } } }
+ * Renders search results from API response data (legacy format without spectrum).
+ * Expects data format: { summary: [...], articles: { ISO: { country/country_name, articles: [...] } } }
  */
 function renderSearchResults(data) {
     const { summary, articles } = data;
+
+    // Normalize country name field (handle both 'country' and 'country_name')
+    Object.keys(articles).forEach(iso => {
+        if (articles[iso].country && !articles[iso].country_name) {
+            articles[iso].country_name = articles[iso].country;
+        }
+    });
 
     if (!articles) {
         console.error("API response did not include 'articles' object:", data);

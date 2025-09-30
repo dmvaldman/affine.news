@@ -189,8 +189,12 @@ class handler(BaseHTTPRequestHandler):
             summary = generate_summary(genai, search_query, by_iso)
             print("Step 3 successful.")
 
+            # Convert to unified format (spectrum fields are null for this endpoint)
             final_response = {
-                "summary": summary,
+                "spectrum_name": None,
+                "spectrum_description": None,
+                "spectrum_points": [],
+                "summary": summary,  # Legacy field, kept for backwards compatibility
                 "articles": by_iso
             }
 
