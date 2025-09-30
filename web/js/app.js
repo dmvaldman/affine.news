@@ -622,11 +622,7 @@ function renderSpectrumLegend(spectrum_points, pointIdToColor) {
     const spectrumMax = maxPointId + 0.5;
     const spectrumRange = spectrumMax - spectrumMin;
 
-    // Create container for the gradient bar
-    const gradientContainer = document.createElement('div');
-    gradientContainer.className = 'spectrum-gradient-container';
-
-    // Create the gradient bar with extended range
+    // Create the gradient bar
     const gradientBar = document.createElement('div');
     gradientBar.className = 'spectrum-gradient-bar';
     const gradientStops = sortedPoints.map(point => {
@@ -634,27 +630,30 @@ function renderSpectrumLegend(spectrum_points, pointIdToColor) {
         return `${pointIdToColor[point.point_id]} ${position}%`;
     }).join(', ');
     gradientBar.style.background = `linear-gradient(to right, ${gradientStops})`;
-    gradientContainer.appendChild(gradientBar);
 
-    // Add markers and labels for each point
+    // Add markers positioned absolutely on the gradient bar
     sortedPoints.forEach(point => {
         const position = ((point.point_id - spectrumMin) / spectrumRange) * 100;
-
-        // Vertical marker line
         const marker = document.createElement('div');
         marker.className = 'spectrum-marker';
         marker.style.left = `${position}%`;
-        gradientContainer.appendChild(marker);
-
-        // Label below the marker
-        const label = document.createElement('div');
-        label.className = 'spectrum-label';
-        label.style.left = `${position}%`;
-        label.textContent = point.label;
-        gradientContainer.appendChild(label);
+        gradientBar.appendChild(marker);
     });
 
-    legendEl.appendChild(gradientContainer);
+    legendEl.appendChild(gradientBar);
+
+    // Create labels container using flexbox for equal distribution
+    const labelsContainer = document.createElement('div');
+    labelsContainer.className = 'spectrum-labels-container';
+
+    sortedPoints.forEach(point => {
+        const label = document.createElement('div');
+        label.className = 'spectrum-label';
+        label.textContent = point.label;
+        labelsContainer.appendChild(label);
+    });
+
+    legendEl.appendChild(labelsContainer);
 }
 
 /**
