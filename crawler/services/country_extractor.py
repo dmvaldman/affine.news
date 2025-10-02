@@ -45,13 +45,13 @@ e.g., "Charlie Kirk's death: What he said before the fatal shooting" -> "USA, 0"
 
 Article title: "{title}"
 
-Notes:
+Rules:
 - Only identify ONE foreign country (the most prominent one)
 - You are only given the title, so must infer the country as many titles are implicit, naming only people, events, regions, etc.
 - Use ISO 3166-1 alpha-3 country codes (e.g., USA, CHN, RUS, JPN)
-- Return null for target_country_iso if no foreign country is mentioned
-- Return null if the article is about {source_country_iso} itself
-- favorability: 1 if positive/supportive, -1 if negative/critical, 0 if neutral/factual"""
+- Set target_country_iso to null if no foreign country is mentioned or if the article is about {source_country_iso} itself
+- ALWAYS set favorability: 1 if positive/supportive, -1 if negative/critical, 0 if neutral/factual or if no foreign country
+- Both fields are required in the response"""
 
     try:
         model = genai.GenerativeModel(
@@ -64,15 +64,25 @@ Notes:
         )
 
         response = model.generate_content(prompt)
-        data = CountryReference.model_validate_json(response.text)
+        print(f"  LLM response: {response.text}")
 
-        # Handle missing or invalid favorability
-        favorability = data.favorability if data.favorability is not None else 0
+        # Parse JSON manually to handle missing fields
+        import json
+        json_data = json.loads(response.text)
+        target_iso = json_data.get('target_country_iso')
+        favorability = json_data.get('favorability', 0)  # Default to 0 if missing
+
+        # Validate target_country_iso (must be 3 characters or None)
+        if target_iso and len(target_iso) != 3:
+            print(f"Warning: Invalid ISO code '{target_iso}', setting to None")
+            target_iso = None
+
+        # Validate favorability
         if favorability not in [-1, 0, 1]:
             print(f"Warning: Invalid favorability '{favorability}', defaulting to 0")
             favorability = 0
 
-        return data.target_country_iso, favorability
+        return target_iso, favorability
 
     except Exception as e:
         print(f"Error extracting country/sentiment: {e}")

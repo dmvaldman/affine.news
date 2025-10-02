@@ -29,7 +29,7 @@ def main():
             LEFT JOIN article_country_reference acr ON acr.article_url = a.url
             WHERE a.title_translated IS NOT NULL
             AND a.title_translated != ''
-            AND a.publish_at >= NOW() - INTERVAL '2 day'
+            AND a.publish_at >= NOW() - INTERVAL '3 day'
             AND acr.article_url IS NULL  -- Only unprocessed articles
             ORDER BY a.publish_at DESC
         """)
@@ -56,32 +56,26 @@ def main():
         # Extract target country and sentiment
         target_iso, favorability = extract_country_and_sentiment(title, source_iso)
 
-        print(f"SRC: {source_iso}, TGT: {target_iso}, FAV: {favorability}, TITLE: {title}")
+        print(f"SRC: {source_iso}, TGT: {target_iso}, FAV: {favorability}")
 
-        if target_iso:
-            # Insert into article_country_reference (idempotent)
-            with conn.cursor() as cur:
-                cur.execute("""
-                    INSERT INTO article_country_reference (
-                        article_url,
-                        source_country_iso,
-                        target_country_iso,
-                        favorability
-                    )
-                    VALUES (%s, %s, %s, %s)
-                    ON CONFLICT (article_url, target_country_iso)
-                    DO UPDATE SET
-                        favorability = EXCLUDED.favorability,
-                        source_country_iso = EXCLUDED.source_country_iso
-                """, (url, source_iso, target_iso, favorability))
+        # Insert into article_country_reference (idempotent)
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO article_country_reference (
+                    article_url,
+                    source_country_iso,
+                    target_country_iso,
+                    favorability
+                )
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (article_url) DO NOTHING
+            """, (url, source_iso, target_iso, favorability))
 
-            conn.commit()
-            processed += 1
+        conn.commit()
+        processed += 1
 
-            if processed % 10 == 0:
-                print(f"  Processed {processed} articles with country references...")
-        else:
-            skipped += 1
+        if processed % 10 == 0:
+            print(f"  Processed {processed} articles with country references...")
 
     # Refresh the materialized view with aggregated stats
     if processed > 0:

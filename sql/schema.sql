@@ -48,12 +48,11 @@ CREATE TABLE IF NOT EXISTS daily_topics (
 
 -- Article-level country references (raw data)
 CREATE TABLE IF NOT EXISTS article_country_reference (
-    article_url TEXT REFERENCES article(url) ON DELETE CASCADE,
+    article_url TEXT PRIMARY KEY REFERENCES article(url) ON DELETE CASCADE,
     source_country_iso CHAR(3) NOT NULL,
-    target_country_iso CHAR(3) NOT NULL,
+    target_country_iso CHAR(3), -- NULL if no foreign country mentioned
     favorability SMALLINT NOT NULL, -- -1, 0, 1
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    PRIMARY KEY (article_url, target_country_iso)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Materialized view for aggregated country comparison stats
@@ -66,6 +65,7 @@ SELECT
     SUM(CASE WHEN favorability = 0 THEN 1 ELSE 0 END)::INT as neutral_count,
     MAX(created_at) as updated_at
 FROM article_country_reference
+WHERE target_country_iso IS NOT NULL  -- Exclude articles with no target country
 GROUP BY source_country_iso, target_country_iso;
 
 -- Index on the materialized view
