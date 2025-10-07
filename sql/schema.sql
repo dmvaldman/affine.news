@@ -51,4 +51,10 @@ CREATE INDEX IF NOT EXISTS idx_article_paper_uuid ON article (paper_uuid);
 CREATE INDEX IF NOT EXISTS idx_crawl_paper_uuid ON crawl (paper_uuid);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_category_set_paper_url ON category_set (paper_uuid, url);
 
+-- Indexes for the matrix building query
+CREATE INDEX IF NOT EXISTS idx_article_publish_at_translated ON article (publish_at)
+WHERE title_translated IS NOT NULL AND title_translated != '';
+CREATE INDEX IF NOT EXISTS idx_article_embedding ON article (title_embedding)
+WHERE title_embedding IS NOT NULL;
+
 
