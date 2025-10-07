@@ -16,6 +16,12 @@ SIMILARITY_THRESHOLD = 0.63
 NUM_WORKERS = 4  # Number of parallel workers for article classification
 MIN_ARTICLES_PER_COUNTRY = 3  # Minimum articles to include a country
 
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY not set")
+
+genai.configure(api_key=GEMINI_API_KEY)
+
 # --- LLM Structured Output Schemas ---
 class SpectrumPoint(BaseModel):
     point_id: int
@@ -190,11 +196,6 @@ class handler(BaseHTTPRequestHandler):
         try:
             # 1. Embed the search query
             print("Step 1: Embedding the search query...")
-            api_key = os.environ.get('GEMINI_API_KEY')
-            if not api_key:
-                raise ValueError("GEMINI_API_KEY not set")
-
-            genai.configure(api_key=api_key)
 
             query_embedding_response = genai.embed_content(
                 model="models/embedding-001",
