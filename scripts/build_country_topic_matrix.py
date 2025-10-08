@@ -78,8 +78,13 @@ def analyze_topic(topic: str, date_start: str, date_end: str) -> dict:
         for article in articles_data
     ]
 
+    # Calculate dynamic number of workers (max 30 articles per worker)
+    num_articles = len(articles_list)
+    num_workers = max(1, (num_articles + 29) // 30)  # Ceiling division
+    print(f"  Using {num_workers} workers for {num_articles} articles")
+
     # Run spectrum analysis
-    result = generate_sankey_data_with_llm_parallel(articles_list, num_workers=4)
+    result = generate_sankey_data_with_llm_parallel(articles_list, num_workers=num_workers)
 
     if not result or not result.spectrum_points:
         print(f"  No spectrum data returned")
