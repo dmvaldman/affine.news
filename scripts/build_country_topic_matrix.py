@@ -17,26 +17,26 @@ from web.api.query2 import fetch_articles_for_query, generate_sankey_data_with_l
 MATRIX_FILE = Path(__file__).parent.parent / "data" / "country_topic_matrix.csv"
 
 
-def fetch_daily_topics(start_date: datetime = None, end_date: datetime = None) -> list[str]:
-    """Fetch topics generated within a date range"""
+def fetch_daily_topics(start_date: datetime = None, end_date: datetime = None) -> list[tuple[str, datetime]]:
+    """Fetch topics generated within a date range with their creation dates"""
     with conn.cursor() as cur:
         if start_date and end_date:
             cur.execute("""
-                SELECT topic
+                SELECT topic, created_at
                 FROM daily_topics
                 WHERE DATE(created_at) BETWEEN %s AND %s
                 ORDER BY id
             """, (start_date.date(), end_date.date()))
         elif start_date:
             cur.execute("""
-                SELECT topic
+                SELECT topic, created_at
                 FROM daily_topics
                 WHERE DATE(created_at) >= %s
                 ORDER BY id
             """, (start_date.date(),))
         elif end_date:
             cur.execute("""
-                SELECT topic
+                SELECT topic, created_at
                 FROM daily_topics
                 WHERE DATE(created_at) <= %s
                 ORDER BY id
@@ -44,12 +44,12 @@ def fetch_daily_topics(start_date: datetime = None, end_date: datetime = None) -
         else:
             # Default to last 7 days
             cur.execute("""
-                SELECT topic
+                SELECT topic, created_at
                 FROM daily_topics
                 WHERE DATE(created_at) >= %s
                 ORDER BY id
             """, ((datetime.now() - timedelta(days=7)).date(),))
-        return [row[0] for row in cur.fetchall()]
+        return [(row[0], row[1]) for row in cur.fetchall()]
 
 
 def analyze_topic(topic: str, date_start: str, date_end: str) -> dict:
@@ -79,8 +79,9 @@ def analyze_topic(topic: str, date_start: str, date_end: str) -> dict:
     ]
 
     # Calculate dynamic number of workers (max 30 articles per worker)
+    num_articles_per_worker = 30
     num_articles = len(articles_list)
-    num_workers = max(1, (num_articles + 29) // 30)  # Ceiling division
+    num_workers = max(1, (num_articles + num_articles_per_worker - 1) // num_articles_per_worker)  # Ceiling division
     print(f"  Using {num_workers} workers for {num_articles} articles")
 
     # Run spectrum analysis
@@ -98,7 +99,19 @@ def analyze_topic(topic: str, date_start: str, date_end: str) -> dict:
     # Calculate mean per country from mappings
     countries = {}
     country_point_ids = {}
+    country_article_counts = {}
 
+    # Count articles per country
+    for mapping in result.mappings:
+        country = article_id_to_country[mapping.article_id]
+        country_article_counts[country] = country_article_counts.get(country, 0) + 1
+
+    # Print article counts per country
+    print(f"    Articles per country:")
+    for country, count in sorted(country_article_counts.items()):
+        print(f"      {country}: {count} articles")
+
+    # Group point_ids by country
     for mapping in result.mappings:
         country = article_id_to_country[mapping.article_id]
         point_id = mapping.point_id
@@ -150,37 +163,45 @@ def build_matrix_for_date(start_date: datetime = None, end_date: datetime = None
     print(f"Building matrix from {date_start} to {date_end}")
 
     # Fetch topics for this date range
-    topics = fetch_daily_topics(start_date, end_date)
+    topics_with_dates = fetch_daily_topics(start_date, end_date)
 
-    if not topics:
+    if not topics_with_dates:
         print(f"No topics found for the specified date range")
         return
 
-    print(f"  Found {len(topics)} topics")
+    print(f"  Found {len(topics_with_dates)} topics")
 
     # Load existing matrix (countries × topics)
     df = load_matrix()
 
     topics_added = 0
-    for topic in topics:
+    for topic, topic_date in topics_with_dates:
         # Skip if topic already exists
         if topic in df.columns:
             print(f"  Skipping '{topic}' (already exists)")
             continue
 
-        result = analyze_topic(topic, date_start, date_end)
+        # Use topic's date as end date, 3 days prior as start date
+        topic_end = topic_date.strftime("%Y-%m-%d")
+        topic_start = (topic_date - timedelta(days=3)).strftime("%Y-%m-%d")
+
+        print(f"  Analyzing '{topic}' ({topic_start} to {topic_end})")
+        result = analyze_topic(topic, topic_start, topic_end)
 
         if result:
-            # Add new column for this topic
-            df[topic] = pd.Series(result)
+            # Add new column for this topic, preserving all existing countries
+            for country, score in result.items():
+                df.loc[country, topic] = round(score, 2)
             print(f"    Added '{topic}' with {len(result)} countries")
             topics_added += 1
+
+            # Save matrix incrementally
+            save_matrix(df)
+            print(f"    ✓ Matrix saved incrementally")
         else:
             print(f"    Skipped '{topic}' (no data)")
 
-    # Save updated matrix
-    save_matrix(df)
-    print(f"\n✓ Matrix saved to {MATRIX_FILE}")
+    print(f"\n✓ Final matrix saved to {MATRIX_FILE}")
     print(f"  Shape: {df.shape[0]} countries × {df.shape[1]} topics")
     print(f"  Added {topics_added} new topics")
 

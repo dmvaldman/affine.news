@@ -9,6 +9,7 @@ from scipy.stats import pearsonr
 
 
 MATRIX_FILE = Path(__file__).parent.parent / "data" / "country_topic_matrix.csv"
+MIN_COMMON_TOPICS = 5
 
 
 def load_matrix() -> pd.DataFrame:
@@ -28,6 +29,7 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
         df: Country × topic DataFrame
         focal_country: If provided, show similarity only for this country
     """
+
     countries = df.index.tolist()
 
     if len(countries) < 2:
@@ -45,7 +47,7 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
         # Find topics where both have values
         mask = ~(vec1.isna() | vec2.isna())
 
-        if mask.sum() < 2:
+        if mask.sum() < MIN_COMMON_TOPICS:
             return np.array([]), np.array([])
 
         return vec1[mask].values, vec2[mask].values
@@ -62,7 +64,7 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
 
             vec1, vec2 = get_common_positions(focal_country, country)
 
-            if len(vec1) < 2:
+            if len(vec1) < MIN_COMMON_TOPICS:
                 continue
 
             # Compute Pearson correlation
@@ -80,7 +82,7 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
         print(f"\nCountries most similar to {focal_country}:")
         print(f"{'Country':<10} {'Correlation':>12} {'Topics':>8} {'P-value':>10}")
         print("-" * 42)
-        for s in similarities[:20]:
+        for s in similarities[:50]:
             print(f"{s['country']:<10} {s['correlation']:>12.3f} {s['common_topics']:>8} {s['p_value']:>10.4f}")
 
     else:
@@ -90,7 +92,7 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
             for c2 in countries[i+1:]:
                 vec1, vec2 = get_common_positions(c1, c2)
 
-                if len(vec1) < 2:
+                if len(vec1) < MIN_COMMON_TOPICS:
                     continue
 
                 corr, p_value = pearsonr(vec1, vec2)
@@ -105,16 +107,16 @@ def compute_similarity(df: pd.DataFrame, focal_country: str = None):
 
         pairs.sort(key=lambda x: x["correlation"], reverse=True)
 
-        print(f"\nTop 20 most similar country pairs:")
+        print(f"\nTop 50 most similar country pairs:")
         print(f"{'Country A':<10} {'Country B':<10} {'Correlation':>12} {'Topics':>8}")
         print("-" * 42)
-        for p in pairs[:20]:
+        for p in pairs[:50]:
             print(f"{p['country_a']:<10} {p['country_b']:<10} {p['correlation']:>12.3f} {p['common_topics']:>8}")
 
-        print(f"\nTop 20 most dissimilar country pairs:")
+        print(f"\nTop 50 most dissimilar country pairs:")
         print(f"{'Country A':<10} {'Country B':<10} {'Correlation':>12} {'Topics':>8}")
         print("-" * 42)
-        for p in sorted(pairs, key=lambda x: x["correlation"])[:20]:
+        for p in sorted(pairs, key=lambda x: x["correlation"])[:50]:
             print(f"{p['country_a']:<10} {p['country_b']:<10} {p['correlation']:>12.3f} {p['common_topics']:>8}")
 
 

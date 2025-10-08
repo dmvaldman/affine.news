@@ -32,7 +32,7 @@ def generate_topics(grouped_headlines: dict) -> List[str]:
     prompt_parts = [
         "You are a news editor. Read the following groups of headlines. Each group represents a distinct news event.",
         "Your task is to generate one short (2-5 words typically), engaging topic label for each group.",
-        "Some headlines may be noisy or irrelevant. Ignore them.",
+        "Some headlines may be noisy or irrelevant. Ignore them. Ignore sports and entertainment headlines.",
         "Avoid unnecessary adjectives/verbs unless necessary. Stick to the proper nouns.",
         "We especially want labels for events that are controversial.",
         "Use first and last names of people when applicable.",
