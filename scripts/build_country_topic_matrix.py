@@ -11,21 +11,44 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from crawler.db.db import conn
-from web.api.query2 import generate_sankey_data_with_llm_parallel
+from web.api.query2 import fetch_articles_for_query, generate_sankey_data_with_llm_parallel
 
 
 MATRIX_FILE = Path(__file__).parent.parent / "data" / "country_topic_matrix.csv"
 
 
-def fetch_daily_topics(date: datetime) -> list[str]:
-    """Fetch topics generated for a specific date"""
+def fetch_daily_topics(start_date: datetime = None, end_date: datetime = None) -> list[str]:
+    """Fetch topics generated within a date range"""
     with conn.cursor() as cur:
-        cur.execute("""
-            SELECT topic
-            FROM daily_topics
-            WHERE DATE(created_at) = %s
-            ORDER BY id
-        """, (date.date(),))
+        if start_date and end_date:
+            cur.execute("""
+                SELECT topic
+                FROM daily_topics
+                WHERE DATE(created_at) BETWEEN %s AND %s
+                ORDER BY id
+            """, (start_date.date(), end_date.date()))
+        elif start_date:
+            cur.execute("""
+                SELECT topic
+                FROM daily_topics
+                WHERE DATE(created_at) >= %s
+                ORDER BY id
+            """, (start_date.date(),))
+        elif end_date:
+            cur.execute("""
+                SELECT topic
+                FROM daily_topics
+                WHERE DATE(created_at) <= %s
+                ORDER BY id
+            """, (end_date.date(),))
+        else:
+            # Default to last 7 days
+            cur.execute("""
+                SELECT topic
+                FROM daily_topics
+                WHERE DATE(created_at) >= %s
+                ORDER BY id
+            """, ((datetime.now() - timedelta(days=7)).date(),))
         return [row[0] for row in cur.fetchall()]
 
 
@@ -38,37 +61,21 @@ def analyze_topic(topic: str, date_start: str, date_end: str) -> dict:
     """
     print(f"  Querying: {topic}")
 
-    # Query articles directly from DB (limit to avoid slow queries)
-    with conn.cursor() as cur:
-        cur.execute("""
-            SELECT
-                a.title_translated,
-                a.title_embedding,
-                p.iso as country_iso
-            FROM article a
-            JOIN paper p ON p.uuid = a.paper_uuid
-            WHERE a.title_translated IS NOT NULL
-            AND a.title_translated != ''
-            AND a.title_embedding IS NOT NULL
-            AND a.publish_at >= %s
-            AND a.publish_at <= %s
-            ORDER BY a.publish_at DESC
-            LIMIT 50
-        """, (date_start, date_end))
-        articles_data = cur.fetchall()
+    # Fetch articles using semantic similarity
+    articles_data = fetch_articles_for_query(topic, date_start, date_end)
 
     if not articles_data:
         print(f"  No articles found")
         return None
 
-    # Convert to format expected by query2
+    # Convert to format expected by generate_sankey_data_with_llm_parallel
     articles_list = [
         {
-            'title': row[0],
-            'title_embedding': row[1],
-            'country': row[2]
+            'title': article['title'],
+            'title_embedding': None,  # Not needed for spectrum analysis
+            'country': article['iso']
         }
-        for row in articles_data
+        for article in articles_data
     ]
 
     # Run spectrum analysis
@@ -119,34 +126,29 @@ def save_matrix(df: pd.DataFrame):
     df.to_csv(MATRIX_FILE)
 
 
-def build_matrix_for_date(target_date: datetime = None):
+def build_matrix_for_date(start_date: datetime = None, end_date: datetime = None):
     """
-    Build country × topic matrix for a given date.
+    Build country × topic matrix for a given date range.
 
     Args:
-        target_date: Date to process (default: today)
+        start_date: Start date for topics and articles (default: today - 3 days)
+        end_date: End date for topics and articles (default: today)
     """
-    if target_date is None:
-        target_date = datetime.now()
+    if end_date is None:
+        end_date = datetime.now()
+    if start_date is None:
+        start_date = end_date - timedelta(days=3)
 
-    date_str = target_date.strftime("%Y-%m-%d")
-    date_end = target_date.strftime("%Y-%m-%d")
-    date_start = (target_date - timedelta(days=3)).strftime("%Y-%m-%d")
+    date_start = start_date.strftime("%Y-%m-%d")
+    date_end = end_date.strftime("%Y-%m-%d")
 
-    print(f"Building matrix for {date_str}")
-    print(f"  Date range: {date_start} to {date_end}")
+    print(f"Building matrix from {date_start} to {date_end}")
 
-    # Fetch topics for this date
-    topics = fetch_daily_topics(target_date)
+    # Fetch topics for this date range
+    topics = fetch_daily_topics(start_date, end_date)
 
     if not topics:
-        print(f"No topics found for {date_str}")
-        print("  Checking what dates have topics...")
-        with conn.cursor() as cur:
-            cur.execute("SELECT DISTINCT DATE(created_at) as date FROM daily_topics ORDER BY date DESC LIMIT 10")
-            dates = cur.fetchall()
-            for date_row in dates:
-                print(f"    {date_row[0]}")
+        print(f"No topics found for the specified date range")
         return
 
     print(f"  Found {len(topics)} topics")
@@ -154,9 +156,8 @@ def build_matrix_for_date(target_date: datetime = None):
     # Load existing matrix (countries × topics)
     df = load_matrix()
 
-    # Analyze each topic (limit to 3 for debugging)
     topics_added = 0
-    for topic in topics[:3]:
+    for topic in topics:
         # Skip if topic already exists
         if topic in df.columns:
             print(f"  Skipping '{topic}' (already exists)")
@@ -182,10 +183,13 @@ def build_matrix_for_date(target_date: datetime = None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Build country × topic matrix')
-    parser.add_argument('--date', type=str, help='Date to process (YYYY-MM-DD), default: today')
+    parser.add_argument('--start-date', type=str, help='Start date (YYYY-MM-DD), default: today - 3 days')
+    parser.add_argument('--end-date', type=str, help='End date (YYYY-MM-DD), default: today')
     args = parser.parse_args()
 
-    target_date = datetime.strptime(args.date, "%Y-%m-%d") if args.date else None
-    build_matrix_for_date(target_date)
+    start_date = datetime.strptime(args.start_date, "%Y-%m-%d") if args.start_date else None
+    end_date = datetime.strptime(args.end_date, "%Y-%m-%d") if args.end_date else None
+
+    build_matrix_for_date(start_date, end_date)
     conn.close()
 

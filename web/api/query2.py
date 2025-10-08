@@ -137,6 +137,95 @@ def classify_articles_batch(batch: list, batch_start_id: int, spectrum_points: l
         return []
 
 
+def fetch_articles_for_query(search_query: str, date_start: str, date_end: str) -> list[dict]:
+    """
+    Fetch articles matching a search query using semantic similarity.
+
+    Args:
+        search_query: The query to search for
+        date_start: Start date (YYYY-MM-DD)
+        date_end: End date (YYYY-MM-DD)
+
+    Returns:
+        List of article dictionaries with metadata
+    """
+    try:
+        # 1. Embed the search query
+        query_embedding_response = genai.embed_content(
+            model="models/embedding-001",
+            content=search_query,
+            task_type="retrieval_query"
+        )
+        query_embedding = query_embedding_response['embedding']
+
+        # 2. Query the database
+        db_url = os.environ.get('DATABASE_URL')
+        if not db_url:
+            raise ValueError("DATABASE_URL not set")
+
+        articles_data = []
+        with psycopg2.connect(db_url) as conn:
+            register_vector(conn)
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                # Fetch paper metadata
+                cur.execute("SELECT uuid, iso, country, lang FROM paper")
+                papers_data = {row['uuid']: {'iso': row['iso'], 'country': row['country'], 'lang': row['lang']} for row in cur.fetchall()}
+
+                # Query articles WITHOUT embeddings (only similarity score)
+                cur.execute(
+                    """
+                    SELECT
+                        url,
+                        title_translated,
+                        paper_uuid,
+                        publish_at,
+                        lang,
+                        1 - (title_embedding <=> %s) AS similarity
+                    FROM article
+                    WHERE
+                        publish_at BETWEEN %s AND %s
+                        AND title_embedding IS NOT NULL
+                        AND 1 - (title_embedding <=> %s) > %s
+                    ORDER BY similarity DESC
+                    LIMIT 200;
+                    """,
+                    (np.array(query_embedding), date_start, date_end, np.array(query_embedding), SIMILARITY_THRESHOLD)
+                )
+                results = cur.fetchall()
+
+                for row in results:
+                    paper_info = papers_data.get(row['paper_uuid'])
+                    if paper_info:
+                        articles_data.append({
+                            "title": row['title_translated'],
+                            "url": row['url'],
+                            "iso": paper_info['iso'],
+                            "country": paper_info['country'],
+                            "publish_at": row['publish_at'].isoformat() if row['publish_at'] else None,
+                            "lang": row['lang'] if row['lang'] else paper_info['lang'],
+                            "similarity": float(row['similarity'])
+                        })
+
+        # Filter out countries with < MIN_ARTICLES_PER_COUNTRY articles
+        articles_by_iso_temp = {}
+        for article in articles_data:
+            iso = article['iso']
+            if iso not in articles_by_iso_temp:
+                articles_by_iso_temp[iso] = []
+            articles_by_iso_temp[iso].append(article)
+
+        filtered_articles_data = []
+        for iso, articles in articles_by_iso_temp.items():
+            if len(articles) >= MIN_ARTICLES_PER_COUNTRY:
+                filtered_articles_data.extend(articles)
+
+        return filtered_articles_data
+
+    except Exception as e:
+        print(f"Error fetching articles: {e}")
+        return []
+
+
 def generate_sankey_data_with_llm_parallel(articles_data: list, num_workers: int = 4) -> LlmSankeyResult | None:
     """
     Two-phase approach:
@@ -194,65 +283,9 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            # 1. Embed the search query
-            print("Step 1: Embedding the search query...")
-
-            query_embedding_response = genai.embed_content(
-                model="models/embedding-001",
-                content=search_query,
-                task_type="retrieval_query"
-            )
-            query_embedding = query_embedding_response['embedding']
-            print("Step 1 successful.")
-
-            # 2. Query the database
-            print("Step 2: Querying the database...")
-            db_url = os.environ.get('DATABASE_URL')
-            if not db_url:
-                raise ValueError("DATABASE_URL not set")
-
-            articles_data = []
-            with psycopg2.connect(db_url) as conn:
-                register_vector(conn)
-                with conn.cursor(cursor_factory=DictCursor) as cur:
-                    # Fetch paper metadata
-                    cur.execute("SELECT uuid, iso, country, lang FROM paper")
-                    papers_data = {row['uuid']: {'iso': row['iso'], 'country': row['country'], 'lang': row['lang']} for row in cur.fetchall()}
-
-                    # Query articles WITHOUT embeddings (only similarity score)
-                    cur.execute(
-                        """
-                        SELECT
-                            url,
-                            title_translated,
-                            paper_uuid,
-                            publish_at,
-                            lang,
-                            1 - (title_embedding <=> %s) AS similarity
-                        FROM article
-                        WHERE
-                            publish_at BETWEEN %s AND %s
-                            AND title_embedding IS NOT NULL
-                            AND 1 - (title_embedding <=> %s) > %s
-                        ORDER BY similarity DESC
-                        LIMIT 200;
-                        """,
-                        (np.array(query_embedding), date_start, date_end, np.array(query_embedding), SIMILARITY_THRESHOLD)
-                    )
-                    results = cur.fetchall()
-
-                    for row in results:
-                        paper_info = papers_data.get(row['paper_uuid'])
-                        if paper_info:
-                            articles_data.append({
-                                "title": row['title_translated'],
-                                "url": row['url'],
-                                "iso": paper_info['iso'],
-                                "country": paper_info['country'],
-                                "publish_at": row['publish_at'].isoformat() if row['publish_at'] else None,
-                                "lang": row['lang'] if row['lang'] else paper_info['lang'],
-                                "similarity": float(row['similarity'])
-                            })
+            # Fetch articles using semantic similarity
+            print("Fetching articles for query...")
+            articles_data = fetch_articles_for_query(search_query, date_start, date_end)
 
             if not articles_data:
                 self.send_response(200)
@@ -266,37 +299,7 @@ class handler(BaseHTTPRequestHandler):
                 }).encode('utf-8'))
                 return
 
-            print(f"Step 2 successful. Found {len(articles_data)} articles.")
-
-            # --- Filter out countries with < MIN_ARTICLES_PER_COUNTRY articles ---
-            print(f"Filtering out countries with fewer than {MIN_ARTICLES_PER_COUNTRY} articles...")
-            articles_by_iso_temp = {}
-            for article in articles_data:
-                iso = article['iso']
-                if iso not in articles_by_iso_temp:
-                    articles_by_iso_temp[iso] = []
-                articles_by_iso_temp[iso].append(article)
-
-            filtered_articles_data = []
-            for iso, articles in articles_by_iso_temp.items():
-                if len(articles) >= MIN_ARTICLES_PER_COUNTRY:
-                    filtered_articles_data.extend(articles)
-
-            num_removed = len(articles_data) - len(filtered_articles_data)
-            articles_data = filtered_articles_data
-            print(f"Removed {num_removed} articles from countries with < {MIN_ARTICLES_PER_COUNTRY} articles. {len(articles_data)} articles remaining.")
-
-            if not articles_data:
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({
-                    "spectrum_name": None,
-                    "spectrum_description": None,
-                    "spectrum_points": [],
-                    "articles": {}
-                }).encode('utf-8'))
-                return
+            print(f"Found {len(articles_data)} articles.")
 
             # 3. Generate spectrum analysis using LLM (parallel)
             print("Step 3: Generating spectrum analysis...")

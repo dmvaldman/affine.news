@@ -146,7 +146,7 @@ class handler(BaseHTTPRequestHandler):
                         FROM articles_with_similarity
                         WHERE similarity > %s
                         ORDER BY similarity DESC
-                        LIMIT 50;
+                        LIMIT 200;
                         """,
                         (np.array(query_embedding), date_start, date_end, SIMILARITY_THRESHOLD)
                     )
