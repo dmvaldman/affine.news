@@ -11,6 +11,7 @@ import numpy as np
 import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import random
+from spectrum_cache import get_cached_spectrum_analysis, is_topic_predefined, cache_spectrum_analysis
 
 SIMILARITY_THRESHOLD = 0.63
 NUM_WORKERS = 4  # Number of parallel workers for article classification
@@ -301,51 +302,74 @@ class handler(BaseHTTPRequestHandler):
 
             print(f"Found {len(articles_data)} articles.")
 
-            # 3. Generate spectrum analysis using LLM (parallel)
-            print("Step 3: Generating spectrum analysis...")
-            analysis_result = generate_sankey_data_with_llm_parallel(articles_data, NUM_WORKERS)
+            # 3. Check cache first for predefined topics
+            print("Step 3: Checking cache...")
+            # Use the end date as the topic date (when the analysis was run)
+            cached_result = get_cached_spectrum_analysis(search_query, date_end)
 
-            if not analysis_result:
-                raise ValueError("Could not get analysis from LLM")
+            if cached_result:
+                print("Using cached results")
+                final_response = cached_result
+            else:
+                print("No cache found, computing fresh results...")
+                # 4. Generate spectrum analysis using LLM (parallel)
+                print("Step 4: Generating spectrum analysis...")
+                analysis_result = generate_sankey_data_with_llm_parallel(articles_data, NUM_WORKERS)
 
-            print(f"Spectrum: {analysis_result.spectrum_name}")
+                if not analysis_result:
+                    raise ValueError("Could not get analysis from LLM")
 
-            # 4. Format response
-            print("Step 4: Formatting response...")
-            mapping_dict = {m.article_id: m.point_id for m in analysis_result.mappings}
+                print(f"Spectrum: {analysis_result.spectrum_name}")
 
-            # Group articles by ISO
-            articles_by_iso = {}
-            for i, article in enumerate(articles_data):
-                article_id_llm = i + 1
-                point_id = mapping_dict.get(article_id_llm)
-                iso = article['iso']
+                # 5. Format response
+                print("Step 5: Formatting response...")
+                mapping_dict = {m.article_id: m.point_id for m in analysis_result.mappings}
 
-                if iso not in articles_by_iso:
-                    articles_by_iso[iso] = {
-                        "country": article['country'],
-                        "articles": []
-                    }
+                # Group articles by ISO
+                articles_by_iso = {}
+                for i, article in enumerate(articles_data):
+                    article_id_llm = i + 1
+                    point_id = mapping_dict.get(article_id_llm)
+                    iso = article['iso']
 
-                articles_by_iso[iso]["articles"].append({
-                    "title": article['title'],
-                    "url": article['url'],
-                    "publish_at": article['publish_at'],
-                    "lang": article['lang'],
-                    "point_id": point_id
-                })
+                    if iso not in articles_by_iso:
+                        articles_by_iso[iso] = {
+                            "country": article['country'],
+                            "articles": []
+                        }
 
-            final_response = {
-                "spectrum_name": analysis_result.spectrum_name,
-                "spectrum_description": analysis_result.spectrum_description,
-                "spectrum_points": [
-                    {"point_id": p.point_id, "label": p.label, "description": p.description}
-                    for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
-                ],
-                "articles": articles_by_iso
-            }
+                    articles_by_iso[iso]["articles"].append({
+                        "title": article['title'],
+                        "url": article['url'],
+                        "publish_at": article['publish_at'],
+                        "lang": article['lang'],
+                        "point_id": point_id
+                    })
 
-            # 5. Send response with caching headers
+                final_response = {
+                    "spectrum_name": analysis_result.spectrum_name,
+                    "spectrum_description": analysis_result.spectrum_description,
+                    "spectrum_points": [
+                        {"point_id": p.point_id, "label": p.label, "description": p.description}
+                        for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
+                    ],
+                    "articles": articles_by_iso
+                }
+
+                # 6. Cache the results if this is a predefined topic
+                if is_topic_predefined(search_query):
+                    print("Caching results for predefined topic...")
+                    cache_spectrum_analysis(
+                        search_query,
+                        analysis_result.spectrum_name,
+                        analysis_result.spectrum_description,
+                        [{"point_id": p.point_id, "label": p.label, "description": p.description}
+                         for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)],
+                        articles_by_iso,
+                        date_end  # Use end date as topic date
+                    )
+
+            # 7. Send response with caching headers
             body = json.dumps(final_response, sort_keys=True).encode('utf-8')
             etag = '"' + hashlib.sha1(body).hexdigest() + '"'
 

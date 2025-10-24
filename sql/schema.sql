@@ -46,6 +46,18 @@ CREATE TABLE IF NOT EXISTS daily_topics (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS topic_spectrum_cache (
+    id SERIAL PRIMARY KEY,
+    topic TEXT NOT NULL,
+    spectrum_name TEXT,
+    spectrum_description TEXT,
+    spectrum_points JSONB,
+    articles_by_country JSONB,
+    topic_date DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(topic, topic_date)
+);
+
 CREATE INDEX IF NOT EXISTS idx_article_publish_at ON article (publish_at);
 CREATE INDEX IF NOT EXISTS idx_article_paper_uuid ON article (paper_uuid);
 CREATE INDEX IF NOT EXISTS idx_crawl_paper_uuid ON crawl (paper_uuid);
@@ -56,5 +68,9 @@ CREATE INDEX IF NOT EXISTS idx_article_publish_at_translated ON article (publish
 WHERE title_translated IS NOT NULL AND title_translated != '';
 CREATE INDEX IF NOT EXISTS idx_article_embedding ON article (title_embedding)
 WHERE title_embedding IS NOT NULL;
+
+-- Indexes for topic spectrum cache
+CREATE INDEX IF NOT EXISTS idx_topic_spectrum_cache_topic ON topic_spectrum_cache (topic);
+CREATE INDEX IF NOT EXISTS idx_topic_spectrum_cache_date ON topic_spectrum_cache (topic_date);
 
 

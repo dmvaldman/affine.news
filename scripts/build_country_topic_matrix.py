@@ -213,8 +213,14 @@ if __name__ == '__main__':
     parser.add_argument('--end-date', type=str, help='End date (YYYY-MM-DD), default: today')
     args = parser.parse_args()
 
-    start_date = datetime.strptime(args.start_date, "%Y-%m-%d") if args.start_date else None
-    end_date = datetime.strptime(args.end_date, "%Y-%m-%d") if args.end_date else None
+    # start_date = datetime.strptime(args.start_date, "%Y-%m-%d") if args.start_date else None
+    # end_date = datetime.strptime(args.end_date, "%Y-%m-%d") if args.end_date else None
+
+    # Temporary override: 3 days ago to 6 days ago
+    from datetime import timedelta
+    today = datetime.now()
+    start_date = today - timedelta(days=15)
+    end_date = today - timedelta(days=8)
 
     build_matrix_for_date(start_date, end_date)
     conn.close()

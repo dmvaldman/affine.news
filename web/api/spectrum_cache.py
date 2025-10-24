@@ -1,0 +1,161 @@
+"""
+Spectrum analysis caching module for precomputed topic results.
+"""
+import json
+import psycopg2
+from psycopg2.extras import DictCursor
+from datetime import datetime, timedelta
+from typing import Optional, Dict, Any
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Database connection
+def get_db_connection():
+    return psycopg2.connect(
+        host=os.getenv('DB_HOST'),
+        database=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        port=os.getenv('DB_PORT', 5432)
+    )
+
+def cache_spectrum_analysis(topic: str, spectrum_name: str, spectrum_description: str,
+                          spectrum_points: list, articles_by_country: dict,
+                          topic_date: str) -> bool:
+    """
+    Cache spectrum analysis results in the database.
+
+    Args:
+        topic: The topic string
+        spectrum_name: Name of the spectrum
+        spectrum_description: Description of the spectrum
+        spectrum_points: List of spectrum points
+        articles_by_country: Articles grouped by country
+        topic_date: Date the topic was created (YYYY-MM-DD)
+
+    Returns:
+        bool: True if cached successfully, False otherwise
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO topic_spectrum_cache (
+                    topic, spectrum_name, spectrum_description,
+                    spectrum_points, articles_by_country, topic_date
+                ) VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (topic, topic_date)
+                DO UPDATE SET
+                    spectrum_name = EXCLUDED.spectrum_name,
+                    spectrum_description = EXCLUDED.spectrum_description,
+                    spectrum_points = EXCLUDED.spectrum_points,
+                    articles_by_country = EXCLUDED.articles_by_country,
+                    created_at = NOW()
+            """, (
+                topic,
+                spectrum_name,
+                spectrum_description,
+                json.dumps(spectrum_points),
+                json.dumps(articles_by_country),
+                topic_date
+            ))
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error caching spectrum analysis: {e}")
+        return False
+    finally:
+        if 'conn' in locals():
+            conn.close()
+
+def get_cached_spectrum_analysis(topic: str, topic_date: str) -> Optional[Dict[str, Any]]:
+    """
+    Retrieve cached spectrum analysis results from the database.
+
+    Args:
+        topic: The topic string
+        topic_date: Date the topic was created (YYYY-MM-DD)
+
+    Returns:
+        Dict with cached results or None if not found
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor(cursor_factory=DictCursor) as cur:
+            cur.execute("""
+                SELECT spectrum_name, spectrum_description, spectrum_points, articles_by_country
+                FROM topic_spectrum_cache
+                WHERE topic = %s AND topic_date = %s
+                ORDER BY created_at DESC
+                LIMIT 1
+            """, (topic, topic_date))
+
+            result = cur.fetchone()
+            if result:
+                return {
+                    'spectrum_name': result['spectrum_name'],
+                    'spectrum_description': result['spectrum_description'],
+                    'spectrum_points': json.loads(result['spectrum_points']),
+                    'articles': json.loads(result['articles_by_country'])
+                }
+            return None
+    except Exception as e:
+        print(f"Error retrieving cached spectrum analysis: {e}")
+        return None
+    finally:
+        if 'conn' in locals():
+            conn.close()
+
+def is_topic_predefined(topic: str) -> bool:
+    """
+    Check if a topic is predefined (exists in daily_topics table).
+
+    Args:
+        topic: The topic string
+
+    Returns:
+        bool: True if topic is predefined, False otherwise
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT COUNT(*) FROM daily_topics WHERE topic = %s
+            """, (topic,))
+            count = cur.fetchone()[0]
+            return count > 0
+    except Exception as e:
+        print(f"Error checking if topic is predefined: {e}")
+        return False
+    finally:
+        if 'conn' in locals():
+            conn.close()
+
+def get_recent_topics(days: int = 7) -> list:
+    """
+    Get recent topics from daily_topics table.
+
+    Args:
+        days: Number of days to look back
+
+    Returns:
+        List of topic strings
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT DISTINCT topic
+                FROM daily_topics
+                WHERE created_at >= NOW() - INTERVAL '%s days'
+                ORDER BY topic
+            """, (days,))
+            return [row[0] for row in cur.fetchall()]
+    except Exception as e:
+        print(f"Error getting recent topics: {e}")
+        return []
+    finally:
+        if 'conn' in locals():
+            conn.close()
