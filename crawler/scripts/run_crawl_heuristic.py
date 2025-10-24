@@ -319,12 +319,16 @@ def main():
         papers_data = json.load(f)
         for paper_data in papers_data:
             # get uuid
-            paperDB = Paper.load_from_url(paper_data['url'])
-            if not paperDB:
-                print(f"Paper not found: {paper_data['url']}")
+            try:
+                paperDB = Paper.load_from_url(paper_data['url'])
+                if not paperDB:
+                    print(f"Paper not found: {paper_data['url']}")
+                    continue
+                paper_data['uuid'] = paperDB.uuid
+                papers.append(Paper(**paper_data))
+            except ValueError as e:
+                print(f"Skipping paper (not in database): {paper_data['url']}")
                 continue
-            paper_data['uuid'] = paperDB.uuid
-            papers.append(Paper(**paper_data))
 
     crawler = HeuristicCrawler(max_articles=args.max_articles)
 

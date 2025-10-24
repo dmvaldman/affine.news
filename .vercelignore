@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+env/
+ENV/
+bertopic_env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+data/
+*.csv
+*.json.gz
+*.pkl
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Documentation
+README.md
+docs/
+
+# Scripts (not needed for deployment)
+scripts/
+crawler/scripts/
+
+# Debug
+debug_server.py
+

@@ -73,7 +73,10 @@ class DBPaper:
                 JOIN category_set cs on cs.paper_uuid = p.uuid
                 WHERE p.url=%s
                 ''', (url,))
-            return get_papers_from_rows(c.fetchall())[0]
+            papers = get_papers_from_rows(c.fetchall())
+            if not papers:
+                raise ValueError(f"Paper not found in database: {url}")
+            return papers[0]
 
     @staticmethod
     def get_paper_by_uuid(uuid):
