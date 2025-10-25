@@ -403,17 +403,17 @@ function renderSpectrumAnalysis(data) {
 
         toggleEl.addEventListener('click', createToggle());
 
+        // Create mini spectrum with marker and error bars
+        const miniSpectrum = createMiniSpectrum(dist.avgPointId, dist.stdDev, spectrum_points, pointIdToColor);
+
         const anchorEl = document.createElement('a');
         anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
         anchorEl.href = '#' + iso;
         anchorEl.id = iso;
         anchorEl.classList.add('iso');
 
-        // Create mini spectrum with marker and error bars
-        const miniSpectrum = createMiniSpectrum(dist.avgPointId, dist.stdDev, spectrum_points, pointIdToColor);
-
-        headerEl.appendChild(anchorEl);
         headerEl.appendChild(miniSpectrum);
+        headerEl.appendChild(anchorEl);
         countryEl.appendChild(headerEl);
         headerEl.appendChild(toggleEl);
 
