@@ -29,11 +29,12 @@ def get_cached_spectrum_analysis(topic, topic_date):
                 """, (topic, topic_date))
                 result = cur.fetchone()
                 if result:
+                    # spectrum_points and articles_by_country are already parsed as dicts/lists by psycopg2 JSONB
                     return {
                         'spectrum_name': result['spectrum_name'],
                         'spectrum_description': result['spectrum_description'],
-                        'spectrum_points': json.loads(result['spectrum_points']),
-                        'articles': json.loads(result['articles_by_country'])
+                        'spectrum_points': result['spectrum_points'] if isinstance(result['spectrum_points'], list) else json.loads(result['spectrum_points']),
+                        'articles': result['articles_by_country'] if isinstance(result['articles_by_country'], dict) else json.loads(result['articles_by_country'])
                     }
         return None
     except Exception as e:
