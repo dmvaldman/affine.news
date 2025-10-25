@@ -169,6 +169,34 @@ body {
     position: relative;
 }
 
+/* Expand/collapse all controls */
+.expand-collapse-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-top: 5px;
+}
+
+.expand-collapse-btn {
+    padding: 4px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 10px;
+    width: 80px;
+    text-align: center;
+}
+
+.expand-collapse-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.expand-collapse-btn:active {
+    background-color: #d0d0d0;
+}
+
 /* Utility class for hidden scrollbars */
 .hide-scrollbar {
     -ms-overflow-style: none;  /* IE and Edge */
@@ -282,6 +310,8 @@ body {
 .section-separator {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 2px;
     text-align: center;
     margin: 30px 0;
     visibility: hidden; /* Hide by default */

@@ -362,8 +362,46 @@ function renderSpectrumAnalysis(data) {
     // Clear and render results
     searchResultsEl.innerHTML = '';
     if (separator) {
-        separator.textContent = 'Articles';
+        separator.innerHTML = ''; // Clear any existing content
         separator.classList.add('visible');
+
+        // Add "Articles" text
+        const articlesText = document.createElement('span');
+        articlesText.textContent = 'Articles';
+        separator.appendChild(articlesText);
+
+        // Add expand/collapse all toggle
+        const toggleAllBtn = document.createElement('button');
+        toggleAllBtn.textContent = 'Collapse';
+        toggleAllBtn.className = 'expand-collapse-btn';
+
+        let allExpanded = true; // Start with all expanded
+
+        toggleAllBtn.onclick = () => {
+            if (allExpanded) {
+                // Collapse all
+                document.querySelectorAll('#searchResults li:not(.collapse)').forEach(li => {
+                    li.classList.add('collapse');
+                });
+                document.querySelectorAll('#searchResults .toggle').forEach(toggle => {
+                    toggle.textContent = '[+]';
+                });
+                toggleAllBtn.textContent = 'Expand';
+                allExpanded = false;
+            } else {
+                // Expand all
+                document.querySelectorAll('#searchResults li.collapse').forEach(li => {
+                    li.classList.remove('collapse');
+                });
+                document.querySelectorAll('#searchResults .toggle').forEach(toggle => {
+                    toggle.textContent = '[–]';
+                });
+                toggleAllBtn.textContent = 'Collapse';
+                allExpanded = true;
+            }
+        };
+
+        separator.appendChild(toggleAllBtn);
     }
 
     // Filter countries with at least 3 articles, then sort by average point_id
