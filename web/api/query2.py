@@ -11,7 +11,72 @@ import numpy as np
 import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import random
-from spectrum_cache import get_cached_spectrum_analysis, is_topic_predefined, cache_spectrum_analysis
+
+# Cache functions using DATABASE_URL directly
+def get_cached_spectrum_analysis(topic, topic_date):
+    try:
+        db_url = os.environ.get('DATABASE_URL')
+        if not db_url:
+            return None
+        with psycopg2.connect(db_url) as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute("""
+                    SELECT spectrum_name, spectrum_description, spectrum_points, articles_by_country
+                    FROM topic_spectrum_cache
+                    WHERE topic = %s AND topic_date = %s
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                """, (topic, topic_date))
+                result = cur.fetchone()
+                if result:
+                    return {
+                        'spectrum_name': result['spectrum_name'],
+                        'spectrum_description': result['spectrum_description'],
+                        'spectrum_points': json.loads(result['spectrum_points']),
+                        'articles': json.loads(result['articles_by_country'])
+                    }
+        return None
+    except Exception as e:
+        print(f"Cache lookup error: {e}")
+        return None
+
+def is_topic_predefined(topic):
+    try:
+        db_url = os.environ.get('DATABASE_URL')
+        if not db_url:
+            return False
+        with psycopg2.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) FROM daily_topics WHERE topic = %s", (topic,))
+                return cur.fetchone()[0] > 0
+    except Exception as e:
+        print(f"Topic check error: {e}")
+        return False
+
+def cache_spectrum_analysis(topic, spectrum_name, spectrum_description, spectrum_points, articles_by_country, topic_date):
+    try:
+        db_url = os.environ.get('DATABASE_URL')
+        if not db_url:
+            return
+        with psycopg2.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO topic_spectrum_cache (
+                        topic, spectrum_name, spectrum_description,
+                        spectrum_points, articles_by_country, topic_date
+                    ) VALUES (%s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (topic, topic_date)
+                    DO UPDATE SET
+                        spectrum_name = EXCLUDED.spectrum_name,
+                        spectrum_description = EXCLUDED.spectrum_description,
+                        spectrum_points = EXCLUDED.spectrum_points,
+                        articles_by_country = EXCLUDED.articles_by_country,
+                        created_at = NOW()
+                """, (topic, spectrum_name, spectrum_description,
+                      json.dumps(spectrum_points), json.dumps(articles_by_country), topic_date))
+                conn.commit()
+    except Exception as e:
+        print(f"Cache write error: {e}")
 
 SIMILARITY_THRESHOLD = 0.63
 NUM_WORKERS = 4  # Number of parallel workers for article classification
@@ -303,15 +368,15 @@ class handler(BaseHTTPRequestHandler):
             print(f"Found {len(articles_data)} articles.")
 
             # 3. Check cache first for predefined topics
-            print("Step 3: Checking cache...")
-            # Use the end date as the topic date (when the analysis was run)
+            print(f"Step 3: Checking cache for query='{search_query}', date_end='{date_end}'...")
             cached_result = get_cached_spectrum_analysis(search_query, date_end)
+            print(f"Cache result: {cached_result is not None} (type: {type(cached_result)})")
 
             if cached_result:
-                print("Using cached results")
+                print("✓ Using cached results")
                 final_response = cached_result
             else:
-                print("No cache found, computing fresh results...")
+                print("✗ No cache found, computing fresh results...")
                 # 4. Generate spectrum analysis using LLM (parallel)
                 print("Step 4: Generating spectrum analysis...")
                 analysis_result = generate_sankey_data_with_llm_parallel(articles_data, NUM_WORKERS)
