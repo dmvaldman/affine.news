@@ -598,8 +598,6 @@ function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_
         Object.keys(articlesByCountry).forEach(iso => {
             const dist = countryDistributions[iso];
 
-            if (dist.total === 0) return;
-
             // Get the country path
             const countryPath = svg.querySelector(`.datamaps-subunit.${iso}`);
             if (!countryPath) {
@@ -607,7 +605,7 @@ function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_
                 return;
             }
 
-            // Use interpolated color based on float average
+            // Use interpolated color based on float average (handles null avgPointId with #ccc)
             const avgColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
             countryPath.style.fill = avgColor;
         });

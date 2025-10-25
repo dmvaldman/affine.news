@@ -377,25 +377,23 @@ class handler(BaseHTTPRequestHandler):
                 print("✓ Using cached results")
                 final_response = cached_result
             else:
-                print("✗ No cache found, computing fresh results...")
-                # 4. Generate spectrum analysis using LLM (parallel)
-                print("Step 4: Generating spectrum analysis...")
-                analysis_result = generate_sankey_data_with_llm_parallel(articles_data, NUM_WORKERS)
+                print("✗ No cache found, computing spectrum definition only (skipping article classification)...")
+                # 4. Define spectrum using sample (cheap), but skip article classification (expensive)
+                print("Step 4: Defining spectrum...")
+                spectrum_result = define_spectrum(articles_data)
 
-                if not analysis_result:
-                    raise ValueError("Could not get analysis from LLM")
+                if not spectrum_result:
+                    raise ValueError("Could not define spectrum from LLM")
 
-                print(f"Spectrum: {analysis_result.spectrum_name}")
+                spectrum_name, spectrum_description, spectrum_points = spectrum_result
+                print(f"Spectrum: {spectrum_name}")
 
-                # 5. Format response
-                print("Step 5: Formatting response...")
-                mapping_dict = {m.article_id: m.point_id for m in analysis_result.mappings}
+                # 5. Format response without point_id assignments (set to None)
+                print("Step 5: Formatting response (articles without classification)...")
 
                 # Group articles by ISO
                 articles_by_iso = {}
-                for i, article in enumerate(articles_data):
-                    article_id_llm = i + 1
-                    point_id = mapping_dict.get(article_id_llm)
+                for article in articles_data:
                     iso = article['iso']
 
                     if iso not in articles_by_iso:
@@ -409,31 +407,20 @@ class handler(BaseHTTPRequestHandler):
                         "url": article['url'],
                         "publish_at": article['publish_at'],
                         "lang": article['lang'],
-                        "point_id": point_id
+                        "point_id": None  # No classification for uncached queries
                     })
 
                 final_response = {
-                    "spectrum_name": analysis_result.spectrum_name,
-                    "spectrum_description": analysis_result.spectrum_description,
+                    "spectrum_name": spectrum_name,
+                    "spectrum_description": spectrum_description,
                     "spectrum_points": [
                         {"point_id": p.point_id, "label": p.label, "description": p.description}
-                        for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)
+                        for p in sorted(spectrum_points, key=lambda x: x.point_id)
                     ],
                     "articles": articles_by_iso
                 }
 
-                # 6. Cache the results if this is a predefined topic
-                if is_topic_predefined(search_query):
-                    print("Caching results for predefined topic...")
-                    cache_spectrum_analysis(
-                        search_query,
-                        analysis_result.spectrum_name,
-                        analysis_result.spectrum_description,
-                        [{"point_id": p.point_id, "label": p.label, "description": p.description}
-                         for p in sorted(analysis_result.spectrum_points, key=lambda x: x.point_id)],
-                        articles_by_iso,
-                        date_end  # Use end date as topic date
-                    )
+                # Note: We don't cache uncached queries since they lack full classification
 
             # 7. Send response with caching headers
             body = json.dumps(final_response, sort_keys=True).encode('utf-8')
