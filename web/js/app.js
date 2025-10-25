@@ -306,7 +306,10 @@ function renderSpectrumAnalysis(data) {
         return;
     }
 
-    // Create color gradient for spectrum points (red to blue)
+    // Check if this is cached data (has summaries) or uncached (no summaries)
+    const isCached = Object.values(articles).some(country => country.summary !== null && country.summary !== undefined);
+
+    // Create color gradient for spectrum points (blue to red)
     const spectrumColors = generateSpectrumColors(spectrum_points.length);
     const pointIdToColor = {};
     spectrum_points.forEach((point, index) => {
@@ -441,16 +444,18 @@ function renderSpectrumAnalysis(data) {
 
         toggleEl.addEventListener('click', createToggle());
 
-        // Create mini spectrum with marker and error bars
-        const miniSpectrum = createMiniSpectrum(dist.avgPointId, dist.stdDev, spectrum_points, pointIdToColor);
-
         const anchorEl = document.createElement('a');
         anchorEl.textContent = `${countryData.country} (${countryData.articles.length} Results)`;
         anchorEl.href = '#' + iso;
         anchorEl.id = iso;
         anchorEl.classList.add('iso');
 
-        headerEl.appendChild(miniSpectrum);
+        // Only show mini spectrum for cached data
+        if (isCached) {
+            const miniSpectrum = createMiniSpectrum(dist.avgPointId, dist.stdDev, spectrum_points, pointIdToColor);
+            headerEl.appendChild(miniSpectrum);
+        }
+
         headerEl.appendChild(anchorEl);
         countryEl.appendChild(headerEl);
         headerEl.appendChild(toggleEl);
@@ -487,10 +492,13 @@ function renderSpectrumAnalysis(data) {
         sortedArticles.forEach(article => {
             const resultEl = document.createElement('li');
 
-            // Article color indicator
-            const colorBox = document.createElement('div');
-            colorBox.className = 'article-color-box';
-            colorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
+            // Article color indicator (only for cached data)
+            if (isCached) {
+                const colorBox = document.createElement('div');
+                colorBox.className = 'article-color-box';
+                colorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
+                resultEl.appendChild(colorBox);
+            }
 
             // Date
             const dateEl = document.createElement('div');
@@ -512,7 +520,6 @@ function renderSpectrumAnalysis(data) {
                 urlEl.href = 'https://translate.google.com/translate?hl=&sl=auto&tl=en&u=' + article.url;
             }
 
-            resultEl.appendChild(colorBox);
             resultEl.appendChild(dateEl);
             resultEl.appendChild(urlEl);
             countryEl.appendChild(resultEl);
@@ -523,13 +530,13 @@ function renderSpectrumAnalysis(data) {
 }
 
 function generateSpectrumColors(count) {
-    // Generate colors from red to blue
+    // Generate colors from blue to red
     const colors = [];
     for (let i = 0; i < count; i++) {
         const ratio = i / (count - 1 || 1);
-        const r = Math.round(220 - ratio * 120); // 220 to 100
-        const g = Math.round(50 + ratio * 100);  // 50 to 150
-        const b = Math.round(50 + ratio * 200);  // 50 to 250
+        const r = Math.round(100 + ratio * 120); // 100 to 220
+        const g = Math.round(150 - ratio * 100);  // 150 to 50
+        const b = Math.round(250 - ratio * 200);  // 250 to 50
         colors.push(`rgb(${r}, ${g}, ${b})`);
     }
     return colors;
@@ -663,11 +670,6 @@ function renderSpectrumLegend(spectrum_points, pointIdToColor) {
 
     legendEl.classList.add('spectrum-legend');
     legendEl.innerHTML = '';
-
-    const title = document.createElement('div');
-    title.className = 'spectrum-title';
-    title.textContent = 'Spectrum';
-    legendEl.appendChild(title);
 
     const sortedPoints = [...spectrum_points].sort((a, b) => a.point_id - b.point_id);
     const minPointId = sortedPoints[0].point_id;

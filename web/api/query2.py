@@ -482,19 +482,9 @@ class handler(BaseHTTPRequestHandler):
                 print("✓ Using cached results")
                 final_response = cached_result
             else:
-                print("✗ No cache found, computing spectrum definition only (skipping article classification)...")
-                # 4. Define spectrum using sample (cheap), but skip article classification (expensive)
-                print("Step 4: Defining spectrum...")
-                spectrum_result = define_spectrum(articles_data)
-
-                if not spectrum_result:
-                    raise ValueError("Could not define spectrum from LLM")
-
-                spectrum_name, spectrum_description, spectrum_points = spectrum_result
-                print(f"Spectrum: {spectrum_name}")
-
-                # 5. Format response without point_id assignments (set to None)
-                print("Step 5: Formatting response (articles without classification)...")
+                print("✗ No cache found, using article count as spectrum...")
+                # 4. Use article count as the spectrum dimension (no LLM calls)
+                print("Step 4: Creating article count spectrum...")
 
                 # Group articles by ISO
                 articles_by_iso = {}
@@ -515,6 +505,43 @@ class handler(BaseHTTPRequestHandler):
                         "lang": article['lang'],
                         "point_id": None  # No classification for uncached queries
                     })
+
+                # Calculate article counts per country
+                article_counts = [len(data['articles']) for data in articles_by_iso.values()]
+                max_count = max(article_counts) if article_counts else 1
+                min_count = min(article_counts) if article_counts else 0
+
+                # Normalize counts to 1-4 scale
+                for iso, country_data in articles_by_iso.items():
+                    count = len(country_data['articles'])
+                    if max_count > min_count:
+                        # Map count to 1-4 scale
+                        normalized = 1 + (count - min_count) / (max_count - min_count) * 3
+                        # Round to nearest integer (1, 2, 3, or 4)
+                        point_id = int(round(normalized))
+                    else:
+                        point_id = 1  # All countries have same count
+
+                    # Assign point_id to each article
+                    for article in country_data['articles']:
+                        article['point_id'] = point_id
+
+                # Create spectrum points representing exact article counts
+                spectrum_name = "Article Volume"
+                spectrum_description = "Number of articles about this topic"
+
+                # Use percentiles to define thresholds
+                sorted_counts = sorted(article_counts)
+                q1_threshold = sorted_counts[int(len(sorted_counts) * 0.25)] if sorted_counts else min_count
+                q2_threshold = sorted_counts[int(len(sorted_counts) * 0.5)] if sorted_counts else min_count
+                q3_threshold = sorted_counts[int(len(sorted_counts) * 0.75)] if sorted_counts else min_count
+
+                spectrum_points = [
+                    SpectrumPoint(point_id=1, label=f"{min_count} article{'s' if min_count != 1 else ''}", description="Lowest coverage"),
+                    SpectrumPoint(point_id=2, label=f"{q2_threshold} articles", description="Median coverage"),
+                    SpectrumPoint(point_id=3, label=f"{q3_threshold} articles", description="High coverage"),
+                    SpectrumPoint(point_id=4, label=f"{max_count} articles", description="Highest coverage")
+                ]
 
                 final_response = {
                     "spectrum_name": spectrum_name,
