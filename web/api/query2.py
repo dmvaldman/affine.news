@@ -99,12 +99,109 @@ class ArticleSpectrumMapping(BaseModel):
     article_id: int
     point_id: int
 
+class CountrySummaryItem(BaseModel):
+    country: str
+    summary: str
+
 class LlmSankeyResult(BaseModel):
     spectrum_name: str
     spectrum_description: str
     spectrum_points: list[SpectrumPoint]
     mappings: list[ArticleSpectrumMapping]
+    country_summaries: list[CountrySummaryItem] = []
 
+
+def generate_country_summaries_batch(articles_data: list, mappings: list[ArticleSpectrumMapping],
+                                     spectrum_name: str, spectrum_points: list[SpectrumPoint]) -> list[CountrySummaryItem]:
+    """
+    Generate summaries for all countries in a single LLM call.
+    """
+    # Group articles by country with their classifications
+    countries_data = {}
+    mapping_dict = {m.article_id: m.point_id for m in mappings}
+
+    for i, article in enumerate(articles_data):
+        article_id = i + 1
+        point_id = mapping_dict.get(article_id)
+        country = article['country']
+
+        if country not in countries_data:
+            countries_data[country] = {
+                'articles': [],
+                'point_ids': []
+            }
+
+        countries_data[country]['articles'].append(article)
+        if point_id is not None:
+            countries_data[country]['point_ids'].append(point_id)
+
+    # Filter countries with at least 3 articles
+    countries_to_summarize = {
+        country: data for country, data in countries_data.items()
+        if len(data['articles']) >= 3 and len(data['point_ids']) > 0
+    }
+
+    if not countries_to_summarize:
+        return []
+
+    # Calculate averages
+    country_avgs = {}
+    for country, data in countries_to_summarize.items():
+        country_avgs[country] = sum(data['point_ids']) / len(data['point_ids'])
+
+    overall_avg = sum(country_avgs.values()) / len(country_avgs)
+    sorted_points = sorted(spectrum_points, key=lambda x: x.point_id)
+
+    # Build prompt for all countries
+    prompt_parts = [
+        f"You are analyzing international news coverage about: {spectrum_name}",
+        f"",
+        f"The political spectrum has {len(spectrum_points)} points:",
+    ]
+
+    for point in sorted_points:
+        prompt_parts.append(f"  {point.point_id}. {point.label}: {point.description}")
+
+    prompt_parts.extend([
+        "",
+        f"Overall average position across all countries: {overall_avg:.1f}",
+        "",
+        "For each country below, write a 1-2 sentence summary (max 40 words) that:",
+        "1. Describes the main narrative or framing in that country's coverage",
+        "2. Notes how it compares to other countries if notably different",
+        "",
+        "Countries and their coverage:",
+        ""
+    ])
+
+    for country, data in countries_to_summarize.items():
+        avg = country_avgs[country]
+        relative = "similar" if abs(avg - overall_avg) < 0.3 else ("lower" if avg < overall_avg else "higher")
+
+        prompt_parts.append(f"--- {country} ---")
+        prompt_parts.append(f"Position: {avg:.1f} ({relative} than average)")
+        prompt_parts.append(f"Articles ({len(data['articles'])}):")
+        for article in data['articles'][:8]:  # Limit to 8 articles per country
+            prompt_parts.append(f"  - {article['title']}")
+        prompt_parts.append("")
+
+    prompt = "\n".join(prompt_parts)
+
+    try:
+        client = genai.GenerativeModel('gemini-2.5-flash')
+        response = client.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=list[CountrySummaryItem]
+            )
+        )
+        summaries = [CountrySummaryItem(**s) for s in json.loads(response.text)]
+        print(f"Generated {len(summaries)} country summaries")
+        return summaries
+    except Exception as e:
+        print(f"Error generating country summaries: {e}")
+        return []
 
 def define_spectrum(articles_data: list) -> tuple[str, str, list[SpectrumPoint]] | None:
     """
@@ -295,9 +392,10 @@ def fetch_articles_for_query(search_query: str, date_start: str, date_end: str) 
 
 def generate_sankey_data_with_llm_parallel(articles_data: list, num_workers: int = 4) -> LlmSankeyResult | None:
     """
-    Two-phase approach:
+    Three-phase approach:
     1. Define spectrum using sample of articles
     2. Classify all articles in parallel batches
+    3. Generate country summaries in a single batch
     """
     # Phase 1: Define spectrum
     spectrum_result = define_spectrum(articles_data)
@@ -326,11 +424,18 @@ def generate_sankey_data_with_llm_parallel(articles_data: list, num_workers: int
 
     print(f"Classified {len(all_mappings)} articles")
 
+    # Phase 3: Generate country summaries
+    print("\nPhase 3: Generating country summaries...")
+    country_summaries = generate_country_summaries_batch(
+        articles_data, all_mappings, spectrum_name, spectrum_points
+    )
+
     return LlmSankeyResult(
         spectrum_name=spectrum_name,
         spectrum_description=spectrum_description,
         spectrum_points=spectrum_points,
-        mappings=all_mappings
+        mappings=all_mappings,
+        country_summaries=country_summaries
     )
 
 
@@ -399,7 +504,8 @@ class handler(BaseHTTPRequestHandler):
                     if iso not in articles_by_iso:
                         articles_by_iso[iso] = {
                             "country": article['country'],
-                            "articles": []
+                            "articles": [],
+                            "summary": None  # No summary for uncached queries
                         }
 
                     articles_by_iso[iso]["articles"].append({

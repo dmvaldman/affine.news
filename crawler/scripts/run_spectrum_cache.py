@@ -87,7 +87,8 @@ def precompute_spectrum_analysis(topics_with_dates):
                 if iso not in articles_by_iso:
                     articles_by_iso[iso] = {
                         "country": article['country'],
-                        "articles": []
+                        "articles": [],
+                        "summary": None
                     }
 
                 articles_by_iso[iso]["articles"].append({
@@ -97,6 +98,13 @@ def precompute_spectrum_analysis(topics_with_dates):
                     "lang": article['lang'],
                     "point_id": point_id
                 })
+
+            # Add summaries from the analysis result
+            print("  Adding country summaries...")
+            summary_dict = {s.country: s.summary for s in analysis_result.country_summaries}
+            for iso, country_data in articles_by_iso.items():
+                country_name = country_data['country']
+                country_data['summary'] = summary_dict.get(country_name)
 
             # Cache the results
             cache_spectrum_analysis(

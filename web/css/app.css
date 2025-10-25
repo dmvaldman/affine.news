@@ -188,6 +188,15 @@ body {
     white-space: nowrap;
 }
 
+#searchResults .country-summary {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    padding: 8px 0 8px 80px;
+    line-height: 1.4;
+    margin-bottom: 5px;
+}
+
 #searchResults .country-mini-spectrum {
     position: relative;
     width: 68px;

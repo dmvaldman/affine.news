@@ -417,6 +417,14 @@ function renderSpectrumAnalysis(data) {
         countryEl.appendChild(headerEl);
         headerEl.appendChild(toggleEl);
 
+        // Add summary if it exists
+        if (countryData.summary) {
+            const summaryEl = document.createElement('div');
+            summaryEl.className = 'country-summary';
+            summaryEl.textContent = countryData.summary;
+            countryEl.appendChild(summaryEl);
+        }
+
         // Sort articles by point_id, then by similarity (if exists), then by date (most recent first)
         const sortedArticles = [...countryData.articles].sort((a, b) => {
             // Primary sort: by point_id (ascending)
