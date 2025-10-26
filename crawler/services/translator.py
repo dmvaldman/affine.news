@@ -1,38 +1,41 @@
 import os
-from google.cloud import translate
+import google.generativeai as genai
+
+# Configure Gemini API key
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable not set")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 def get_translator():
     """
-    Initializes and returns a translator client based on environment variables.
-    Currently supports Google Cloud Translate.
+    Initializes and returns a translator client (Gemini model).
     """
-    provider = os.environ.get('TRANSLATE_PROVIDER', 'google')
+    provider = os.environ.get('TRANSLATE_PROVIDER', 'gemini')
 
-    if provider == 'google':
-        return translate.TranslationServiceClient()
+    if provider == 'gemini':
+        return genai.GenerativeModel('gemini-2.5-flash-lite')
     else:
         raise NotImplementedError(f"Translator provider '{provider}' is not supported.")
 
 def translate_text(client, text, target_lang='en', source_lang=None):
     """
-    Translates a single text string.
+    Translates a single text string using Gemini.
     """
-    # This is your Google Project ID or number
-    project_id = os.environ.get('GOOGLE_PROJECT_ID')
-    if not project_id:
-        raise ValueError("GOOGLE_PROJECT_ID environment variable not set.")
+    if not text or not text.strip():
+        return None
 
-    location = "global"
-    parent = f"projects/{project_id}/locations/{location}"
+    # Build translation prompt
+    if source_lang and source_lang != target_lang:
+        prompt = f"Translate the following text from {source_lang} to {target_lang}. Return only the translation, nothing else.\n\n{text}"
+    else:
+        prompt = f"Translate the following text to {target_lang}. Return only the translation, nothing else.\n\n{text}"
 
-    response = client.translate_text(
-        parent=parent,
-        contents=[text],
-        mime_type="text/plain",
-        source_language_code=source_lang,
-        target_language_code=target_lang,
-    )
-
-    if response.translations:
-        return response.translations[0].translated_text
-    return None
+    try:
+        response = client.generate_content(prompt)
+        translated_text = response.text.strip()
+        return translated_text if translated_text else None
+    except Exception as e:
+        print(f"Error translating text: {e}")
+        return None
