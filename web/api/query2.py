@@ -530,17 +530,20 @@ class handler(BaseHTTPRequestHandler):
                 spectrum_name = "Article Volume"
                 spectrum_description = "Number of articles about this topic"
 
-                # Use percentiles to define thresholds
-                sorted_counts = sorted(article_counts)
-                q1_threshold = sorted_counts[int(len(sorted_counts) * 0.25)] if sorted_counts else min_count
-                q2_threshold = sorted_counts[int(len(sorted_counts) * 0.5)] if sorted_counts else min_count
-                q3_threshold = sorted_counts[int(len(sorted_counts) * 0.75)] if sorted_counts else min_count
+                # Calculate evenly spaced steps from min to max
+                if max_count > min_count:
+                    step1 = min_count
+                    step2 = min_count + int((max_count - min_count) / 3)
+                    step3 = min_count + int(2 * (max_count - min_count) / 3)
+                    step4 = max_count
+                else:
+                    step1 = step2 = step3 = step4 = min_count
 
                 spectrum_points = [
-                    SpectrumPoint(point_id=1, label=f"{min_count} article{'s' if min_count != 1 else ''}", description="Lowest coverage"),
-                    SpectrumPoint(point_id=2, label=f"{q2_threshold} articles", description="Median coverage"),
-                    SpectrumPoint(point_id=3, label=f"{q3_threshold} articles", description="High coverage"),
-                    SpectrumPoint(point_id=4, label=f"{max_count} articles", description="Highest coverage")
+                    SpectrumPoint(point_id=1, label=f"{step1} article{'s' if step1 != 1 else ''}", description=""),
+                    SpectrumPoint(point_id=2, label=f"{step2} articles", description=""),
+                    SpectrumPoint(point_id=3, label=f"{step3} articles", description=""),
+                    SpectrumPoint(point_id=4, label=f"{step4} articles", description="")
                 ]
 
                 final_response = {
