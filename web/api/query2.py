@@ -481,26 +481,8 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            # Fetch articles using semantic similarity
-            print("Fetching articles for query...")
-            articles_data = fetch_articles_for_query(search_query, date_start, date_end)
-
-            if not articles_data:
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({
-                    "spectrum_name": None,
-                    "spectrum_description": None,
-                    "spectrum_points": [],
-                    "articles": {}
-                }).encode('utf-8'))
-                return
-
-            print(f"Found {len(articles_data)} articles.")
-
-            # 3. Check cache first for predefined topics
-            print(f"Step 3: Checking cache for query='{search_query}', date_end='{date_end}'...")
+            # 1. Check cache first to avoid expensive DB query
+            print(f"Step 1: Checking cache for query='{search_query}', date_end='{date_end}'...")
             cached_result = get_cached_spectrum_analysis(search_query, date_end)
             print(f"Cache result: {cached_result is not None} (type: {type(cached_result)})")
 
@@ -508,6 +490,23 @@ class handler(BaseHTTPRequestHandler):
                 print("✓ Using cached results")
                 final_response = cached_result
             else:
+                # 2. Cache miss - fetch articles using semantic similarity
+                print("✗ No cache found, fetching articles...")
+                articles_data = fetch_articles_for_query(search_query, date_start, date_end)
+
+                if not articles_data:
+                    self.send_response(200)
+                    self.send_header('Content-type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({
+                        "spectrum_name": None,
+                        "spectrum_description": None,
+                        "spectrum_points": [],
+                        "articles": {}
+                    }).encode('utf-8'))
+                    return
+
+                print(f"Found {len(articles_data)} articles.")
                 print("✗ No cache found, using article count as spectrum...")
                 # 4. Use article count as the spectrum dimension (no LLM calls)
                 print("Step 4: Creating article count spectrum...")
