@@ -407,13 +407,19 @@ function renderSpectrumAnalysis(data) {
         separator.appendChild(toggleAllBtn);
     }
 
-    // Filter countries with at least 3 articles, then sort by average point_id
+    // Filter countries with at least 3 articles, then sort appropriately
     const sortedCountries = Object.keys(articles)
         .filter(iso => articles[iso].articles.length >= 3)
         .sort((a, b) => {
-            const avgA = countryDistributions[a].avgPointId;
-            const avgB = countryDistributions[b].avgPointId;
-            return avgA - avgB;
+            if (isCached) {
+                // For cached: sort by average point_id (spectrum position)
+                const avgA = countryDistributions[a].avgPointId;
+                const avgB = countryDistributions[b].avgPointId;
+                return avgA - avgB;
+            } else {
+                // For uncached: sort by article count (most to least)
+                return articles[b].articles.length - articles[a].articles.length;
+            }
         });
 
     // Render each country's articles

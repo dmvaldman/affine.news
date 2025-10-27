@@ -111,6 +111,32 @@ class LlmSankeyResult(BaseModel):
     country_summaries: list[CountrySummaryItem] = []
 
 
+def generate_country_summary_simple(country_name: str, articles: list) -> str:
+    """
+    Generate a simple summary for a country's articles (for uncached queries).
+    """
+    if not articles:
+        return None
+
+    # Limit to 10 articles for prompt size
+    sample_articles = articles[:10]
+
+    prompt = f"""Analyze news headlines from {country_name} and write a 1-3 sentence summary (max 100 words).
+
+Describe the main themes or narrative framing in these headlines:
+{chr(10).join(f"- {article['title']}" for article in sample_articles)}
+
+Write only the summary, nothing else."""
+
+    try:
+        client = genai.GenerativeModel('gemini-2.5-flash')
+        response = client.generate_content(prompt)
+        summary = response.text.strip()
+        return summary if summary else None
+    except Exception as e:
+        print(f"Error generating summary for {country_name}: {e}")
+        return None
+
 def generate_country_summaries_batch(articles_data: list, mappings: list[ArticleSpectrumMapping],
                                      spectrum_name: str, spectrum_points: list[SpectrumPoint]) -> list[CountrySummaryItem]:
     """
@@ -545,6 +571,18 @@ class handler(BaseHTTPRequestHandler):
                     SpectrumPoint(point_id=3, label=f"{step3} articles", description=""),
                     SpectrumPoint(point_id=4, label=f"{step4} articles", description="")
                 ]
+
+                # Generate summaries for countries with 3+ articles (single LLM call)
+                print("Generating country summaries for uncached query...")
+                for iso, country_data in articles_by_iso.items():
+                    if len(country_data['articles']) >= 3:
+                        summary = generate_country_summary_simple(
+                            country_data['country'],
+                            country_data['articles']
+                        )
+                        country_data['summary'] = summary
+                    else:
+                        country_data['summary'] = None
 
                 final_response = {
                     "spectrum_name": spectrum_name,
