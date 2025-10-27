@@ -129,7 +129,7 @@ Describe the main themes or narrative framing in these headlines:
 Write only the summary, nothing else."""
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash')
+        client = genai.GenerativeModel('gemini-2.5-flash-lite')
         response = client.generate_content(prompt)
         summary = response.text.strip()
         return summary if summary else None
@@ -214,7 +214,7 @@ def generate_country_summaries_batch(articles_data: list, mappings: list[Article
     prompt = "\n".join(prompt_parts)
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash')
+        client = genai.GenerativeModel('gemini-2.5-flash-lite')
         response = client.generate_content(
             prompt,
             generation_config=genai.types.GenerationConfig(
