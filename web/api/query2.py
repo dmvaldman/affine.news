@@ -121,7 +121,7 @@ def generate_country_summary_simple(country_name: str, articles: list) -> str:
     # Limit to 10 articles for prompt size
     sample_articles = articles[:10]
 
-    prompt = f"""Analyze news headlines from {country_name} and write a 1-3 sentence summary (max 100 words).
+    prompt = f"""Analyze news headlines from {country_name} and write a 1-3 sentence summary (max 80 words).
 
 Describe the main themes or narrative framing in these headlines:
 {chr(10).join(f"- {article['title']}" for article in sample_articles)}
