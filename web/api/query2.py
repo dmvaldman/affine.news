@@ -137,6 +137,37 @@ Write only the summary, nothing else."""
         print(f"Error generating summary for {country_name}: {e}")
         return None
 
+def generate_country_summaries_parallel(articles_by_iso: dict, max_workers: int = 4) -> None:
+    """
+    Generate summaries for countries with 3+ articles in parallel.
+    Updates articles_by_iso dict in place.
+    """
+    print("Generating country summaries in parallel...")
+
+    # Find countries that need summaries
+    countries_to_summarize = [
+        (iso, country_data['country'], country_data['articles'])
+        for iso, country_data in articles_by_iso.items()
+        if len(country_data['articles']) >= 3
+    ]
+
+    if countries_to_summarize:
+        with ThreadPoolExecutor(max_workers=min(max_workers, len(countries_to_summarize))) as executor:
+            # Use map to process all countries in parallel
+            summaries = executor.map(
+                lambda x: generate_country_summary_simple(x[1], x[2]),
+                countries_to_summarize
+            )
+
+            # Assign summaries back to articles_by_iso
+            for (iso, _, _), summary in zip(countries_to_summarize, summaries):
+                articles_by_iso[iso]['summary'] = summary
+
+    # Set None for countries with < 3 articles
+    for iso, country_data in articles_by_iso.items():
+        if len(country_data['articles']) < 3:
+            country_data['summary'] = None
+
 def generate_country_summaries_batch(articles_data: list, mappings: list[ArticleSpectrumMapping],
                                      spectrum_name: str, spectrum_points: list[SpectrumPoint]) -> list[CountrySummaryItem]:
     """
@@ -465,6 +496,117 @@ def generate_sankey_data_with_llm_parallel(articles_data: list, num_workers: int
     )
 
 
+def execute(search_query: str, date_start: str, date_end: str) -> dict:
+    """
+    Execute a query and return the response data.
+    This is the main logic that can be called directly or via HTTP handler.
+
+    Returns:
+        dict: The final response with spectrum analysis or article counts
+    """
+    # 1. Check cache first to avoid expensive DB query
+    print(f"Step 1: Checking cache for query='{search_query}', date_end='{date_end}'...")
+    cached_result = get_cached_spectrum_analysis(search_query, date_end)
+    print(f"Cache result: {cached_result is not None} (type: {type(cached_result)})")
+
+    if cached_result:
+        print("✓ Using cached results")
+        return cached_result
+
+    # 2. Cache miss - fetch articles using semantic similarity
+    print("✗ No cache found, fetching articles...")
+    articles_data = fetch_articles_for_query(search_query, date_start, date_end)
+
+    if not articles_data:
+        return {
+            "spectrum_name": None,
+            "spectrum_description": None,
+            "spectrum_points": [],
+            "articles": {}
+        }
+
+    print(f"Found {len(articles_data)} articles.")
+    print("✗ No cache found, using article count as spectrum...")
+    # 4. Use article count as the spectrum dimension (no LLM calls)
+    print("Step 4: Creating article count spectrum...")
+
+    # Group articles by ISO
+    articles_by_iso = {}
+    for article in articles_data:
+        iso = article['iso']
+
+        if iso not in articles_by_iso:
+            articles_by_iso[iso] = {
+                "country": article['country'],
+                "articles": [],
+                "summary": None  # No summary for uncached queries
+            }
+
+        articles_by_iso[iso]["articles"].append({
+            "title": article['title'],
+            "url": article['url'],
+            "publish_at": article['publish_at'],
+            "lang": article['lang'],
+            "point_id": None  # No classification for uncached queries
+        })
+
+    # Calculate article counts per country
+    article_counts = [len(data['articles']) for data in articles_by_iso.values()]
+    max_count = max(article_counts) if article_counts else 1
+    min_count = min(article_counts) if article_counts else 0
+
+    # Normalize counts to 1-4 scale
+    for iso, country_data in articles_by_iso.items():
+        count = len(country_data['articles'])
+        if max_count > min_count:
+            # Map count to 1-4 scale
+            normalized = 1 + (count - min_count) / (max_count - min_count) * 3
+            # Round to nearest integer (1, 2, 3, or 4)
+            point_id = int(round(normalized))
+        else:
+            point_id = 1  # All countries have same count
+
+        # Assign point_id to each article
+        for article in country_data['articles']:
+            article['point_id'] = point_id
+
+    # Create spectrum points representing exact article counts
+    spectrum_name = "Article Volume"
+    spectrum_description = "Number of articles about this topic"
+
+    # Calculate evenly spaced steps from min to max
+    if max_count > min_count:
+        step1 = min_count
+        step2 = min_count + int((max_count - min_count) / 3)
+        step3 = min_count + int(2 * (max_count - min_count) / 3)
+        step4 = max_count
+    else:
+        step1 = step2 = step3 = step4 = min_count
+
+    spectrum_points = [
+        SpectrumPoint(point_id=1, label=f"{step1} article{'s' if step1 != 1 else ''}", description=""),
+        SpectrumPoint(point_id=2, label=f"{step2} articles", description=""),
+        SpectrumPoint(point_id=3, label=f"{step3} articles", description=""),
+        SpectrumPoint(point_id=4, label=f"{step4} articles", description="")
+    ]
+
+    # Generate summaries for countries with 3+ articles (parallel LLM calls)
+    generate_country_summaries_parallel(articles_by_iso, max_workers=4)
+
+    final_response = {
+        "spectrum_name": spectrum_name,
+        "spectrum_description": spectrum_description,
+        "spectrum_points": [
+            {"point_id": p.point_id, "label": p.label, "description": p.description}
+            for p in sorted(spectrum_points, key=lambda x: x.point_id)
+        ],
+        "articles": articles_by_iso
+    }
+
+    # Note: We don't cache uncached queries since they lack full classification
+    return final_response
+
+
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # Parse query parameters
@@ -481,121 +623,10 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            # 1. Check cache first to avoid expensive DB query
-            print(f"Step 1: Checking cache for query='{search_query}', date_end='{date_end}'...")
-            cached_result = get_cached_spectrum_analysis(search_query, date_end)
-            print(f"Cache result: {cached_result is not None} (type: {type(cached_result)})")
+            # Execute the query logic
+            final_response = execute(search_query, date_start, date_end)
 
-            if cached_result:
-                print("✓ Using cached results")
-                final_response = cached_result
-            else:
-                # 2. Cache miss - fetch articles using semantic similarity
-                print("✗ No cache found, fetching articles...")
-                articles_data = fetch_articles_for_query(search_query, date_start, date_end)
-
-                if not articles_data:
-                    self.send_response(200)
-                    self.send_header('Content-type', 'application/json')
-                    self.end_headers()
-                    self.wfile.write(json.dumps({
-                        "spectrum_name": None,
-                        "spectrum_description": None,
-                        "spectrum_points": [],
-                        "articles": {}
-                    }).encode('utf-8'))
-                    return
-
-                print(f"Found {len(articles_data)} articles.")
-                print("✗ No cache found, using article count as spectrum...")
-                # 4. Use article count as the spectrum dimension (no LLM calls)
-                print("Step 4: Creating article count spectrum...")
-
-                # Group articles by ISO
-                articles_by_iso = {}
-                for article in articles_data:
-                    iso = article['iso']
-
-                    if iso not in articles_by_iso:
-                        articles_by_iso[iso] = {
-                            "country": article['country'],
-                            "articles": [],
-                            "summary": None  # No summary for uncached queries
-                        }
-
-                    articles_by_iso[iso]["articles"].append({
-                        "title": article['title'],
-                        "url": article['url'],
-                        "publish_at": article['publish_at'],
-                        "lang": article['lang'],
-                        "point_id": None  # No classification for uncached queries
-                    })
-
-                # Calculate article counts per country
-                article_counts = [len(data['articles']) for data in articles_by_iso.values()]
-                max_count = max(article_counts) if article_counts else 1
-                min_count = min(article_counts) if article_counts else 0
-
-                # Normalize counts to 1-4 scale
-                for iso, country_data in articles_by_iso.items():
-                    count = len(country_data['articles'])
-                    if max_count > min_count:
-                        # Map count to 1-4 scale
-                        normalized = 1 + (count - min_count) / (max_count - min_count) * 3
-                        # Round to nearest integer (1, 2, 3, or 4)
-                        point_id = int(round(normalized))
-                    else:
-                        point_id = 1  # All countries have same count
-
-                    # Assign point_id to each article
-                    for article in country_data['articles']:
-                        article['point_id'] = point_id
-
-                # Create spectrum points representing exact article counts
-                spectrum_name = "Article Volume"
-                spectrum_description = "Number of articles about this topic"
-
-                # Calculate evenly spaced steps from min to max
-                if max_count > min_count:
-                    step1 = min_count
-                    step2 = min_count + int((max_count - min_count) / 3)
-                    step3 = min_count + int(2 * (max_count - min_count) / 3)
-                    step4 = max_count
-                else:
-                    step1 = step2 = step3 = step4 = min_count
-
-                spectrum_points = [
-                    SpectrumPoint(point_id=1, label=f"{step1} article{'s' if step1 != 1 else ''}", description=""),
-                    SpectrumPoint(point_id=2, label=f"{step2} articles", description=""),
-                    SpectrumPoint(point_id=3, label=f"{step3} articles", description=""),
-                    SpectrumPoint(point_id=4, label=f"{step4} articles", description="")
-                ]
-
-                # Generate summaries for countries with 3+ articles (single LLM call)
-                print("Generating country summaries for uncached query...")
-                for iso, country_data in articles_by_iso.items():
-                    if len(country_data['articles']) >= 3:
-                        summary = generate_country_summary_simple(
-                            country_data['country'],
-                            country_data['articles']
-                        )
-                        country_data['summary'] = summary
-                    else:
-                        country_data['summary'] = None
-
-                final_response = {
-                    "spectrum_name": spectrum_name,
-                    "spectrum_description": spectrum_description,
-                    "spectrum_points": [
-                        {"point_id": p.point_id, "label": p.label, "description": p.description}
-                        for p in sorted(spectrum_points, key=lambda x: x.point_id)
-                    ],
-                    "articles": articles_by_iso
-                }
-
-                # Note: We don't cache uncached queries since they lack full classification
-
-            # 7. Send response with caching headers
+            # Send response with caching headers
             body = json.dumps(final_response, sort_keys=True).encode('utf-8')
             etag = '"' + hashlib.sha1(body).hexdigest() + '"'
 
