@@ -498,6 +498,11 @@ function renderSpectrumAnalysis(data) {
                 colorBox.className = 'article-color-box';
                 colorBox.style.backgroundColor = article.point_id !== null ? pointIdToColor[article.point_id] : '#ccc';
                 resultEl.appendChild(colorBox);
+            } else {
+                // Bullet dot for uncached results
+                const bulletDot = document.createElement('div');
+                bulletDot.className = 'article-bullet-dot';
+                resultEl.appendChild(bulletDot);
             }
 
             // Date

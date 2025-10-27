@@ -270,6 +270,20 @@ body {
     flex-shrink: 0;
 }
 
+#searchResults li .article-bullet-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #000;
+    margin-right: 4px;
+    margin-left: 1px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    position: relative;
+    top: -1px;
+}
+
 #searchResults li:last-child {
   padding-bottom: 0;
 }
