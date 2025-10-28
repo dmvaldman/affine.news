@@ -492,11 +492,6 @@ function renderSpectrumAnalysis(data) {
         sortedArticles.forEach(article => {
             const resultEl = document.createElement('li');
 
-            // Add class based on cached status
-            if (isCached) {
-                resultEl.classList.add('cached');
-            }
-
             // Article color indicator (only for cached data)
             if (isCached) {
                 const colorBox = document.createElement('div');
@@ -677,6 +672,11 @@ function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_
 
 function renderSpectrumLegend(spectrum_points, pointIdToColor) {
     if (!legendEl) return;
+
+    if (!spectrum_points || spectrum_points.length === 0) {
+        legendEl.innerHTML = '';
+        return;
+    }
 
     legendEl.classList.add('spectrum-legend');
     legendEl.innerHTML = '';
