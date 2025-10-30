@@ -2,7 +2,7 @@ name: Data Pipeline
 
 on:
   schedule:
-    - cron: '0 13,21,5 * * *' # Every 8 hours, starting at 6am PT (UTC-7)
+    - cron: '0 13,1 * * *' # Every 12 hours, starting at 6am PT (UTC-7)
   workflow_dispatch:
     inputs:
       max_articles:
