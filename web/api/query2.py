@@ -54,6 +54,46 @@ def is_topic_predefined(topic):
         print(f"Topic check error: {e}")
         return False
 
+def get_topic_date_for_cache(topic: str, default_date: str) -> str:
+    """
+    Get the appropriate date to use for cache lookup.
+    For predefined topics, returns the topic's creation date.
+    For other topics, returns the default_date.
+
+    Args:
+        topic: The topic string to look up
+        default_date: Default date to use if topic is not predefined (YYYY-MM-DD)
+
+    Returns:
+        str: Date string in YYYY-MM-DD format
+    """
+    if not is_topic_predefined(topic):
+        return default_date
+
+    # Get the topic's creation date from daily_topics
+    try:
+        db_url = os.environ.get('DATABASE_URL')
+        if db_url:
+            with psycopg2.connect(db_url) as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        SELECT DATE(created_at) as topic_date
+                        FROM daily_topics
+                        WHERE topic = %s
+                        ORDER BY created_at DESC
+                        LIMIT 1
+                    """, (topic,))
+                    result = cur.fetchone()
+                    if result:
+                        topic_date = result[0].strftime('%Y-%m-%d')
+                        print(f"Found topic creation date: {topic_date}")
+                        return topic_date
+    except Exception as e:
+        print(f"Error looking up topic date: {e}")
+
+    # Fallback to default_date if lookup fails
+    return default_date
+
 def cache_spectrum_analysis(topic, spectrum_name, spectrum_description, spectrum_points, articles_by_country, topic_date):
     try:
         db_url = os.environ.get('DATABASE_URL')
@@ -505,8 +545,11 @@ def execute(search_query: str, date_start: str, date_end: str) -> dict:
         dict: The final response with spectrum analysis or article counts
     """
     # 1. Check cache first to avoid expensive DB query
-    print(f"Step 1: Checking cache for query='{search_query}', date_end='{date_end}'...")
-    cached_result = get_cached_spectrum_analysis(search_query, date_end)
+    # For predefined topics, look up their creation date first
+    topic_date_for_cache = get_topic_date_for_cache(search_query, date_end)
+
+    print(f"Step 1: Checking cache for query='{search_query}', topic_date='{topic_date_for_cache}'...")
+    cached_result = get_cached_spectrum_analysis(search_query, topic_date_for_cache)
     print(f"Cache result: {cached_result is not None} (type: {type(cached_result)})")
 
     if cached_result:
