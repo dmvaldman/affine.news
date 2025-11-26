@@ -648,26 +648,16 @@ function interpolateSpectrumColor(avgPointId, spectrum_points, pointIdToColor) {
 function updateMapWithStripes(articlesByCountry, countryDistributions, spectrum_points, pointIdToColor) {
     if (!map) return;
 
-    // Use setTimeout to ensure map DOM is ready
-    setTimeout(() => {
-        const svg = document.querySelector('#mapContainer svg');
-        if (!svg) return;
+    const updateData = {};
 
-        Object.keys(articlesByCountry).forEach(iso => {
-            const dist = countryDistributions[iso];
+    Object.keys(articlesByCountry).forEach(iso => {
+        const dist = countryDistributions[iso];
+        // Use interpolated color based on float average (handles null avgPointId with #ccc)
+        const avgColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
+        updateData[iso] = avgColor;
+    });
 
-            // Get the country path
-            const countryPath = svg.querySelector(`.datamaps-subunit.${iso}`);
-            if (!countryPath) {
-                console.warn(`Country path not found for ISO: ${iso}`);
-                return;
-            }
-
-            // Use interpolated color based on float average (handles null avgPointId with #ccc)
-            const avgColor = interpolateSpectrumColor(dist.avgPointId, spectrum_points, pointIdToColor);
-            countryPath.style.fill = avgColor;
-        });
-    }, 100);
+    map.updateChoropleth(updateData);
 }
 
 function renderSpectrumLegend(spectrum_points, pointIdToColor) {
