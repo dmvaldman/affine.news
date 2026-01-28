@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(git -C /Users/dmvaldman/Code/affine log:*)"
+    ]
+  }
+}

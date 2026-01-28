@@ -138,7 +138,7 @@ function initializeMap(papersByCountry) {
             highlightBorderWidth: 1,
             popupTemplate: function(geography, data) {
                 // Don't show popups on mobile devices
-                if (window.innerWidth < 768) {
+                if (window.innerWidth < 500) {
                     return null;
                 }
                 let urls = papersByCountry[geography.id];
