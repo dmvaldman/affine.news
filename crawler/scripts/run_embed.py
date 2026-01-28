@@ -18,6 +18,7 @@ def main():
               WHERE title_embedding IS NULL
               AND title_translated IS NOT NULL
               AND title_translated != ''
+              AND publish_at >= NOW() - INTERVAL '2 days'
             """)
             articles_to_embed = cur.fetchall()
 
