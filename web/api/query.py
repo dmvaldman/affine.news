@@ -2,12 +2,10 @@ from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import urlparse, parse_qs
 import os
-import psycopg2
-from psycopg2.extras import DictCursor
-from pgvector.psycopg2 import register_vector
+import psycopg  # type: ignore
+from psycopg.rows import dict_row  # type: ignore
 import google.generativeai as genai
 from pydantic import BaseModel
-import numpy as np
 import hashlib
 
 SIMILARITY_THRESHOLD = 0.63  # Minimum similarity score to be included in results
@@ -115,9 +113,11 @@ class handler(BaseHTTPRequestHandler):
             if not db_url:
                 raise ValueError("DATABASE_URL not set")
 
-            with psycopg2.connect(db_url) as conn:
-                register_vector(conn)
-                with conn.cursor(cursor_factory=DictCursor) as cur:
+            # Convert embedding list to PostgreSQL vector string format
+            embedding_str = '[' + ','.join(str(x) for x in query_embedding) + ']'
+
+            with psycopg.connect(db_url) as conn:
+                with conn.cursor(row_factory=dict_row) as cur:
                     # Fetch ISO, language, AND country name from the paper table
                     cur.execute("SELECT uuid, iso, lang, country FROM paper")
                     papers_data = {row['uuid']: {'iso': row['iso'], 'lang': row['lang'], 'country': row['country']} for row in cur.fetchall()}
@@ -131,7 +131,7 @@ class handler(BaseHTTPRequestHandler):
                                 title_translated,
                                 publish_at,
                                 paper_uuid,
-                                1 - (title_embedding <=> %s) AS similarity
+                                1 - (title_embedding <=> %s::vector) AS similarity
                             FROM article
                             WHERE
                                 publish_at BETWEEN %s AND %s
@@ -148,7 +148,7 @@ class handler(BaseHTTPRequestHandler):
                         ORDER BY similarity DESC
                         LIMIT 200;
                         """,
-                        (np.array(query_embedding), date_start, date_end, SIMILARITY_THRESHOLD)
+                        (embedding_str, date_start, date_end, SIMILARITY_THRESHOLD)
                     )
                     results = cur.fetchall()
             print(f"Step 2 successful. Found {len(results)} articles.")

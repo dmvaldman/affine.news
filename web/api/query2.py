@@ -2,15 +2,38 @@ from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import urlparse, parse_qs
 import os
-import psycopg2
-from psycopg2.extras import DictCursor
-from pgvector.psycopg2 import register_vector
-import google.generativeai as genai
-from pydantic import BaseModel
-import numpy as np
+import psycopg  # type: ignore
+from psycopg.rows import dict_row  # type: ignore
+from dataclasses import dataclass, field
 import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import random
+import urllib.request
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+
+def gemini_generate(model: str, prompt: str, response_schema=None) -> str:
+    """Call Gemini API via REST."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
+
+    payload = {"contents": [{"parts": [{"text": prompt}]}]}
+    if response_schema:
+        payload["generationConfig"] = {
+            "responseMimeType": "application/json",
+            "responseSchema": response_schema
+        }
+
+    req = urllib.request.Request(url, json.dumps(payload).encode(), {"Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())['candidates'][0]['content']['parts'][0]['text']
+
+def gemini_embed(text: str) -> list:
+    """Get embeddings via REST."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={GEMINI_API_KEY}"
+    payload = {"model": "models/embedding-001", "content": {"parts": [{"text": text}]}, "taskType": "RETRIEVAL_QUERY"}
+    req = urllib.request.Request(url, json.dumps(payload).encode(), {"Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())['embedding']['values']
 
 # Cache functions using DATABASE_URL directly
 def get_cached_spectrum_analysis(topic, topic_date):
@@ -18,8 +41,8 @@ def get_cached_spectrum_analysis(topic, topic_date):
         db_url = os.environ.get('DATABASE_URL')
         if not db_url:
             return None
-        with psycopg2.connect(db_url) as conn:
-            with conn.cursor(cursor_factory=DictCursor) as cur:
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor(row_factory=dict_row) as cur:
                 cur.execute("""
                     SELECT spectrum_name, spectrum_description, spectrum_points, articles_by_country
                     FROM topic_spectrum_cache
@@ -29,7 +52,7 @@ def get_cached_spectrum_analysis(topic, topic_date):
                 """, (topic, topic_date))
                 result = cur.fetchone()
                 if result:
-                    # spectrum_points and articles_by_country are already parsed as dicts/lists by psycopg2 JSONB
+                    # spectrum_points and articles_by_country are already parsed as dicts/lists by psycopg JSONB
                     return {
                         'spectrum_name': result['spectrum_name'],
                         'spectrum_description': result['spectrum_description'],
@@ -46,7 +69,7 @@ def is_topic_predefined(topic):
         db_url = os.environ.get('DATABASE_URL')
         if not db_url:
             return False
-        with psycopg2.connect(db_url) as conn:
+        with psycopg.connect(db_url) as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT COUNT(*) FROM daily_topics WHERE topic = %s", (topic,))
                 return cur.fetchone()[0] > 0
@@ -74,7 +97,7 @@ def get_topic_date_for_cache(topic: str, default_date: str) -> str:
     try:
         db_url = os.environ.get('DATABASE_URL')
         if db_url:
-            with psycopg2.connect(db_url) as conn:
+            with psycopg.connect(db_url) as conn:
                 with conn.cursor() as cur:
                     cur.execute("""
                         SELECT DATE(created_at) as topic_date
@@ -99,7 +122,7 @@ def cache_spectrum_analysis(topic, spectrum_name, spectrum_description, spectrum
         db_url = os.environ.get('DATABASE_URL')
         if not db_url:
             return
-        with psycopg2.connect(db_url) as conn:
+        with psycopg.connect(db_url) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO topic_spectrum_cache (
@@ -123,32 +146,30 @@ SIMILARITY_THRESHOLD = 0.63
 NUM_WORKERS = 4  # Number of parallel workers for article classification
 MIN_ARTICLES_PER_COUNTRY = 3  # Minimum articles to include a country
 
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not set")
-
-genai.configure(api_key=GEMINI_API_KEY)
-
 # --- LLM Structured Output Schemas ---
-class SpectrumPoint(BaseModel):
+@dataclass
+class SpectrumPoint:
     point_id: int
     label: str
     description: str  # Brief description of this viewpoint
 
-class ArticleSpectrumMapping(BaseModel):
+@dataclass
+class ArticleSpectrumMapping:
     article_id: int
     point_id: int
 
-class CountrySummaryItem(BaseModel):
+@dataclass
+class CountrySummaryItem:
     country: str
     summary: str
 
-class LlmSankeyResult(BaseModel):
+@dataclass
+class LlmSankeyResult:
     spectrum_name: str
     spectrum_description: str
     spectrum_points: list[SpectrumPoint]
     mappings: list[ArticleSpectrumMapping]
-    country_summaries: list[CountrySummaryItem] = []
+    country_summaries: list[CountrySummaryItem] = field(default_factory=list)
 
 
 def generate_country_summary_simple(country_name: str, articles: list) -> str:
@@ -169,10 +190,8 @@ Describe the main themes or narrative framing in these headlines:
 Write only the summary, nothing else."""
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash-lite')
-        response = client.generate_content(prompt)
-        summary = response.text.strip()
-        return summary if summary else None
+        response = gemini_generate('gemini-2.5-flash-lite', prompt)
+        return response.strip() if response else None
     except Exception as e:
         print(f"Error generating summary for {country_name}: {e}")
         return None
@@ -285,15 +304,9 @@ def generate_country_summaries_batch(articles_data: list, mappings: list[Article
     prompt = "\n".join(prompt_parts)
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash-lite')
-        response = client.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json",
-                response_schema=list[CountrySummaryItem]
-            )
-        )
-        summaries = [CountrySummaryItem(**s) for s in json.loads(response.text)]
+        schema = {"type": "array", "items": {"type": "object", "properties": {"country": {"type": "string"}, "summary": {"type": "string"}}, "required": ["country", "summary"]}}
+        response = gemini_generate('gemini-2.5-flash-lite', prompt, schema)
+        summaries = [CountrySummaryItem(**s) for s in json.loads(response)]
         print(f"Generated {len(summaries)} country summaries")
         return summaries
     except Exception as e:
@@ -332,21 +345,16 @@ def define_spectrum(articles_data: list) -> tuple[str, str, list[SpectrumPoint]]
 
     prompt = "\n".join(prompt_parts)
 
-    class SpectrumDefinition(BaseModel):
+    @dataclass
+    class SpectrumDefinition:
         spectrum_name: str
         spectrum_description: str
         spectrum_points: list[SpectrumPoint]
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash')
-        response = client.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json",
-                response_schema=SpectrumDefinition
-            )
-        )
-        result = SpectrumDefinition(**json.loads(response.text))
+        schema = {"type": "object", "properties": {"spectrum_name": {"type": "string"}, "spectrum_description": {"type": "string"}, "spectrum_points": {"type": "array", "items": {"type": "object", "properties": {"point_id": {"type": "integer"}, "label": {"type": "string"}, "description": {"type": "string"}}, "required": ["point_id", "label", "description"]}}}, "required": ["spectrum_name", "spectrum_description", "spectrum_points"]}
+        response = gemini_generate('gemini-2.5-flash', prompt, schema)
+        result = SpectrumDefinition(**json.loads(response))
         print(f"Spectrum defined: {result.spectrum_name}")
         return (result.spectrum_name, result.spectrum_description, result.spectrum_points)
     except Exception as e:
@@ -384,15 +392,9 @@ def classify_articles_batch(batch: list, batch_start_id: int, spectrum_points: l
     prompt = "\n".join(prompt_parts)
 
     try:
-        client = genai.GenerativeModel('gemini-2.5-flash')
-        response = client.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json",
-                response_schema=list[ArticleSpectrumMapping]
-            )
-        )
-        return [ArticleSpectrumMapping(**m) for m in json.loads(response.text)]
+        schema = {"type": "array", "items": {"type": "object", "properties": {"article_id": {"type": "integer"}, "point_id": {"type": "integer"}}, "required": ["article_id", "point_id"]}}
+        response = gemini_generate('gemini-2.5-flash', prompt, schema)
+        return [ArticleSpectrumMapping(**m) for m in json.loads(response)]
     except Exception as e:
         print(f"Error classifying batch: {e}")
         return []
@@ -412,12 +414,7 @@ def fetch_articles_for_query(search_query: str, date_start: str, date_end: str) 
     """
     try:
         # 1. Embed the search query
-        query_embedding_response = genai.embed_content(
-            model="models/embedding-001",
-            content=search_query,
-            task_type="retrieval_query"
-        )
-        query_embedding = query_embedding_response['embedding']
+        query_embedding = gemini_embed(search_query)
 
         # 2. Query the database
         db_url = os.environ.get('DATABASE_URL')
@@ -425,9 +422,11 @@ def fetch_articles_for_query(search_query: str, date_start: str, date_end: str) 
             raise ValueError("DATABASE_URL not set")
 
         articles_data = []
-        with psycopg2.connect(db_url) as conn:
-            register_vector(conn)
-            with conn.cursor(cursor_factory=DictCursor) as cur:
+        # Convert embedding list to PostgreSQL vector string format
+        embedding_str = '[' + ','.join(str(x) for x in query_embedding) + ']'
+
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor(row_factory=dict_row) as cur:
                 # Fetch paper metadata
                 cur.execute("SELECT uuid, iso, country, lang FROM paper")
                 papers_data = {row['uuid']: {'iso': row['iso'], 'country': row['country'], 'lang': row['lang']} for row in cur.fetchall()}
@@ -441,16 +440,16 @@ def fetch_articles_for_query(search_query: str, date_start: str, date_end: str) 
                         paper_uuid,
                         publish_at,
                         lang,
-                        1 - (title_embedding <=> %s) AS similarity
+                        1 - (title_embedding <=> %s::vector) AS similarity
                     FROM article
                     WHERE
                         publish_at BETWEEN %s AND %s
                         AND title_embedding IS NOT NULL
-                        AND 1 - (title_embedding <=> %s) > %s
+                        AND 1 - (title_embedding <=> %s::vector) > %s
                     ORDER BY similarity DESC
                     LIMIT 200;
                     """,
-                    (np.array(query_embedding), date_start, date_end, np.array(query_embedding), SIMILARITY_THRESHOLD)
+                    (embedding_str, date_start, date_end, embedding_str, SIMILARITY_THRESHOLD)
                 )
                 results = cur.fetchall()
 

@@ -1,5 +1,1 @@
-google-generativeai==0.7.2
-psycopg2-binary==2.9.9
-pgvector==0.2.1
-pydantic==2.9.2
-packaging
+psycopg[binary]>=3.1.0
