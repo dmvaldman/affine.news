@@ -24,13 +24,14 @@ def translate_paper(paper):
         print(f"Could not initialize translator, skipping translation. Error: {e}")
         return
 
-    # Get articles to translate
+    # Get articles to translate (only from last 3 days to prioritize recent content)
     with conn.cursor(cursor_factory=DictCursor) as c:
         c.execute('''
             SELECT a.url, a.lang, a.title FROM article a
             JOIN paper p on p.uuid = a.paper_uuid
             WHERE a.title_translated IS NULL
             AND p.uuid=%s
+            AND a.publish_at >= NOW() - INTERVAL '2 days'
         ''', (paper.uuid,))
         results = c.fetchall()
 
