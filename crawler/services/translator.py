@@ -1,7 +1,6 @@
 import os
 import json
 import google.generativeai as genai
-from typing import List
 
 # Configure Gemini API key
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -109,7 +108,7 @@ def translate_batch(client, texts_with_info: list[tuple[str, str, str]], target_
                     prompt,
                     generation_config=genai.types.GenerationConfig(
                         response_mime_type="application/json",
-                        response_schema=List[str]
+                        response_schema=list[str]
                     )
                 )
                 translations = json.loads(response.text)

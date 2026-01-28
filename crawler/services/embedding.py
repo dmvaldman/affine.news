@@ -22,10 +22,12 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
     genai.configure(api_key=api_key)
 
     try:
+        # Use 768 dimensions to match existing DB embeddings
         result = genai.embed_content(
-            model="models/embedding-001",
+            model="models/gemini-embedding-001",
             content=texts,
-            task_type="retrieval_document"
+            task_type="RETRIEVAL_DOCUMENT",
+            output_dimensionality=768
         )
         return result['embedding']
     except Exception as e:

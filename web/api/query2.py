@@ -28,9 +28,14 @@ def gemini_generate(model: str, prompt: str, response_schema=None) -> str:
         return json.loads(resp.read())['candidates'][0]['content']['parts'][0]['text']
 
 def gemini_embed(text: str) -> list:
-    """Get embeddings via REST."""
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={GEMINI_API_KEY}"
-    payload = {"model": "models/embedding-001", "content": {"parts": [{"text": text}]}, "taskType": "RETRIEVAL_QUERY"}
+    """Get embeddings via REST. Uses 768 dimensions to match existing DB embeddings."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={GEMINI_API_KEY}"
+    payload = {
+        "model": "models/gemini-embedding-001",
+        "content": {"parts": [{"text": text}]},
+        "taskType": "RETRIEVAL_QUERY",
+        "outputDimensionality": 768
+    }
     req = urllib.request.Request(url, json.dumps(payload).encode(), {"Content-Type": "application/json"})
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read())['embedding']['values']
