@@ -1,8 +1,8 @@
 import os
 import sys
-import psycopg2
-from psycopg2.extras import DictCursor
-from pgvector.psycopg2 import register_vector
+import psycopg
+from psycopg.rows import dict_row
+from pgvector.psycopg import register_vector
 import google.generativeai as genai
 from dotenv import load_dotenv
 import numpy as np
@@ -176,9 +176,9 @@ def main():
             raise ValueError("DATABASE_URL not set")
 
         articles_data = []
-        with psycopg2.connect(db_url) as conn:
+        with psycopg.connect(db_url) as conn:
             register_vector(conn)
-            with conn.cursor(cursor_factory=DictCursor) as cur:
+            with conn.cursor(row_factory=dict_row) as cur:
                 cur.execute("SELECT uuid, iso, country FROM paper")
                 papers_data = {row['uuid']: {'iso': row['iso'], 'country': row['country']} for row in cur.fetchall()}
 

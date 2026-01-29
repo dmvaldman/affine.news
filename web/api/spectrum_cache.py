@@ -4,7 +4,7 @@ Spectrum analysis caching module for precomputed topic results.
 import json
 import sys
 import os
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 
@@ -69,7 +69,7 @@ def get_cached_spectrum_analysis(topic: str, topic_date: str) -> Optional[Dict[s
         Dict with cached results or None if not found
     """
     try:
-        with conn.cursor(cursor_factory=DictCursor) as cur:
+        with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT spectrum_name, spectrum_description, spectrum_points, articles_by_country
                 FROM topic_spectrum_cache
