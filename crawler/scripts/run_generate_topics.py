@@ -1,7 +1,7 @@
 import os
 import sys
-import psycopg2
-from pgvector.psycopg2 import register_vector
+import psycopg
+from pgvector.psycopg import register_vector
 import numpy as np
 import json
 from datetime import datetime, timedelta
@@ -113,7 +113,7 @@ def main():
 
         print(f"Successfully saved {len(final_topics)} topics to the database.")
 
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         print(f"Database error: {e}", file=sys.stderr)
     except Exception as e:
         print(f"An unexpected error occurred: {e}", file=sys.stderr)

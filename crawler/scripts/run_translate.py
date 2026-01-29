@@ -1,6 +1,6 @@
 import sys
 import time
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 
 from crawler.models.Paper import Papers
 from crawler.db.db import conn
@@ -25,7 +25,7 @@ def translate_paper(paper):
         return
 
     # Get articles to translate (only from last 3 days to prioritize recent content)
-    with conn.cursor(cursor_factory=DictCursor) as c:
+    with conn.cursor(row_factory=dict_row) as c:
         c.execute('''
             SELECT a.url, a.lang, a.title FROM article a
             JOIN paper p on p.uuid = a.paper_uuid

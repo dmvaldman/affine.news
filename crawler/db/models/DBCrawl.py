@@ -1,11 +1,11 @@
 from crawler.db.db import conn
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 
 
 class DBCrawl:
     @staticmethod
     def create(crawl):
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute("""
                 INSERT INTO crawl (
                     uuid,
@@ -27,7 +27,7 @@ class DBCrawl:
 
     @staticmethod
     def update_status(crawl, status):
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute('''
                 UPDATE crawl SET status=%s
                 WHERE uuid=%s

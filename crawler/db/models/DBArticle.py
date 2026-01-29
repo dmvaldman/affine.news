@@ -1,5 +1,5 @@
 from crawler.db.db import conn
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 
 class DBArticle:
     @staticmethod
@@ -8,7 +8,7 @@ class DBArticle:
 
     @staticmethod
     def save(article):
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             try:
                 c.execute("""
                     INSERT INTO article (
@@ -52,6 +52,6 @@ class DBArticle:
     def cache_hit(article):
         query = '''SELECT * FROM article WHERE url=%s and title is not null'''
         data = (article.url, )
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute(query, data)
             return c.fetchone()

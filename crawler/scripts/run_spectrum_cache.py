@@ -5,7 +5,7 @@ Runs after topic generation to precompute spectrum analysis for new topics.
 """
 import os
 import sys
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 from datetime import datetime, timedelta
 import time
 
@@ -22,7 +22,7 @@ def get_topics_needing_spectrum_analysis():
     Get topics from the last day that don't have cached spectrum analysis.
     """
     try:
-        with conn.cursor(cursor_factory=DictCursor) as cur:
+        with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT DISTINCT dt.topic, DATE(dt.created_at) as topic_date, dt.created_at
                 FROM daily_topics dt

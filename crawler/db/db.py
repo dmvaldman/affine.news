@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import psycopg2
+import psycopg
 
 database_url = os.environ.get('DATABASE_URL')
 if not database_url:
@@ -13,8 +13,8 @@ if not database_url:
     conn = None
 else:
     try:
-        conn = psycopg2.connect(database_url)
-    except psycopg2.OperationalError as e:
+        conn = psycopg.connect(database_url)
+    except psycopg.OperationalError as e:
         print(f"DB connection failed: {e}", file=sys.stderr)
         conn = None
 

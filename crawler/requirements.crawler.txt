@@ -12,9 +12,8 @@ newspaper3k==0.2.8
 nltk==3.8.1
 numpy==2.0.0
 Pillow==10.4.0
-psycopg2-binary==2.9.9
 psycopg[binary]>=3.1.0
-pgvector==0.2.1
+pgvector>=0.2.4
 python-dotenv==1.0.1
 PyYAML==6.0.1
 random-string-detector==1.1.1

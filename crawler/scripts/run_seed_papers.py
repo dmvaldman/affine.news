@@ -4,7 +4,7 @@ import json
 import os
 import sys
 
-import psycopg2
+import psycopg
 
 
 def stable_uuid_from_url(url: str) -> str:
@@ -28,7 +28,7 @@ def main():
     with open(json_path, 'r') as f:
         papers_json = json.load(f)
 
-    conn = psycopg2.connect(database_url)
+    conn = psycopg.connect(database_url)
     try:
         with conn.cursor() as c:
             json_paper_uuids = {stable_uuid_from_url(p['url']) for p in papers_json}

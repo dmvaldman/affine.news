@@ -1,6 +1,6 @@
 from crawler.models.Paper import Paper
 from crawler.db.db import conn
-from psycopg2.extras import DictCursor
+from psycopg.rows import dict_row
 
 
 def get_papers_from_rows(results):
@@ -58,7 +58,7 @@ class DBPaper:
 
     @staticmethod
     def get_all():
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute('''
                 SELECT p.uuid, p.country, p.iso, p.lang, p.url, p.whitelist, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
@@ -67,7 +67,7 @@ class DBPaper:
 
     @staticmethod
     def get_paper_by_url(url):
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute('''
                 SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, p.whitelist, cs.url as category_url FROM paper p
                 JOIN category_set cs on cs.paper_uuid = p.uuid
@@ -80,7 +80,7 @@ class DBPaper:
 
     @staticmethod
     def get_paper_by_uuid(uuid):
-        with conn.cursor(cursor_factory=DictCursor) as c:
+        with conn.cursor(row_factory=dict_row) as c:
             c.execute('''
                     SELECT p.uuid, p.country, p.iso, p.lang, p.url as url, p.whitelist, cs.url as category_url FROM paper p
                     JOIN category_set cs on cs.paper_uuid = p.uuid
